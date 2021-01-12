@@ -1,11 +1,4 @@
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef struct	t_vector {
-	int x;
-	int y;
-}				s_vector;
+#include "vectors.h"
 
 int main (int argc, char **argv)
 {
