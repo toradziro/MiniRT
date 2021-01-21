@@ -1,11 +1,11 @@
 #include "vectors.h"
 
-s_normal		vector_normalise(s_vector v, double len)
+s_vector		vector_normalise(s_vector v, double len)
 {
-	s_normal	n;
+	s_vector	n;
 
-	n.n_x = v.v_x / len;
-	n.n_y = v.v_y / len;
-	n.n_z = v.v_z / len;
+	n.v_x = v.v_x / len;
+	n.v_y = v.v_y / len;
+	n.v_z = v.v_z / len;
 	return (n);
 }
