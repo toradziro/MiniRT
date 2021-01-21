@@ -18,6 +18,7 @@ typedef struct	t_point {
 
 double			vector_scalar_mult(s_vector a, s_vector b);
 double			vector_length(s_vector v);
+double			**matrix_decl(int num);
 s_vector		vector_normalise(s_vector v, double len);
 s_vector		cross_prod(s_vector a, s_vector b);
 s_vector		add_vectors(s_vector a, s_vector b);
