@@ -16,6 +16,11 @@ typedef struct	t_point {
 				double p_z;
 }				s_point;
 
+typedef struct	t_ray {
+				s_vector dir;
+				s_point orig;
+}				s_ray;
+
 double			**matrix_multip(double **a, double **b);
 double			vector_scalar_mult(s_vector a, s_vector b);
 double			vector_length(s_vector v);
