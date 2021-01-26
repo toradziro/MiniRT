@@ -2,21 +2,21 @@
 # define VECTORS_H
 
 typedef struct	t_vector {
-				double v_x;
-				double v_y;
-				double v_z;
+		double	v_x;
+		double	v_y;
+		double	v_z;
 }				s_vector;
 
 typedef struct	t_point {
-				double p_x;
-				double p_y;
-				double p_z;
+		double	p_x;
+		double	p_y;
+		double	p_z;
 }				s_point;
 
-typedef struct	t_ray {
-				s_vector dir;
-				s_point orig;
-}				s_ray;
+typedef struct		t_ray {
+		s_vector	dir;
+		s_point		orig;
+}					s_ray;
 
 /**
  ** Subs (vec1 - vec2); 

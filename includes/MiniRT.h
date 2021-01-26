@@ -15,8 +15,14 @@
 //# include "mlx.h"
 # include "vectors.h"
 # include "utils.h"
+# include "sphere.h"
+# include "camera.h"
+# include "scene.h"
+
 # include <unistd.h>
 # include <math.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <fcntl.h>
+
 #endif
