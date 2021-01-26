@@ -1,4 +1,4 @@
-#include "vectors.h"
+#include "../includes/MiniRT.h"
 
 s_vector		*add_vectors(s_vector *a, s_vector *b)
 {

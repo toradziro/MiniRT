@@ -1,4 +1,4 @@
-#include "../MiniRT.h"
+#include "../includes/MiniRT.h"
 
 s_vector		*vector_normalise(s_vector *v, double len)
 {

@@ -21,9 +21,9 @@ typedef struct	t_ray {
 /**
  ** Subs (vec1 - vec2); 
  ** add (vec1 + vec2);
- ** vec_scal_mult = (vector * vector)
+ ** vec_scal_mult = (vector * vector) = dot product
  ** vector_cross = (vec * vec) = cross product
- ** vector_by_scalar = mult vector by const = dot product
+ ** vector_by_scalar = mult vector by const
  ** new_vector = create new vector (lol)
 **/
 

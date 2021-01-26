@@ -1,4 +1,4 @@
-#include "../MiniRT.h"
+#include "../includes/MiniRT.h"
 
 double	vector_length(s_vector *v)
 {

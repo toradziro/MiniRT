@@ -1,4 +1,4 @@
-#include "vectors.h"
+#include "../includes/MiniRT.h"
 
 double		vector_scalar_mult(s_vector *a, s_vector *b)
 {

@@ -1,4 +1,4 @@
-#include "../MiniRT.h"
+#include "../includes/MiniRT.h"
 
 s_vector		*cross_prod(s_vector *a, s_vector *b)
 {

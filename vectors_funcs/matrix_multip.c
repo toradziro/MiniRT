@@ -1,4 +1,4 @@
-#include "../MiniRT.h"
+#include "../includes/MiniRT.h"
 
 double		**matrix_multip(double **a, double **b)
 {
