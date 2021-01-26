@@ -1,4 +1,4 @@
-#include "vectors.h"
+#include "../MiniRT.h"
 
 double		**matrix_decl(int num)
 {
@@ -7,12 +7,12 @@ double		**matrix_decl(int num)
 	double	**res;
 
 	if(!(res = (double**)malloc(sizeof(double*) * num)))
-		return (NULL);
+		killed_by_error(-1);
 	i = 0;
 	while (i < num)
 	{
 		if (!(res[i] = (double*)malloc(sizeof(double) * num)))
-			return (NULL);
+			killed_by_error(-1);
 		i++;
 	}
 	i = 0;

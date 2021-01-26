@@ -1,4 +1,4 @@
-#include "vectors.h"
+#include "../MiniRT.h"
 
 double		**matrix_multip(double **a, double **b)
 {
@@ -7,7 +7,7 @@ double		**matrix_multip(double **a, double **b)
 	double	**res;
 
 	if (!(res = matrix_decl(4)))
-		return (NULL);
+		killed_by_error(-1);
 	i = 0;
 	j = 0;
 	while (i < 4)
