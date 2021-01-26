@@ -27,5 +27,6 @@ s_vector		cross_prod(s_vector a, s_vector b);
 s_vector		add_vectors(s_vector a, s_vector b);
 s_vector		subs_vectors(s_vector a, s_vector b);
 s_vector		vector_by_scalar(s_vector a, double num);
+s_vector		*new_vector(double x, double y, double z);
 
 #endif
