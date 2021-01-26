@@ -13,17 +13,9 @@
 #ifndef MINIRT_H
 # define MINIRT_H
 # include "mlx.h"
-
-typedef struct 	s_data {
-	void		*img;
-	char		*adr;
-	int			b_p_p;
-	int			l_l;
-	int			endian;
-}				t_data;
-
-void	put_square(t_data *data, int x, int y, int size, int color);
-void	my_pixel_put(t_data *data, int x, int y, int color);
-void	put_line(t_data *data, int x1, int y1, int x2, int y2, int color);
+# include "vectors_funcs/vectors.h"
+# include <unistd.h>
+# include <math.h>
+# include <stdio.h>
 
 #endif
