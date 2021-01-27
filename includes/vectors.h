@@ -27,6 +27,7 @@ typedef struct		t_ray {
  ** new_vector = create new vector (lol)
 **/
 
+s_point			*new_point(double x, double y, double z);
 double			**matrix_multip(double **a, double **b);
 double			vector_scalar_mult(s_vector *a, s_vector *b);
 double			vector_length(s_vector *v);
