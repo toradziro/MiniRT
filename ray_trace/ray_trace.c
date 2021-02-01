@@ -29,13 +29,23 @@ void	ray_trace(void *mlx, void *window, s_scene *scene)
 	{
 		y_ray = win_y * vplane->y_pixel;
 		win_x = -scene->width / 2;
+		mlx_x = 0;
 		while (win_x <= scene->width / 2)
 		{
 			x_ray = win_x * vplane->x_pixel;
 			ray = new_vector(x_ray, y_ray, -1);
 			ray = vector_normalise(ray, vector_length(ray));
-			//!!!!!!!!!
+			if (sphere_intersect(scene->cams, ray, scene->sphere))
+				color = 16777215;
+			else
+				color = 0;
+			mlx_pixel_put(mlx, window, mlx_x, mlx_y, color);
+			free(ray);
+			win_x++;
+			mlx_x++;
 		}
+		win_y--;
+		mlx_y++;
 	}
 }
 
