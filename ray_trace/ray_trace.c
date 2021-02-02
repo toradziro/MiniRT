@@ -6,7 +6,7 @@
 /*   By: ehillman <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:36:02 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/02 20:41:41 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/02 22:01:15 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,11 @@ s_vplane		*get_view_plane(double width, double hieght, double fov)
 	s_vplane	*vplane;
 	double		aspect_ratio; //mashtab!
 
-	fov = 1;
 	if (!(vplane = (s_vplane*)malloc(sizeof(s_vplane))))
 		killed_by_error(-1);
 	aspect_ratio = width / hieght;
-	vplane->width = 1;
-	vplane->hieght = 1 / aspect_ratio;
+	vplane->width = (tan(fov / 2 * (M_PI / 180))) * 2;
+	vplane->hieght = vplane->width / aspect_ratio;
 	vplane->x_pixel = vplane->width / width;
 	vplane->y_pixel = vplane->hieght / hieght;
 	return (vplane);
