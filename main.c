@@ -6,7 +6,7 @@
 /*   By: ehillman <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/01/28 00:17:35 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/02 21:05:57 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ int			main(void)
 	void	*window;
 
 	mlx = mlx_init();
-	s_point		*sphere_center = new_point(3, 2, -30);
-	s_sphere	*sphere = new_sphere(sphere_center, 30/2);
+	s_point		*sphere_center = new_point(3, 2, -100);
+	s_sphere	*sphere = new_sphere(sphere_center, 10);
 	s_point		*camera_center = new_point(0, 0, 0);
 	s_vector	*camera_dir = new_vector(0, 0, -1);
 	s_camera	*camera = new_camera(camera_dir, camera_center, 180);

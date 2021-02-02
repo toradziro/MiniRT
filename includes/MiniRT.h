@@ -6,7 +6,7 @@
 /*   By: ehillman <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/01/28 00:56:38 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/02 19:23:34 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "camera.h"
 # include "scene.h"
 # include "vplane.h"
+# include "sphere_inters.h"
 
 # include <unistd.h>
 # include <math.h>
