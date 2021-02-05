@@ -24,6 +24,7 @@ void	ray_trace(void *mlx, void *window, s_scene *scene)
 	double		x_ray;
 	s_vector	*ray;
 	s_vplane	*vplane;
+	t_vector	light_dir = new_vector(0.2, 0.3, 0.5); // in parser
 	vplane = get_view_plane(scene->width, scene->hieght, scene->cams->field_of_v);
 	while (win_y >= -scene->hieght / 2)
 	{
@@ -37,6 +38,14 @@ void	ray_trace(void *mlx, void *window, s_scene *scene)
 			ray = vector_normalise(ray, vector_length(ray));
 			if (sphere_intersect(scene->cams, ray, scene->sphere))
 				color = 16777215;
+			
+
+			t_point *lie_on_sphere = (t_point*)vector_by_scalar(ray, x_one);
+			//t_vector normal  = lie_on_sphere - sp_center;
+			//double coeff = normal * light_dir;
+			//color = (цвет сфера + (col_ambient * intens) + (цвет света * coeff));
+			//
+			//
 			else
 				color = 0;
 			mlx_pixel_put(mlx, window, mlx_x, mlx_y, color);

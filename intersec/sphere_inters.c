@@ -21,6 +21,6 @@ int			sphere_intersect(s_camera *camera, s_vector *ray, s_sphere *sp)
 	x_one = (-b - sqrt(discr)) / 2;
 	x_two = (-b + sqrt(discr)) / 2;
 	if (x_one > 0)
-		return (1);
+		return (x_one);
 	return (0);
 }
