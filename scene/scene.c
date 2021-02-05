@@ -9,6 +9,6 @@ s_scene		*new_scene(s_camera *cam, s_sphere *sphere)
 	res->cams = cam;
 	res->sphere = sphere;
 	res->width = 0;
-	res->hieght = 0;
+	res->height = 0;
 	return (res);
 }
