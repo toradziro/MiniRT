@@ -25,4 +25,31 @@
  * "tr 10.0,20.0,10.0 | 10.0,10.0,20.0 | 20.0,10.0,10.0 | 0,0,255" - xyz first point | xyz s_point | xyz th_point | color
  */
 
-s_scene
+void 	parser(char *str, s_scene *scene)
+{
+	const unsigned char spec = check_specif(str);
+
+	if (str[0] == 'A')
+	{
+		//work with amb
+	}
+	else
+	{
+		//work with spec and str
+	}
+}
+
+//char 		check_specif(char *str)
+//{
+//	unsigned char	spec;
+//
+//	spec |= S_NUL;
+//	if (str[0] == 'R')
+//		spec |= S_R;
+//	else if (str[0] == 'c')
+//		spec |= S_CM;
+//	else if (str[0] == 'l')
+//		spec |= S_LT;
+//	else if ()
+//	return (spec);
+//}

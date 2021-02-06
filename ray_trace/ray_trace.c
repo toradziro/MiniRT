@@ -125,7 +125,7 @@ s_vplane		*get_view_plane(double width, double height, double fov)
 	double		aspect_ratio; //mashtab!
 
 	if (!(vplane = (s_vplane*)malloc(sizeof(s_vplane))))
-		killed_by_error(-1);
+		killed_by_error(MALLOC_ERROR);
 	aspect_ratio = width / height;
 	vplane->width = (tan(fov / 2 * (M_PI / 180))) * 2;
 	vplane->hieght = vplane->width / aspect_ratio;

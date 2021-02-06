@@ -14,11 +14,17 @@
 
 int			main(int argc, char **argv)
 {
+	s_scene		*scene;
+	int			fd;
+	char 		*line;
+
 	if (argc != 2 && argc != 3)
-		killed_by_error(-2);
+		killed_by_error(INV_AM_OF_ARG);
 	if (argc == 2)
 		check_valid_name(argv[1]);
-	s_scene *scene;
+	fd = open(argv[1], O_RDONLY);
+	while (get_next_line(fd, &line))
+		parser(line, scene);
 	return (0);
 }
 

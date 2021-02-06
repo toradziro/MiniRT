@@ -21,6 +21,4 @@ typedef struct		t_lights {
 		void		*next;
 }					s_lights;
 
-
-
 #endif
