@@ -1,6 +1,6 @@
 #include "../includes/MiniRT.h"
 
-int			sphere_intersect(s_camera *camera, s_vector *ray, s_sphere *sp)
+int			sphere_intersect(s_cameras *cameras, s_vector *ray, s_sphere *sp)
 {
 	double		b;
 	double		c;
@@ -11,7 +11,8 @@ int			sphere_intersect(s_camera *camera, s_vector *ray, s_sphere *sp)
 
 	x_one = 0;
 	//x_two = 0;
-	res = subs_vectors((s_vector*)camera->coordinates, (s_vector*)sp->coordinates);
+	res = subs_vectors((s_vector*)cameras->coordinates, (s_vector*)
+	sp->coordinates);
 	b = 2 * vector_scalar_mult(res, ray);
 	c = vector_scalar_mult(res, res) - (sp->radius * sp->radius);
 	discr = (b * b) - (4 * c);

@@ -12,7 +12,7 @@
 
 #ifndef MINIRT_H
 # define MINIRT_H
-# include "mlx.h"
+//# include "mlx.h"
 # include "vectors.h"
 # include "figures.h"
 # include "scene.h"

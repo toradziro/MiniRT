@@ -21,4 +21,7 @@ typedef struct		t_lights {
 		void		*next;
 }					s_lights;
 
+s_figures		*new_figur_list(void *content, char spec);
+void			push_back_figur(s_figures *start, void *content, char spec);
+
 #endif
