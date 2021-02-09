@@ -21,6 +21,11 @@ typedef struct		t_lights {
 		void		*next;
 }					s_lights;
 
+typedef struct	t_ab_light {
+	s_color		color;
+	double		intensity;
+}				s_ab_light;
+
 s_figures		*new_figur_list(void *content, char spec);
 void			push_back_figur(s_figures *start, void *content, char spec);
 s_cameras		*new_camera_node(s_point *coordinates, s_vector *dir, double fov);

@@ -27,10 +27,36 @@ int			main(int argc, char **argv)
 		killed_by_error(INV_AM_OF_ARG);
 	if (argc == 2)
 		check_valid_name(argv[1]);
+	scene = ft_init_scene();
 	fd = open(argv[1], O_RDONLY);
 	while (get_next_line(fd, &line))
+	{
 		parser(line, scene);
+		free(line);
+	}
+	parser(line, scene);
+	free(line);
 	return (0);
+}
+
+s_scene		*ft_init_scene(void)
+{
+	s_scene	*scene;
+
+	if (!(scene = (s_scene*)malloc(sizeof(s_scene))))
+		killed_by_error(MALLOC_ERROR);
+	scene->height = 0;
+	scene->width = 0;
+	scene->cams = NULL;
+	scene->figures = NULL;
+	scene->lights = NULL;
+	scene->ab_light = NULL;
+	scene->is_amb_l = 0;
+	scene->is_cam = 0;
+	scene->is_figur = 0;
+	scene->is_light = 0;
+	scene->is_size = 0;
+	return (scene);
 }
 
 //	void	*mlx;

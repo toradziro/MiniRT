@@ -10,6 +10,8 @@ void	killed_by_error(int num)
 		write(2, "Error: invalid file name.\n", 26);
 	else if (num == INV_COLOR)
 		write(2, "Error: invalid color.\n", 22);
+	else if (num == UNKNWN_ARG)
+		write(2, "Error: unknown argument.\n", 25);
 	exit(num);
 }
 

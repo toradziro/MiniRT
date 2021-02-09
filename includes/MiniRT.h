@@ -15,7 +15,6 @@
 # include "mlx.h"
 # include "vectors.h"
 # include "figures.h"
-# include "scene.h"
 # include "vplane.h"
 # include "lists.h"
 # include "colors.h"
@@ -31,6 +30,7 @@
 # define INV_AM_OF_ARG -2
 # define INV_FILE_NAME -3
 # define INV_COLOR -4
+# define UNKNWN_ARG -5
 
 enum e_spec
 {
@@ -45,10 +45,19 @@ enum e_spec
 	S_R = 0b10000000,
 };
 
-typedef struct	t_ab_light {
-		s_color	color;
-		double	intensity;
-}				s_ab_light;
+typedef struct		t_scene {
+	s_cameras	*cams;
+	s_figures	*figures;
+	s_lights	*lights;
+	s_ab_light	*ab_light;
+	int 		is_cam;
+	int 		is_light;
+	int 		is_size;
+	int 		is_amb_l;
+	int 		is_figur;
+	double		width;
+	double		height;
+}					s_scene;
 
 void		killed_by_error(int num);
 void 		check_valid_name(char *str);
@@ -58,5 +67,6 @@ double 		parse_d_part(char *str);
 s_color		col_parse(char *str);
 s_color		check_valid_color(s_color *c);
 void	 	parser(char *str, s_scene *scene);
+s_scene		*ft_init_scene(void);
 
 #endif
