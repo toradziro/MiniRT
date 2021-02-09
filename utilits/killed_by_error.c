@@ -24,8 +24,8 @@ void 		check_valid_name(char *str)
 			|| (str[i] >= 'A' && str[i] <= 'Z')) && str[i] != '.' && str[i])
 		++i;
 	if (str[i] != '.')
-		killed_by_error(-3);
+		killed_by_error(INV_FILE_NAME);
 	++i;
 	if (str[i] != 'r' && str[i + 1] != 't')
-		killed_by_error(-3);
+		killed_by_error(INV_FILE_NAME);
 }
