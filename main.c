@@ -12,18 +12,22 @@
 
 #include "includes/MiniRT.h"
 
+//void 	print_scene(s_scene *scene);
+//void 	print_color(s_color c);
+//void    print_point(s_point *p);
+
 int			main(int argc, char **argv)
 {
 	s_scene		*scene;
 	int			fd;
 	char 		*line;
 
-	if (argc != 2 && argc != 3)
-		killed_by_error(INV_AM_OF_ARG);
-	if (argc == 2)
-		check_valid_name(argv[1]);
+//	if (argc != 2 && argc != 3)
+//		killed_by_error(INV_AM_OF_ARG);
+//	if (argc == 2)
+//		check_valid_name(argv[1]);
 	scene = ft_init_scene();
-	fd = open(argv[1], O_RDONLY);
+	fd = open("minirt.rt", O_RDONLY);
 	while (get_next_line(fd, &line))
 	{
 		parser(line, scene);
@@ -31,6 +35,7 @@ int			main(int argc, char **argv)
 	}
 	parser(line, scene);
 	free(line);
+//	print_scene(scene);
 	return (0);
 }
 
@@ -53,21 +58,35 @@ s_scene		*ft_init_scene(void)
 	scene->is_size = 0;
 	return (scene);
 }
-
-//	void	*mlx;
-//	void	*window;
+/*
+* "+R 100 | 100" - x, y are size of render
+* "+A 0.2 | 255,255,255" - ambient light, 0,2 is intensity, other is color
+* "c 50.0, 0, 20.0  |  0,1,0 | 70" - camera x,y,z are view point, 3d normalized vector, field of view
+* "l -40.0,50.0,0.0 | 0.6 |  10,0,255" - light x,y,z are coordinates of light point, intensity, color
+* "sp 0.0,0.0,20.0 |  12.6 |  10,0,255" - coordinates, diameter, color
+* "pl 0.0,1.0,2.0  |  1.0,0.0,0.0 | 255,0,255" - coordinates, 3d normalized vector, color
+* "sq 0.0,0.0,20.6 | 1.0,0.0,0.0 | 12.6 | 255,0,255" - coordinates of center square, 3d norm vector, side size, color
+* "cy 50.0,0.0,20.6 | 0.0,0.0,1.0 | 10,0,255 | 14.2 | 21.42" - xyz coor | 3d norm vector | cylinder diameter | height | color
+* "tr 10.0,20.0,10.0 | 10.0,10.0,20.0 | 20.0,10.0,10.0 | 0,0,255" - xyz first point | xyz s_point | xyz th_point | color
+*/
+//void 	print_scene(s_scene *scene)
+//{
+//	printf("---------R----------\n");
+//	printf("%f | %f\n\n", scene->width, scene->height);
+//	printf("---------A----------\n");
+//	printf("intensity: %f\n", scene->ab_light->intensity);
+//	printf("color: ");
+//	print_color(scene->ab_light->color);
+//	printf("\n\n");
+//	printf("---------c----------\n");
+//}
 //
-//	mlx = mlx_init();
-//	s_point		*sphere_center = new_point(10, 10, -100);
-//	s_sphere	*sphere = new_sphere(sphere_center, 20);
-//	s_point		*camera_center = new_point(0, 0, 0);
-//	s_vector	*camera_dir = new_vector(0, 0, -1);
-//	s_camera	*camera = new_camera(camera_dir, camera_center, 90);
-//	s_scene		*scene = new_scene(camera, sphere);
+//void 	print_color(s_color c)
+//{
+//	printf("%i, %i, %i", c.r, c.g, c.b);
+//}
 //
-//	scene->width = 1200;
-//	scene->hieght = 800;
-//	window = mlx_new_window(mlx, scene->width, scene->hieght, "Hello");
-//	ray_trace(mlx, window, scene);
-//	//free_scene(scene);
-//	mlx_loop(mlx);
+//void    print_point(s_point *p)
+//{
+//	printf("%f, %f, %f", p->p_x, p->p_y, p->p_z);
+//}

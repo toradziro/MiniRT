@@ -18,6 +18,7 @@
 # include "vplane.h"
 # include "lists.h"
 # include "colors.h"
+# include "parser.h"
 # include "../gnl/get_next_line.h"
 
 # include <unistd.h>
@@ -40,24 +41,7 @@ enum e_spec
 	S_SQ = 0b00000100,
 	S_CL = 0b00001000,
 	S_TR = 0b00010000,
-	S_LT = 0b00100000,
-	S_CM = 0b01000000,
-	S_R = 0b10000000,
 };
-
-typedef struct		t_scene {
-	s_cameras	*cams;
-	s_figures	*figures;
-	s_lights	*lights;
-	s_ab_light	*ab_light;
-	int 		is_cam;
-	int 		is_light;
-	int 		is_size;
-	int 		is_amb_l;
-	int 		is_figur;
-	double		width;
-	double		height;
-}					s_scene;
 
 void		killed_by_error(int num);
 void 		check_valid_name(char *str);
@@ -66,7 +50,6 @@ double 		parse_int_part(char *str);
 double 		parse_d_part(char *str);
 s_color		col_parse(char *str);
 s_color		check_valid_color(s_color *c);
-void	 	parser(char *str, s_scene *scene);
 s_scene		*ft_init_scene(void);
 
 #endif
