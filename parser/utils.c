@@ -90,9 +90,3 @@ s_color			check_valid_color(s_color *c)
 		c->b = 255;
 	return (*c);
 }
-
-int main(int argc, char **argv)
-{
-	s_color tmp = col_parse(argv[1]);
-	printf("%d\n%d\n%d\n", tmp.r, tmp.g, tmp.b);
-}

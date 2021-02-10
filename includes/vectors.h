@@ -1,5 +1,6 @@
 #ifndef VECTORS_H
 # define VECTORS_H
+# include "math.h"
 
 typedef struct	t_vector {
 		double	v_x;
@@ -24,7 +25,7 @@ typedef struct		t_ray {
  ** vec_scal_mult = (vector * vector) = dot product
  ** vector_cross = (vec * vec) = cross product
  ** vector_by_scalar = mult vector by const
- ** new_vector = create new vector (lol)
+ ** new_vector = create new vector
 **/
 
 s_point			*new_point(double x, double y, double z);

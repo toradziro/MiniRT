@@ -51,7 +51,7 @@ void 	parser(char *str, s_scene *scene)
 		parse_plane(str + 2, scene);
 	else if (str[0] == 's' && str[1] == 'q')
 		parse_square(str + 2, scene);
-	else if (str[0] == 'c' && str[1] = 'y')
+	else if (str[0] == 'c' && str[1] == 'y')
 		parse_cylinder(str + 2, scene);
 	else if (str[0] == 't' && str[1] == 'r')
 		parse_triangle(str + 2, scene);
@@ -76,16 +76,16 @@ char		*skip_pattern(char *str)
 
 char		*skip_nums(char *str)
 {
-	while (*str && (*str >= '0' && str <= '9'))
+	while (*str && (*str >= '0' && *str <= '9'))
 		str++;
 	if (*str == '.')
 		str++;
-	while (*str && (*str >= '0' && str <= '9'))
+	while (*str && (*str >= '0' && *str <= '9'))
 		str++;
 	return (str);
 }
 
-s_point		parse_coordinares(char *str)
+s_point		*parse_coordinares(char *str)
 {
 	double	x;
 	double	y;
@@ -143,7 +143,7 @@ void 	parse_cam(char *str, s_scene *scene)
 	dir = (s_vector*)parse_coordinares(str);
 	str = skip_pattern(str);
 	fov = d_atoi(str);
-	new = new_camera_node(dir, coor, fov);
+	new = new_camera_node(coor, dir, fov);
 	if (!(scene->cams))
 		scene->cams = new;
 	else
@@ -184,7 +184,7 @@ void 			parse_sphere(char *str, s_scene *scene)
 	radius = d_atoi(str);
 	str = skip_pattern(str);
 	color = col_parse(str);
-	new = new_sphere(radius, coordinates, color)
+	new = new_sphere(radius, coordinates, color);
 	if (!(scene->figures))
 		scene->figures = new_figur_list(new, S_SP);
 	else
@@ -204,7 +204,7 @@ void	 		parse_plane(char *str, s_scene *scene)
 	normal = (s_vector*)parse_coordinares(str);
 	str = skip_pattern(str);
 	color = col_parse(str);
-	new = new_plane(coor, normal, color);
+	new = new_plane((s_vector*)coor, normal, color);
 	if (!(scene->figures))
 		scene->figures = new_figur_list(new, S_PL);
 	else
@@ -237,6 +237,7 @@ void			parse_square(char *str, s_scene *scene)
 void			parse_cylinder(char *str, s_scene *scene)
 {
 	s_cylinder	*new;
+	s_color		color;
 
 	new = new_cylinder(NULL, NULL, 0, 0, NULL);
 	str = skip_spaces(str);
@@ -248,7 +249,8 @@ void			parse_cylinder(char *str, s_scene *scene)
 	str = skip_pattern(str);
 	new->height = d_atoi(str);
 	str = skip_pattern(str);
-	new->color = col_parse(str);
+	color = col_parse(str);
+	new->color = &color;
 	if (!(scene->figures))
 		scene->figures = new_figur_list(new, S_CL);
 	else
@@ -258,6 +260,7 @@ void			parse_cylinder(char *str, s_scene *scene)
 void			parse_triangle(char *str, s_scene *scene)
 {
 	s_triangle	*new;
+	s_color		color;
 
 	new = new_triangle(NULL, NULL, NULL, NULL);
 	str = skip_spaces(str);
@@ -267,7 +270,8 @@ void			parse_triangle(char *str, s_scene *scene)
 	str = skip_pattern(str);
 	new->thd_point = parse_coordinares(str);
 	str = skip_pattern(str);
-	new->color = col_parse(str);
+	color = col_parse(str);
+	new->color = &color;
 	if (!(scene->figures))
 		scene->figures = new_figur_list(new, S_TR);
 	else

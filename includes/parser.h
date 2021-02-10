@@ -33,7 +33,7 @@ void 			parser(char *str, s_scene *scene);
 char			*skip_spaces(char *str);
 char			*skip_pattern(char *str);
 char			*skip_nums(char *str);
-s_point			parse_coordinares(char *str);
+s_point			*parse_coordinares(char *str);
 void	 		parse_size(char *str, s_scene *scene);
 void 			parse_ambl(char *str, s_scene *scene);
 void 			parse_cam(char *str, s_scene *scene);

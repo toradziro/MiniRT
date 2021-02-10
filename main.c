@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "includes/MiniRT.h"
-
 //void 	print_scene(s_scene *scene);
 //void 	print_color(s_color c);
 //void    print_point(s_point *p);

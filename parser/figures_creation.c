@@ -37,7 +37,7 @@ s_square		*new_square(s_point *center, s_vector *normal, double side, s_color co
 	return (new);
 }
 
-s_cylinder		*new_cylinder(s_point *coordinates, s_vector *normal, double diameter, double height, s_color color)
+s_cylinder		*new_cylinder(s_point *coordinates, s_vector *normal, double diameter, double height, s_color *color)
 {
 	s_cylinder	*new;
 
@@ -51,7 +51,7 @@ s_cylinder		*new_cylinder(s_point *coordinates, s_vector *normal, double diamete
 	return (new);
 }
 
-s_triangle		*new_triangle(s_point *frs_point, s_point *sec_point, s_point *thd_point)
+s_triangle		*new_triangle(s_point *frs_point, s_point *sec_point, s_point *thd_point, s_color *color)
 {
 	s_triangle	*new;
 
