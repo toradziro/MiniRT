@@ -9,9 +9,10 @@ double		d_atoi(char *str)
 	i = 0;
 	sign = 1;
 	res = 0;
-	if (str[i] == '-')
+	if (str[i] == '-' || str[i] == '+')
 	{
-		sign *= -1;
+		if (str[i] == '-')
+			sign *= -1;
 		++i;
 	}
 	res = parse_int_part(&str[i]);

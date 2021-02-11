@@ -18,10 +18,11 @@ SRC =		gnl/get_next_line.c \
 			vectors_funcs/vector_normalise.c \
 			vectors_funcs/vector_scalar_mult.c \
 			vectors_funcs/vectors_add_substract.c \
+			ray_trace/ray_trace.c \
 			main.c
 
 OBJS =		${SRC:.c=.o}
-FLAGS =		-Wall -Wextra -Werror #-lmlx -framework OpenGL -framework AppKit
+FLAGS =		 -lmlx -framework OpenGL -framework AppKit -g
 RM =		rm -rf
 CC =		gcc
 
@@ -38,3 +39,5 @@ clean:
 
 fclean:		clean
 			${RM} ${NAME}
+
+re:			fclean all

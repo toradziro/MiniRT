@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/05 23:11:44 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/11 21:02:31 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ char		*skip_pattern(char *str)
 
 char		*skip_nums(char *str)
 {
+	if (*str && *str == '-')
+		++str;
 	while (*str && (*str >= '0' && *str <= '9'))
 		str++;
 	if (*str == '.')
@@ -119,7 +121,7 @@ void 			parse_ambl(char *str, s_scene *scene)
 {
 	s_ab_light	*new;
 
-	if (!(new = (s_ab_light*)malloc(sizeof(s_ab_light))))
+	if (!(new = (s_ab_light*)malloc(sizeof(s_ab_light*))))
 		killed_by_error(MALLOC_ERROR);
 	str = skip_spaces(str);
 	new->intensity = d_atoi(str);

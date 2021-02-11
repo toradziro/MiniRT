@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/02 22:04:36 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/11 22:59:42 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,14 @@
 
 int			main(void)
 {
+	void		*mlx;
+	void		*window;
 	s_scene		*scene;
 	int			fd;
 	char 		*line;
 	char 		*tmp;
+	int			width;
+	int			height;
 
 //	if (argc != 2 && argc != 3)
 //		killed_by_error(INV_AM_OF_ARG);
@@ -31,14 +35,23 @@ int			main(void)
 	while (get_next_line(fd, &line))
 	{
 		tmp = line;
-		printf ("line = %s\n", line);
 		parser(tmp, scene);
 		free(line);
 	}
-	printf("???\n");
-	parser(line, scene);
-//	free(line);
-//	print_scene(scene);
+//	parser(line, scene);
+	//free(line);
+	mlx = mlx_init();
+	window = mlx_new_window(mlx, (int)scene->width, (int)scene->height, "my_little_heart_attack");
+	printf("%f\n", scene->cams->field_of_v);
+	ray_trace(mlx, window, scene);
+	printf("%f\n", scene->cams->field_of_v);
+	//mlx_loop(mlx);
+
+	// s_ray	*ray = (s_ray *)malloc(sizeof(s_ray));
+	// ray->orig = new_point(0,0,0);
+	// ray->dir = new_vector(0,0,1);
+	// sphere_intersect(ray, (s_sphere *)scene->figures->content);
+
 	return (0);
 }
 

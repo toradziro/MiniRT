@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   MiniRT.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/02 19:23:34 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/11 21:57:55 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_H
 # define MINIRT_H
-//# include "mlx.h"
+# include "mlx.h"
 # include "vectors.h"
 # include "figures.h"
 # include "vplane.h"
@@ -51,5 +51,8 @@ double 		parse_d_part(char *str);
 s_color		col_parse(char *str);
 s_color		check_valid_color(s_color *c);
 s_scene		*ft_init_scene(void);
+void		ray_trace(void *mlx, void *window, s_scene *scene);
+s_color		*intersec(s_figures *figures, s_ray *ray);
+double		sphere_intersect(s_ray *ray, s_sphere *sp);
 
 #endif

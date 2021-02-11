@@ -3,133 +3,116 @@
 /*                                                        :::      ::::::::   */
 /*   ray_trace.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:36:02 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/02 22:01:15 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/11 22:43:47 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/MiniRT.h"
 
-typedef struct s_color {
-	double r;
-	double g;
-	double b;
-}				t_color;
-
-void	multip_color(t_color *color, double coeff)
+void			ray_trace(void *mlx, void *window, s_scene *scene)
 {
-	color->r *= coeff;
-	if (color->r >= 255)
-		color->r = 255;
-	color->g *= coeff;
-	if (color->g >= 255)
-		color->g = 255;
-	color->b *= coeff;
-	if (color->b >= 255)
-		color->b = 255;
-}
+	s_ray		*ray;
+	double		coefs[3];
+	int			x_pixel;
+	int			y_pixel;
+	int			res_color;
+	s_color		*color;
 
-t_color	add_color(t_color color, t_color color_2)
-{
-	color.r = color.r + color_2.r;
-	if (color.r >= 255)
-		color.r = 255;
-	color.g = color.g + color_2.g;
-	if (color.g >= 255)
-		color.g = 255;
-	color.b = color.b + color_2.b;
-	if (color.b >= 255)
-		color.b = 255;
-	return (color);
-}
-
-void	ray_trace(void *mlx, void *window, s_scene *scene)
-{
-	int			mlx_x = 0;
-	int			mlx_y = 0;
-	double		win_x;
-	double		win_y = scene->hieght / 2;
-	double		y_ray; // make struct later
-	double		x_ray;
-	s_vector	*ray;
-	s_vplane	*vplane;
-	s_vector	*light_dir = new_vector(400,400,200); // in parser
-	int 		color;
-
-	t_color ambient;
-	ambient.r = 255;
-	ambient.g = 255;
-	ambient.b = 0;
-	t_color res_color;
-	res_color.r = 0;
-	res_color.g = 70;
-	res_color.b = 0;
-	t_color light;
-	light.r = 255;
-	light.g = 255;
-	light.b = 0;
-	int i = 0;
-
-	vplane = get_view_plane(scene->width, scene->height, scene->cams->field_of_v);
-	while (win_y >= -scene->hieght / 2)
+	if (!(ray = (s_ray*)malloc(sizeof(s_ray))))
+		killed_by_error(MALLOC_ERROR);
+	ray->orig = scene->cams->coordinates;
+	x_pixel = 0;
+	printf("fov = %f\n", scene->cams->field_of_v);
+//	printf("in rad: %.3f\n", scene->cams->field_of_v * M_PI / 180);
+	return ;
+	while (x_pixel < scene->width)
 	{
-		y_ray = win_y * vplane->y_pixel;
-		win_x = -scene->width / 2;
-		mlx_x = 0;
-		while (win_x <= scene->width / 2)
+		y_pixel = 0;
+		while (y_pixel < scene->height)
 		{
-			x_ray = win_x * vplane->x_pixel;
-			ray = new_vector(x_ray, y_ray, -1);
-			ray = vector_normalise(ray, vector_length(ray));
-			double x_one = sphere_intersect(scene->cams, ray, scene->sphere);
-
-			if (x_one > 0)
-			{
-				t_color new_c = res_color;
-				t_color new_a = ambient;
-				t_color new_l = light;
-
-                s_point *lie_on_sphere = (s_point *)vector_by_scalar(ray, x_one);
-                s_vector *normal = subs_vectors(((s_vector*)scene->sphere->coordinates), (s_vector*)lie_on_sphere);
-                double coeff = vector_scalar_mult(vector_normalise(normal, vector_length(normal)), vector_normalise(light_dir, vector_length(light_dir))) * -1;
-				//printf("%f\n", coeff);
-				if (coeff < 0)
-					coeff = 0;
-
-                multip_color(&new_a, 0.1);
-                multip_color(&new_l, coeff);
-                new_c = add_color(new_c, add_color(new_l, new_a));
-                //multip_color(&new_c, 0.5);
-                color = (int)new_c.r << 16 | (int)new_c.g << 8 | (int)new_c.b;
-                //i++;
-			}
+			coefs[0] = x_pixel - (scene->width / 2);
+			coefs[1] = -y_pixel + (scene->height / 2);
+			coefs[2] = scene->width / (2 *tan(scene->cams->field_of_v / 2 * M_PI / 180));
+			ray->dir = new_vector(coefs[0], coefs[1], coefs[2]);
+			// if (x_pixel % 10 == 0 && y_pixel % 10 == 0)
+			// {
+			// 	printf("[%d %d]\t", x_pixel, y_pixel);
+			// 	printf("[%.1f %.1f %.1f]\n", coefs[0], coefs[1], coefs[2]);
+			// }
+			ray->dir = vector_normalise(ray->dir, vector_length(ray->dir));
+			color = intersec(scene->figures, ray);
+			//free (ray);
+			if (color)
+				res_color = color->r << 16 | color->g << 8 | color->b;
 			else
-				color = 0;
-			mlx_pixel_put(mlx, window, mlx_x, mlx_y, color);
-			free(ray);
-			win_x++;
-			mlx_x++;
-			//if (i == 50)
-			//	break;
+				res_color = 0;
+			mlx_pixel_put(mlx, window, x_pixel, y_pixel, res_color);
+			y_pixel++;
 		}
-		win_y--;
-		mlx_y++;
+		x_pixel++;
 	}
 }
 
-s_vplane		*get_view_plane(double width, double height, double fov)
+s_color			*intersec(s_figures *figures, s_ray *ray)
 {
-	s_vplane	*vplane;
-	double		aspect_ratio; //mashtab!
+	s_figures	*tmp;
+	s_sphere	*sphere_tmp;
+	double		min;
+	double		intersec;
 
-	if (!(vplane = (s_vplane*)malloc(sizeof(s_vplane))))
-		killed_by_error(MALLOC_ERROR);
-	aspect_ratio = width / height;
-	vplane->width = (tan(fov / 2 * (M_PI / 180))) * 2;
-	vplane->hieght = vplane->width / aspect_ratio;
-	vplane->x_pixel = vplane->width / width;
-	vplane->y_pixel = vplane->hieght / height;
-	return (vplane);
+	tmp = figures;
+	min = 100000;
+	while (tmp)
+	{
+		if (tmp->specif == S_SP)
+		{
+			//printf("here\n");
+			intersec = sphere_intersect(ray, (s_sphere*)tmp->content);
+			if (intersec > 0)
+				printf("inter = %f\n", intersec);
+			if (intersec < min && intersec > 0)
+			{
+				printf("min = %.3f\n", min);
+				printf("intersec = %.3f\n", min);
+				sphere_tmp = (s_sphere*)tmp->content;
+				min = intersec;
+				printf("min after= %.3f\n", min);
+				printf("intersec after = %.3f\n", min);
+			}
+		}
+		tmp = tmp->next;
+	}
+	if (min == 100000)
+		return (NULL);
+	return (&(sphere_tmp->color));
+}
+
+double			sphere_intersect(s_ray *ray, s_sphere *sp)
+{
+	double		b;
+	double		c;
+	double		discr;
+	double		x_one;
+	s_vector	*res;
+
+	x_one = 0;
+	res = subs_vectors(ray->dir, (s_vector*)sp->coordinates);
+	b = 2 * vector_scalar_mult(res, ray->dir);
+	c = vector_scalar_mult(res, res) - (sp->radius * sp->radius);
+	discr = (b * b) - (4 * c);
+	free(res);
+	if (discr < 0)
+		return (0);
+	x_one = (-b - sqrt(discr)) / 2;
+	double x_two = (-b + sqrt(discr)) / 2;
+	// printf("solved with [%.3f %.3f]\n", x_one, x_two);
+	if (x_one > 0)
+	{
+		printf("here\n");
+		return (x_one);
+	}
+	return (0);
 }

@@ -15,12 +15,12 @@ typedef struct	t_point {
 }				s_point;
 
 typedef struct		t_ray {
-		s_vector	dir;
-		s_point		orig;
+		s_vector	*dir;
+		s_point		*orig;
 }					s_ray;
 
 /**
- ** Subs (vec1 - vec2); 
+ ** Subs (vec1 - vec2);
  ** add (vec1 + vec2);
  ** vec_scal_mult = (vector * vector) = dot product
  ** vector_cross = (vec * vec) = cross product
