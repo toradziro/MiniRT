@@ -29,5 +29,5 @@ int		ft_free(char *tmp);
 #endif
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 10
+# define BUFFER_SIZE 64
 #endif

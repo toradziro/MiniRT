@@ -16,11 +16,13 @@ double		d_atoi(char *str)
 		++i;
 	}
 	res = parse_int_part(&str[i]);
-	while (str[i] >= '0' && str[i] <= '9')
+	while (str[i] >= '0' && str[i] <= '9' && str[i])
 		++i;
 	if (str[i] == '.')
+	{
 		++i;
-	res += parse_d_part(&str[i]);
+		res += parse_d_part(&str[i]);
+	}
 	return (res * (double)sign);
 }
 
@@ -31,7 +33,7 @@ double 		parse_int_part(char *str)
 
 	i = 0;
 	res = 0;
-	while (str[i] >= '0' && str[i] <= '9')
+	while ((str[i] >= '0' && str[i] <= '9') && *str)
 	{
 		res = res * 10 + (str[i] - '0');
 		++i;

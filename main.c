@@ -34,17 +34,23 @@ int			main(void)
 	fd = open("minirt.rt", O_RDONLY);
 	while (get_next_line(fd, &line))
 	{
+		if (line[0] == '\n' || !line[0])
+		{
+			free (line);
+			continue ;
+		}
 		tmp = line;
 		parser(tmp, scene);
 		free(line);
 	}
 //	parser(line, scene);
 	//free(line);
-	mlx = mlx_init();
-	window = mlx_new_window(mlx, (int)scene->width, (int)scene->height, "my_little_heart_attack");
-	printf("%f\n", scene->cams->field_of_v);
-	ray_trace(mlx, window, scene);
-	printf("%f\n", scene->cams->field_of_v);
+	//mlx = mlx_init();
+	//window = mlx_new_window(mlx, (int)scene->width, (int)scene->height, "my_little_heart_attack");
+	s_sphere *smth = (s_sphere*)scene->figures->content;
+	printf("%f\n", (double)smth->radius);
+//	ray_trace(mlx, window, scene);
+//	printf("%f\n", scene->cams->field_of_v);
 	//mlx_loop(mlx);
 
 	// s_ray	*ray = (s_ray *)malloc(sizeof(s_ray));
@@ -63,10 +69,10 @@ s_scene		*ft_init_scene(void)
 		killed_by_error(MALLOC_ERROR);
 	scene->height = 0;
 	scene->width = 0;
-	scene->cams = NULL;
-	scene->figures = NULL;
-	scene->lights = NULL;
-	scene->ab_light = NULL;
+	scene->cams = 0;
+	scene->figures = 0;
+	scene->lights = 0;
+	scene->ab_light = 0;
 	scene->is_amb_l = 0;
 	scene->is_cam = 0;
 	scene->is_figur = 0;

@@ -22,7 +22,7 @@ SRC =		gnl/get_next_line.c \
 			main.c
 
 OBJS =		${SRC:.c=.o}
-FLAGS =		 -lmlx -framework OpenGL -framework AppKit -g
+FLAGS =		-lmlx -g -lm #-framework OpenGL -framework AppKit -g
 RM =		rm -rf
 CC =		gcc
 

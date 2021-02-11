@@ -27,6 +27,8 @@ int		get_next_line(int fd, char **line)
 		if ((rd = read(fd, buff, BUFFER_SIZE)) == -1)
 			return (ft_free(buff));
 		buff[rd] = '\0';
+		if (!*buff && !*rem)
+			break ;
 		if (!(rem = ft_strjoin(rem, buff)))
 		{
 			free(rem);

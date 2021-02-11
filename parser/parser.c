@@ -138,16 +138,15 @@ void 	parse_cam(char *str, s_scene *scene)
 	s_point		*coor;
 	double 		fov;
 
-	while (*str && *str == ' ')
-		str++;
+	str = skip_spaces(str);
 	coor = parse_coordinares(str);
 	str = skip_pattern(str);
 	dir = (s_vector*)parse_coordinares(str);
 	str = skip_pattern(str);
 	fov = d_atoi(str);
 	new = new_camera_node(coor, dir, fov);
-	if (!(scene->cams))
-		scene->cams = new;
+	if (!scene->cams)
+	 	scene->cams = new;
 	else
 		push_back_cam(scene->cams, coor, dir, fov);
 }

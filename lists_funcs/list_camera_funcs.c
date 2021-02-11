@@ -4,7 +4,7 @@ s_cameras		*new_camera_node(s_point *coordinates, s_vector *dir, double fov)
 {
 	s_cameras	*new;
 
-	if (!(new = (s_cameras*)malloc(sizeof(s_cameras*))))
+	if (!(new = (s_cameras*)malloc(sizeof(s_cameras))))
 		killed_by_error(MALLOC_ERROR);
 	new->coordinates = coordinates;
 	new->direction = dir;
