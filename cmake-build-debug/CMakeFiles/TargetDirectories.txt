@@ -1,3 +1,0 @@
-C:/School_21/MiniRT/cmake-build-debug/CMakeFiles/MiniRT.dir
-C:/School_21/MiniRT/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/School_21/MiniRT/cmake-build-debug/CMakeFiles/rebuild_cache.dir
