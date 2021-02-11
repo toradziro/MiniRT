@@ -26,7 +26,7 @@ int		get_next_line(int fd, char **line)
 	while (rd > 0 && !(ft_find_endl(rem)))
 	{
 		if ((rd = read(fd, buff, BUFFER_SIZE)) == -1)
-			killed_by_error(-3); //change!!!!
+			killed_by_error(MALLOC_ERROR); //change!!!!
 		buff[rd] = '\0';
 		if (!(rem = ft_strjoin(rem, buff)))
 		{

@@ -15,7 +15,7 @@
 //void 	print_color(s_color c);
 //void    print_point(s_point *p);
 
-int			main(int argc, char **argv)
+int			main(void)
 {
 	s_scene		*scene;
 	int			fd;

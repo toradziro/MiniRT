@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2020.2.5\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\MiniRT.dir/objects.a
+C:\MinGW\bin\ar.exe cr CMakeFiles\MiniRT.dir/objects.a @CMakeFiles\MiniRT.dir\objects1.rsp
+C:\MinGW\bin\gcc.exe -g   -Wl,--whole-archive CMakeFiles\MiniRT.dir/objects.a -Wl,--no-whole-archive  -o MiniRT.exe -Wl,--out-implib,libMiniRT.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\MiniRT.dir\linklibs.rsp
