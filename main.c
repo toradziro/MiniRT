@@ -20,6 +20,7 @@ int			main(void)
 	s_scene		*scene;
 	int			fd;
 	char 		*line;
+	char 		*tmp;
 
 //	if (argc != 2 && argc != 3)
 //		killed_by_error(INV_AM_OF_ARG);
@@ -29,11 +30,14 @@ int			main(void)
 	fd = open("minirt.rt", O_RDONLY);
 	while (get_next_line(fd, &line))
 	{
-		parser(line, scene);
+		tmp = line;
+		printf ("line = %s\n", line);
+		parser(tmp, scene);
 		free(line);
 	}
+	printf("???\n");
 	parser(line, scene);
-	free(line);
+//	free(line);
 //	print_scene(scene);
 	return (0);
 }

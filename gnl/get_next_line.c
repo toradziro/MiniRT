@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include "../includes/MiniRT.h"
 
 int		get_next_line(int fd, char **line)
 {
@@ -22,21 +21,21 @@ int		get_next_line(int fd, char **line)
 	buff = (char*)malloc(sizeof(char) * BUFFER_SIZE + 1);
 	rd = 1;
 	if (fd < 0 || !line || !buff)
-		killed_by_error(MALLOC_ERROR);
+		return (ft_free(buff));
 	while (rd > 0 && !(ft_find_endl(rem)))
 	{
 		if ((rd = read(fd, buff, BUFFER_SIZE)) == -1)
-			killed_by_error(MALLOC_ERROR); //change!!!!
+			return (ft_free(buff));
 		buff[rd] = '\0';
 		if (!(rem = ft_strjoin(rem, buff)))
 		{
 			free(rem);
-			killed_by_error(MALLOC_ERROR);
+			return (ft_free(buff));
 		}
 	}
 	free(buff);
 	if (!(*line = ft_init(rem)))
-		killed_by_error(-1);
+		return (ft_free(rem));
 	rem = ft_cut(rem);
 	return (rd == 0 ? 0 : 1);
 }
