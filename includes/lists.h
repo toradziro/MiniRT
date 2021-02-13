@@ -4,7 +4,7 @@
 typedef struct		t_figures {
 		void 		*content;
 		char 		specif;
-		void 		*next;
+		void	 	*next;
 }					s_figures;
 
 typedef struct 		t_cameras {

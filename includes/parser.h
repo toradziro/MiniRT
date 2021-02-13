@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:10:13 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/05 23:10:41 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/13 19:24:33 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ typedef struct		t_scene {
 	int 		is_size;
 	int 		is_amb_l;
 	int 		is_figur;
-	double		width;
-	double		height;
+	int			width;
+	int			height;
 }					s_scene;
 
 void 			parser(char *str, s_scene *scene);

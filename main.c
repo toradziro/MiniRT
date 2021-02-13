@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/11 22:59:42 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/13 19:47:33 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@ int			main(void)
 	int			fd;
 	char 		*line;
 	char 		*tmp;
-	int			width;
-	int			height;
 
 //	if (argc != 2 && argc != 3)
 //		killed_by_error(INV_AM_OF_ARG);
@@ -43,21 +41,24 @@ int			main(void)
 		parser(tmp, scene);
 		free(line);
 	}
-//	parser(line, scene);
-	//free(line);
-	//mlx = mlx_init();
-	//window = mlx_new_window(mlx, (int)scene->width, (int)scene->height, "my_little_heart_attack");
-	s_sphere *smth = (s_sphere*)scene->figures->content;
-	printf("%f\n", (double)smth->radius);
+
+//	s_sphere *r = (s_sphere*)scene->figures->content;
+//	printf("%f, %f, %f, %f, %d, %d, %d\n", r->coordinates->p_x, r->coordinates->p_y, r->coordinates->p_z, r->radius, r->color.r, r->color.g, r->color.b);
+
+//	printf("%d, %d\n", scene->height, scene->width);
+
+//	printf("%f, %d, %d, %d", scene->ab_light->intensity, scene->ab_light->color.r, scene->ab_light->color.g, scene->ab_light->color.b);
+
+// s_cameras *r = (s_cameras*)scene->cams;
+// printf("%f\n", r->coordinates->p_x);
+// printf("%f, %f, %f, %f, %f, %f, %f\n", r->coordinates->p_x, r->coordinates->p_y, r->coordinates->p_z, r->direction->v_x, r->direction->v_y, r->direction->v_z, r->field_of_v);
+
+
+	write (1, "here\n", 5);
+	mlx = mlx_init();
+	window = mlx_new_window(mlx, scene->width, scene->height, "my_little_heart_attack");
 //	ray_trace(mlx, window, scene);
-//	printf("%f\n", scene->cams->field_of_v);
-	//mlx_loop(mlx);
-
-	// s_ray	*ray = (s_ray *)malloc(sizeof(s_ray));
-	// ray->orig = new_point(0,0,0);
-	// ray->dir = new_vector(0,0,1);
-	// sphere_intersect(ray, (s_sphere *)scene->figures->content);
-
+	mlx_loop(mlx);
 	return (0);
 }
 
@@ -80,35 +81,3 @@ s_scene		*ft_init_scene(void)
 	scene->is_size = 0;
 	return (scene);
 }
-/*
-* "+R 100 | 100" - x, y are size of render
-* "+A 0.2 | 255,255,255" - ambient light, 0,2 is intensity, other is color
-* "c 50.0, 0, 20.0  |  0,1,0 | 70" - camera x,y,z are view point, 3d normalized vector, field of view
-* "l -40.0,50.0,0.0 | 0.6 |  10,0,255" - light x,y,z are coordinates of light point, intensity, color
-* "sp 0.0,0.0,20.0 |  12.6 |  10,0,255" - coordinates, diameter, color
-* "pl 0.0,1.0,2.0  |  1.0,0.0,0.0 | 255,0,255" - coordinates, 3d normalized vector, color
-* "sq 0.0,0.0,20.6 | 1.0,0.0,0.0 | 12.6 | 255,0,255" - coordinates of center square, 3d norm vector, side size, color
-* "cy 50.0,0.0,20.6 | 0.0,0.0,1.0 | 10,0,255 | 14.2 | 21.42" - xyz coor | 3d norm vector | cylinder diameter | height | color
-* "tr 10.0,20.0,10.0 | 10.0,10.0,20.0 | 20.0,10.0,10.0 | 0,0,255" - xyz first point | xyz s_point | xyz th_point | color
-*/
-//void 	print_scene(s_scene *scene)
-//{
-//	printf("---------R----------\n");
-//	printf("%f | %f\n\n", scene->width, scene->height);
-//	printf("---------A----------\n");
-//	printf("intensity: %f\n", scene->ab_light->intensity);
-//	printf("color: ");
-//	print_color(scene->ab_light->color);
-//	printf("\n\n");
-//	printf("---------c----------\n");
-//}
-//
-//void 	print_color(s_color c)
-//{
-//	printf("%i, %i, %i", c.r, c.g, c.b);
-//}
-//
-//void    print_point(s_point *p)
-//{
-//	printf("%f, %f, %f", p->p_x, p->p_y, p->p_z);
-//}

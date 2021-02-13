@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/11 21:02:31 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/13 19:40:50 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,17 @@ char		*skip_spaces(char *str)
 
 char		*skip_pattern(char *str)
 {
-	while (*str && *str != ' ')
+	str = skip_nums(str);
+	if (*str == ',')
 		str++;
+	str = skip_nums(str);
+	if (*str == ',')
+		str++;
+	str = skip_nums(str);
+	if (!*str)
+		killed_by_error(UNKNWN_ARG);
+	if (*str != ' ')
+		killed_by_error(UNKNWN_ARG);
 	str = skip_spaces(str);
 	return (str);
 }
@@ -81,9 +90,11 @@ char		*skip_nums(char *str)
 	while (*str && (*str >= '0' && *str <= '9'))
 		str++;
 	if (*str == '.')
+	{
 		str++;
-	while (*str && (*str >= '0' && *str <= '9'))
-		str++;
+		while (*str && (*str >= '0' && *str <= '9'))
+			str++;
+	}
 	return (str);
 }
 
@@ -111,10 +122,10 @@ s_point		*parse_coordinares(char *str)
 void 			parse_size(char *str, s_scene *scene)
 {
 	str = skip_spaces(str); //add check for num
-	scene->width = d_atoi(str);
+	scene->width = (int)d_atoi(str);
 	str = skip_nums(str);
 	str = skip_spaces(str);
-	scene->height = d_atoi(str);
+	scene->height = (int)d_atoi(str);
 }
 
 void 			parse_ambl(char *str, s_scene *scene)
@@ -184,6 +195,7 @@ void 			parse_sphere(char *str, s_scene *scene)
 	str = skip_pattern(str);
 	radius = d_atoi(str);
 	str = skip_pattern(str);
+//	printf("%s\n", str);
 	color = col_parse(str);
 	new = new_sphere(radius, coordinates, color);
 	if (!(scene->figures))

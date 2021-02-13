@@ -22,17 +22,18 @@ SRC =		gnl/get_next_line.c \
 			main.c
 
 OBJS =		${SRC:.c=.o}
-FLAGS =		-lmlx -g -lm #-framework OpenGL -framework AppKit -g
+FLAGS =		-Wall -Wextra -Werror -L . -lmlx
 RM =		rm -rf
 CC =		gcc
 
 all:		$(NAME)
 
-.c.o:
-			$(CC) $(FLAGS) -I ./includes -c $< -o ${<:.c=.o}
+%.o: %.c
+			$(CC) -I ./includes/ -c $< -o $@
 
 $(NAME):	${OBJS}
-			$(CC) $(FLAGS) -I ./includes $(SRC) -o $(NAME) -lm
+			$(CC) $(FLAGS) $(OBJS) -o $(NAME)
+
 
 clean:
 			${RM} ${OBJS}
