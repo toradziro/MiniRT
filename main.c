@@ -6,29 +6,25 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/13 19:47:33 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/16 20:34:34 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/MiniRT.h"
-//void 	print_scene(s_scene *scene);
-//void 	print_color(s_color c);
-//void    print_point(s_point *p);
 
-int			main(void)
+int			main(int argc, char **argv)
 {
-	void		*mlx;
-	void		*window;
 	s_scene		*scene;
 	int			fd;
 	char 		*line;
 	char 		*tmp;
 
-//	if (argc != 2 && argc != 3)
-//		killed_by_error(INV_AM_OF_ARG);
-//	if (argc == 2)
-//		check_valid_name(argv[1]);
+	if (argc != 2 && argc != 3)
+		killed_by_error(INV_AM_OF_ARG);
+	if (argc == 2)
+		check_valid_name(argv[1]);
 	scene = ft_init_scene();
+	scene->mlx = mlx_init();
 	fd = open("minirt.rt", O_RDONLY);
 	while (get_next_line(fd, &line))
 	{
@@ -41,24 +37,11 @@ int			main(void)
 		parser(tmp, scene);
 		free(line);
 	}
-
-//	s_sphere *r = (s_sphere*)scene->figures->content;
-//	printf("%f, %f, %f, %f, %d, %d, %d\n", r->coordinates->p_x, r->coordinates->p_y, r->coordinates->p_z, r->radius, r->color.r, r->color.g, r->color.b);
-
-//	printf("%d, %d\n", scene->height, scene->width);
-
-//	printf("%f, %d, %d, %d", scene->ab_light->intensity, scene->ab_light->color.r, scene->ab_light->color.g, scene->ab_light->color.b);
-
-// s_cameras *r = (s_cameras*)scene->cams;
-// printf("%f\n", r->coordinates->p_x);
-// printf("%f, %f, %f, %f, %f, %f, %f\n", r->coordinates->p_x, r->coordinates->p_y, r->coordinates->p_z, r->direction->v_x, r->direction->v_y, r->direction->v_z, r->field_of_v);
-
-
-	write (1, "here\n", 5);
-	mlx = mlx_init();
-	window = mlx_new_window(mlx, scene->width, scene->height, "my_little_heart_attack");
-//	ray_trace(mlx, window, scene);
-	mlx_loop(mlx);
+	//write (1, "here\n", 5);
+	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
+	ray_trace(scene);
+	mlx_loop(scene->mlx);
+	free_scene(scene);
 	return (0);
 }
 
@@ -79,5 +62,28 @@ s_scene		*ft_init_scene(void)
 	scene->is_figur = 0;
 	scene->is_light = 0;
 	scene->is_size = 0;
+	scene->window = NULL;
+	scene->mlx = NULL;
 	return (scene);
 }
+
+void		free_scene(s_scene *scene)
+{
+	free (scene->cams);
+	free (scene->figures);
+	free (scene->mlx);
+	free (scene->window);
+	free (scene->lights);
+	free (scene);
+}
+
+//	s_sphere *r = (s_sphere*)scene->figures->content;
+//	printf("%f, %f, %f, %f, %d, %d, %d\n", r->coordinates->p_x, r->coordinates->p_y, r->coordinates->p_z, r->radius, r->color.r, r->color.g, r->color.b);
+
+//	printf("%d, %d\n", scene->height, scene->width);
+
+//	printf("%f, %d, %d, %d", scene->ab_light->intensity, scene->ab_light->color.r, scene->ab_light->color.g, scene->ab_light->color.b);
+
+// s_cameras *r = (s_cameras*)scene->cams;
+// printf("%f\n", r->coordinates->p_x);
+// printf("%f, %f, %f, %f, %f, %f, %f\n", r->coordinates->p_x, r->coordinates->p_y, r->coordinates->p_z, r->direction->v_x, r->direction->v_y, r->direction->v_z, r->field_of_v);

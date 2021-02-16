@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:10:13 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/13 19:24:33 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/16 20:04:04 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ typedef struct		t_scene {
 	int 		is_figur;
 	int			width;
 	int			height;
+	void		*mlx;
+	void		*window;
 }					s_scene;
 
 void 			parser(char *str, s_scene *scene);
