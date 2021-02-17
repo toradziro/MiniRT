@@ -52,7 +52,7 @@ s_color		col_parse(char *str);
 s_color		check_valid_color(s_color *c);
 s_scene		*ft_init_scene(void);
 void		ray_trace(s_scene *scene);
-s_color			intersec(s_figures *figures, s_ray *ray, s_lights *light);
+s_color		intersec(s_figures *figures, s_ray *ray, s_lights *light);
 double		sphere_intersect(s_ray *ray, s_sphere *sp);
 void		free_scene(s_scene *scene);
 

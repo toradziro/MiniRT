@@ -4,7 +4,7 @@ s_lights	*new_light_node(s_point *coordinates, double intensity, s_color color)
 {
 	s_lights	*new;
 
-	if (!(new = (s_lights*)malloc(sizeof(s_lights*))))
+	if (!(new = (s_lights*)malloc(sizeof(s_lights))))
 		killed_by_error(MALLOC_ERROR);
 	new->coordinates = coordinates;
 	new->intensity = intensity;

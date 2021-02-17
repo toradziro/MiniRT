@@ -37,8 +37,8 @@ int			main(int argc, char **argv)
 		parser(tmp, scene);
 		free(line);
 	}
-	//write (1, "here\n", 5);
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
+	//	write (1, "here\n", 5);
 	ray_trace(scene);
 	mlx_loop(scene->mlx);
 	free_scene(scene);

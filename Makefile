@@ -22,18 +22,26 @@ SRC =		gnl/get_next_line.c \
 			main.c
 
 OBJS =		${SRC:.c=.o}
-FLAGS =		-Lmlx -lmlx -framework OpenGL -framework AppKit
+MAC_FLAGS =	-Lmlx -lmlx -framework OpenGL -framework AppKit
+LNX_FLAGS =	-Lmlx -lmlx -Imlx -lXext -lX11 -lm -lz	#-lmlx_linux -lXext -lX11 -lm -Lmlx_linux
 RM =		rm -rf
 CC =		gcc
 
 all:		$(NAME)
 
+#MAC
+#%.o: %.c
+#			$(CC) -Wall -Wextra -Werror -I ./includes/ -I ./mlx/ -c $< -o $@
+#
+#$(NAME):	${OBJS}
+#			$(CC) $(MAC_FLAGS) $(OBJS) -o $(NAME)
+
+#LINUX
 %.o: %.c
-			$(CC) -Wall -Wextra -Werror -I ./includes/ -I ./mlx/ -c $< -o $@
+			$(CC) -Wall -Wextra -I/usr/include -Imlx_linux -O3 -c $< -o $@
 
-$(NAME):	${OBJS}
-			$(CC) $(FLAGS) $(OBJS) -o $(NAME)
-
+$(NAME):	$(OBJS)
+			$(CC) $(OBJS) -Lmlx_Linux -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -o $(NAME)
 
 clean:
 			${RM} ${OBJS}

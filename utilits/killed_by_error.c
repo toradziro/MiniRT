@@ -2,16 +2,19 @@
 
 void	killed_by_error(int num)
 {
+	int	error_num;
+
 	if (num == MALLOC_ERROR)
-		write(2, "Error: malloc error.\n", 20);
+		error_num = write(2, "Error: malloc error.\n", 20);
 	else if (num == INV_AM_OF_ARG)
-		write(2, "Error: invalid amount of the arguments.\n", 40);
+		error_num = write(2, "Error: invalid amount of the arguments.\n", 40);
 	else if (num == INV_FILE_NAME)
-		write(2, "Error: invalid file name.\n", 26);
+		error_num = write(2, "Error: invalid file name.\n", 26);
 	else if (num == INV_COLOR)
-		write(2, "Error: invalid color.\n", 22);
+		error_num = write(2, "Error: invalid color.\n", 22);
 	else if (num == UNKNWN_ARG)
-		write(2, "Error: unknown argument.\n", 25);
+		error_num = write(2, "Error: unknown argument.\n", 25);
+	error_num += 1;
 	exit(num);
 }
 
