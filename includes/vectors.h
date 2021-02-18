@@ -39,5 +39,6 @@ s_vector		*add_vectors(s_vector *a, s_vector *b);
 s_vector		*subs_vectors(s_vector *a, s_vector *b);
 s_vector		*vector_by_scalar(s_vector *a, double num);
 s_vector		*new_vector(double x, double y, double z);
+s_vector		*vector_from_points(s_point *p1, s_point *p2);
 
 #endif

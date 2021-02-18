@@ -88,27 +88,28 @@ s_color			find_color(s_ab_light *ab_light, s_lights *light, s_ray *ray, double m
 	s_ray		*shadow_ray = malloc(sizeof(s_ray));
 
 	light_color = multip_color(light->color, light->intensity);
-	intersec_point = (s_point*)vector_by_scalar(ray->dir, min);
-	normal = subs_vectors((s_vector*)sphere->coordinates, (s_vector*)intersec_point);
+	intersec_point = (s_point*)vector_by_scalar(vector_normalise(ray->dir, vector_length(ray->dir)), min);
+	normal = subs_vectors((s_vector*)intersec_point, (s_vector*)sphere->coordinates);
 	shadow_ray->orig = intersec_point;
 
 	l_coor = (s_vector*)subs_vectors(l_coor, (s_vector*)intersec_point);
-	shadow_ray->dir = subs_vectors((s_vector*)light->coordinates, (s_vector*)intersec_point);
+	shadow_ray->dir = vector_from_points(intersec_point, light->coordinates);
 	shadow_ray->dir = vector_normalise(shadow_ray->dir, vector_length(shadow_ray->dir));
-	printf("%f, %f, %f\n", shadow_ray->dir->v_x, shadow_ray->dir->v_y, shadow_ray->dir->v_z);
+	//shadow_ray->dir = vector_by_scalar(shadow_ray->dir, -1);
+	//printf("%f, %f, %f\n", shadow_ray->orig->p_x, shadow_ray->orig->p_y, shadow_ray->orig->p_z);
 
-	if (shadow_intersec(figures, shadow_ray))
-	//	res_color = multip_color(sphere->color, ab_light->intensity);
+	if (shadow_intersec(figures, shadow_ray) == 1)
 	{
-		printf("HERE!!!");
-		res_color.r = 24;
-		res_color.g = 31;
-		res_color.b = 82;
+		res_color = multip_color(sphere->color, ab_light->intensity);
+//		printf("HERE!!!");
+//		res_color.r = 24;
+//		res_color.g = 31;
+//		res_color.b = 82;
 	}
 	else
 	{
 		coeff = vector_scalar_mult(vector_normalise(normal, vector_length(normal)), vector_normalise(l_coor, vector_length(l_coor)));
-		coeff *= -1;
+		coeff *= 1;
 		if (coeff < 0)
 			coeff = 0;
 		res_color = multip_color(sphere->color, (coeff * light->intensity + ab_light->intensity));
@@ -128,7 +129,9 @@ int			shadow_intersec(s_figures *figures, s_ray *ray)
 		if (tmp->specif == S_SP)
 		{
 			res = sphere_intersect(ray, (s_sphere*)tmp->content);
-			if (res < 1000000 && res > 0.001)
+//			s_sphere *s_tmp = (s_sphere*)tmp->content;
+//			printf("%f\n", res);
+			if (res < 1000000 && res > 0.0001)
 				return (1);
 		}
 		tmp = tmp->next;
@@ -145,8 +148,7 @@ double			sphere_intersect(s_ray *ray, s_sphere *sp)
 	s_vector	*res;
 
 	x_one = 0;
-	//static int i;
-	res = subs_vectors(ray->dir, (s_vector*)sp->coordinates);
+	res = vector_from_points(sp->coordinates, ray->orig);
 	b = 2 * vector_scalar_mult(res, ray->dir);
 	c = vector_scalar_mult(res, res) - (sp->radius * sp->radius);
 	discr = (b * b) - (4 * c);
@@ -156,10 +158,9 @@ double			sphere_intersect(s_ray *ray, s_sphere *sp)
 	x_one = (-b - sqrt(discr)) / 2;
 //	double x_two = (-b + sqrt(discr)) / 2;
 	// printf("solved with [%.3f %.3f]\n", x_one, x_two);
+//	printf("%f\n", x_one);
 	if (x_one > 0)
-	{
 		return (x_one);
-	}
 	return (0);
 }
 
