@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/16 21:55:27 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/18 21:53:37 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,12 @@ s_color		col_parse(char *str);
 s_color		check_valid_color(s_color *c);
 s_scene		*ft_init_scene(void);
 void		ray_trace(s_scene *scene);
-s_color		intersec(s_figures *figures, s_ray *ray, s_lights *light);
+s_color		intersec(s_figures *figures, s_ray *ray, s_lights *light, s_ab_light *ab_light);
+s_color		find_color(s_ab_light *ab_light, s_lights *light, s_ray *ray, double min, s_sphere *sphere, s_figures *figures);
 double		sphere_intersect(s_ray *ray, s_sphere *sp);
 void		free_scene(s_scene *scene);
+
+int			shadow_intersec(s_figures *figures, s_ray *ray);
 
 s_color	multip_color(s_color color, double coeff);
 s_color	add_color(s_color color, s_color color_2);

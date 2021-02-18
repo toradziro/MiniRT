@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/16 20:34:34 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/18 18:52:31 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int			main(int argc, char **argv)
 	if (argc == 2)
 		check_valid_name(argv[1]);
 	scene = ft_init_scene();
-	scene->mlx = mlx_init();
+	if (!(scene->mlx = mlx_init()))
+		killed_by_error(MALLOC_ERROR);
 	fd = open("minirt.rt", O_RDONLY);
 	while (get_next_line(fd, &line))
 	{
@@ -37,10 +38,12 @@ int			main(int argc, char **argv)
 		parser(tmp, scene);
 		free(line);
 	}
+	//printf("%d, %d\n", scene->height, scene->width);
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
 	//	write (1, "here\n", 5);
 	ray_trace(scene);
 	mlx_loop(scene->mlx);
+	//write(1, "here\n", 5);
 	free_scene(scene);
 	return (0);
 }

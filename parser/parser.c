@@ -6,34 +6,12 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/13 19:40:50 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/18 21:15:28 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../includes/MiniRT.h"
-
-/*
- * "+R 100 | 100" - x, y are size of render
- * "A 0.2 | 255,255,255" - ambient light, 0,2 is intensity, other is color
- * "c 50.0, 0, 20.0  |  0,1,0 | 70" - camera x,y,z are view point, 3d normalized vector, field of view
- * "l -40.0,50.0,0.0 | 0.6 |  10,0,255" - light x,y,z are coordinates of light point, intensity, color
- * "sp 0.0,0.0,20.0 |  12.6 |  10,0,255" - coordinates, diameter, color
- * "pl 0.0,1.0,2.0  |  1.0,0.0,0.0 | 255,0,255" - coordinates, 3d normalized vector, color
- * "sq 0.0,0.0,20.6 | 1.0,0.0,0.0 | 12.6 | 255,0,255" - coordinates of center square, 3d norm vector, side size, color
- * "cy 50.0,0.0,20.6 | 0.0,0.0,1.0 | 10,0,255 | 14.2 | 21.42" - xyz coor | 3d norm vector | cylinder diameter | height | color
- * "tr 10.0,20.0,10.0 | 10.0,10.0,20.0 | 20.0,10.0,10.0 | 0,0,255" - xyz first point | xyz s_point | xyz th_point | color
- *
- * Функции под листы в отдельном каталоге - done
- * Функции для создания каждой фигуры в отдельном каталоге - done
- * Навести порядок в заголовочных - ???
- *
- * функции "skip_nums and dots" и "skip_spaces"
- *
- * каждую строку проверить не спец - внести в символ - вызвать фунцию обработки параметра
- *
- * переписать сразу на создание каждого объекта
- */
 
 void 	parser(char *str, s_scene *scene)
 {
@@ -139,6 +117,7 @@ void 			parse_ambl(char *str, s_scene *scene)
 	str = skip_nums(str);
 	str = skip_spaces(str);
 	new->color = col_parse(str);
+	new->color = multip_color(new->color, new->intensity);
 	scene->ab_light = new;
 }
 
@@ -193,7 +172,7 @@ void 			parse_sphere(char *str, s_scene *scene)
 	str = skip_spaces(str);
 	coordinates = parse_coordinares(str);
 	str = skip_pattern(str);
-	radius = d_atoi(str);
+	radius = d_atoi(str) / 2.0;
 	str = skip_pattern(str);
 //	printf("%s\n", str);
 	color = col_parse(str);

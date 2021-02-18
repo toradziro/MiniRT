@@ -4,6 +4,7 @@ void	killed_by_error(int num)
 {
 	int	error_num;
 
+	error_num = 0;
 	if (num == MALLOC_ERROR)
 		error_num = write(2, "Error: malloc error.\n", 20);
 	else if (num == INV_AM_OF_ARG)
