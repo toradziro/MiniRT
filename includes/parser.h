@@ -29,6 +29,7 @@ typedef struct		t_scene {
 	int			height;
 	void		*mlx;
 	void		*window;
+	void		*image;
 }					s_scene;
 
 void 			parser(char *str, s_scene *scene);

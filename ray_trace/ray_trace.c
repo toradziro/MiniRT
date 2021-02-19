@@ -48,6 +48,7 @@ s_color			intersec(s_figures *figures, s_ray *ray, s_lights *light, s_ab_light *
 {
 	s_figures	*tmp;
 	s_sphere	*sphere_tmp;
+	s_plane		*plane_tmp;
 //	s_vector	*normal;
 	s_color		c_tmp;
 	double		min;
@@ -55,7 +56,7 @@ s_color			intersec(s_figures *figures, s_ray *ray, s_lights *light, s_ab_light *
 
 
 	tmp = figures;
-	min = 1000000;
+	min = 1000;
 	c_tmp.r = 0;
 	c_tmp.g = 0;
 	c_tmp.b = 0;
@@ -68,7 +69,19 @@ s_color			intersec(s_figures *figures, s_ray *ray, s_lights *light, s_ab_light *
 			{
 				sphere_tmp = (s_sphere*)tmp->content;
 				min = intersec;
-				c_tmp = find_color(ab_light, light, ray, min, sphere_tmp, figures);
+				s_point	*intersec_point = (s_point*)vector_by_scalar(vector_normalise(ray->dir, vector_length(ray->dir)), min);
+				s_vector *normal = subs_vectors((s_vector*)intersec_point, (s_vector*)sphere_tmp->coordinates);
+				c_tmp = find_color(ab_light, light, ray, min, normal, figures, sphere_tmp->color, tmp->specif);
+			}
+		}
+		else if (tmp->specif == S_PL)
+		{
+			intersec = plane_intersect(ray, (s_plane*)tmp->content); //!!!!!
+			if (intersec < min && intersec > 0.00001)
+			{
+				plane_tmp = (s_plane*)tmp->content;
+				min = intersec;
+				c_tmp = find_color(ab_light, light, ray, min, plane_tmp->normal, figures, plane_tmp->color, tmp->specif);
 			}
 		}
 		tmp = tmp->next;
@@ -76,10 +89,9 @@ s_color			intersec(s_figures *figures, s_ray *ray, s_lights *light, s_ab_light *
 	return (c_tmp);
 }
 
-s_color			find_color(s_ab_light *ab_light, s_lights *light, s_ray *ray, double min, s_sphere *sphere, s_figures *figures)
+s_color			find_color(s_ab_light *ab_light, s_lights *light, s_ray *ray, double min, s_vector *normal, s_figures *figures, s_color f_color, char spec)
 {
 	s_point		*intersec_point;
-	s_vector	*normal;
 	s_vector	*l_coor = (s_vector*)light->coordinates;
 	double		coeff;
 	s_color		light_color;
@@ -89,30 +101,22 @@ s_color			find_color(s_ab_light *ab_light, s_lights *light, s_ray *ray, double m
 
 	light_color = multip_color(light->color, light->intensity);
 	intersec_point = (s_point*)vector_by_scalar(vector_normalise(ray->dir, vector_length(ray->dir)), min);
-	normal = subs_vectors((s_vector*)intersec_point, (s_vector*)sphere->coordinates);
 	shadow_ray->orig = intersec_point;
 
 	l_coor = (s_vector*)subs_vectors(l_coor, (s_vector*)intersec_point);
 	shadow_ray->dir = vector_from_points(intersec_point, light->coordinates);
 	shadow_ray->dir = vector_normalise(shadow_ray->dir, vector_length(shadow_ray->dir));
-	//shadow_ray->dir = vector_by_scalar(shadow_ray->dir, -1);
-	//printf("%f, %f, %f\n", shadow_ray->orig->p_x, shadow_ray->orig->p_y, shadow_ray->orig->p_z);
 
 	if (shadow_intersec(figures, shadow_ray) == 1)
-	{
-		res_color = multip_color(sphere->color, ab_light->intensity);
-//		printf("HERE!!!");
-//		res_color.r = 24;
-//		res_color.g = 31;
-//		res_color.b = 82;
-	}
+		res_color = multip_color(f_color, ab_light->intensity);
 	else
 	{
 		coeff = vector_scalar_mult(vector_normalise(normal, vector_length(normal)), vector_normalise(l_coor, vector_length(l_coor)));
-		coeff *= 1;
+		if (spec == S_PL)
+			coeff *= -1;
 		if (coeff < 0)
 			coeff = 0;
-		res_color = multip_color(sphere->color, (coeff * light->intensity + ab_light->intensity));
+		res_color = multip_color(f_color, (coeff * light->intensity + ab_light->intensity));
 	}
 	return (res_color);
 }
@@ -120,7 +124,6 @@ s_color			find_color(s_ab_light *ab_light, s_lights *light, s_ray *ray, double m
 int			shadow_intersec(s_figures *figures, s_ray *ray)
 {
 	s_figures	*tmp;
-//	s_vector	*normal;
 
 	double res;
 	tmp = figures;
@@ -129,8 +132,6 @@ int			shadow_intersec(s_figures *figures, s_ray *ray)
 		if (tmp->specif == S_SP)
 		{
 			res = sphere_intersect(ray, (s_sphere*)tmp->content);
-//			s_sphere *s_tmp = (s_sphere*)tmp->content;
-//			printf("%f\n", res);
 			if (res < 1000000 && res > 0.0001)
 				return (1);
 		}
@@ -161,6 +162,21 @@ double			sphere_intersect(s_ray *ray, s_sphere *sp)
 //	printf("%f\n", x_one);
 	if (x_one > 0)
 		return (x_one);
+	return (0);
+}
+
+double			plane_intersect(s_ray *ray, s_plane *plane)
+{
+	double		denom = vector_scalar_mult(plane->normal, ray->dir);
+//		printf("%f\n", denom);
+	double		t;
+	if (denom > 0.000001)
+	{
+		s_vector *p0l0 = subs_vectors(plane->coordinates, (s_vector*)ray->orig);
+		t = vector_scalar_mult(p0l0, plane->normal) / denom;
+		if (t >= 0)
+			return (t / denom);
+	}
 	return (0);
 }
 

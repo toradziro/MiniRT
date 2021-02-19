@@ -38,12 +38,10 @@ int			main(int argc, char **argv)
 		parser(tmp, scene);
 		free(line);
 	}
-	//printf("%d, %d\n", scene->height, scene->width);
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
-	//	write (1, "here\n", 5);
+	scene->image = mlx_new_image(scene->mlx, scene->width, scene->height);
 	ray_trace(scene);
 	mlx_loop(scene->mlx);
-	//write(1, "here\n", 5);
 	free_scene(scene);
 	return (0);
 }
@@ -67,6 +65,7 @@ s_scene		*ft_init_scene(void)
 	scene->is_size = 0;
 	scene->window = NULL;
 	scene->mlx = NULL;
+	scene->image = NULL;
 	return (scene);
 }
 

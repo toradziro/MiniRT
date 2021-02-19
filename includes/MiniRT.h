@@ -53,9 +53,10 @@ s_color		check_valid_color(s_color *c);
 s_scene		*ft_init_scene(void);
 void		ray_trace(s_scene *scene);
 s_color		intersec(s_figures *figures, s_ray *ray, s_lights *light, s_ab_light *ab_light);
-s_color		find_color(s_ab_light *ab_light, s_lights *light, s_ray *ray, double min, s_sphere *sphere, s_figures *figures);
+s_color		find_color(s_ab_light *ab_light, s_lights *light, s_ray *ray, double min, s_vector *normal, s_figures *figures, s_color f_color, char spec);
 double		sphere_intersect(s_ray *ray, s_sphere *sp);
 void		free_scene(s_scene *scene);
+double		plane_intersect(s_ray *ray, s_plane *plane);
 
 int			shadow_intersec(s_figures *figures, s_ray *ray);
 
