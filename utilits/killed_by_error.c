@@ -24,8 +24,7 @@ void 		check_valid_name(char *str)
 	int		i;
 
 	i = 0;
-	while (((str[i] >= '0' && str[i] <= '9') || (str[i] >= 'a' && str[i] <= 'z')
-			|| (str[i] >= 'A' && str[i] <= 'Z')) && str[i] != '.' && str[i])
+	while (((str[i] >= 32 && str[i] < 127)) && str[i] != '.' && str[i])
 		++i;
 	if (str[i] != '.')
 		killed_by_error(INV_FILE_NAME);

@@ -26,7 +26,7 @@ int			main(int argc, char **argv)
 	scene = ft_init_scene();
 	if (!(scene->mlx = mlx_init()))
 		killed_by_error(MALLOC_ERROR);
-	fd = open("minirt.rt", O_RDONLY);
+	fd = open(argv[1], O_RDONLY);
 	while (get_next_line(fd, &line))
 	{
 		if (line[0] == '\n' || !line[0])

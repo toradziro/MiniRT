@@ -20,6 +20,9 @@ typedef struct		t_scene {
 	s_figures	*figures;
 	s_lights	*lights;
 	s_ab_light	*ab_light;
+	void		*mlx;
+	void		*window;
+	void		*image;
 	int 		is_cam;
 	int 		is_light;
 	int 		is_size;
@@ -27,9 +30,6 @@ typedef struct		t_scene {
 	int 		is_figur;
 	int			width;
 	int			height;
-	void		*mlx;
-	void		*window;
-	void		*image;
 }					s_scene;
 
 void 			parser(char *str, s_scene *scene);

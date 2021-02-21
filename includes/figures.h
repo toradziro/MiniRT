@@ -4,8 +4,8 @@
 #include "colors.h"
 
 typedef struct		t_sphere {
-		double		radius;
 		s_point		*coordinates;
+		double		radius;
 		s_color 	color;
 }					s_sphere;
 

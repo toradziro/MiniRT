@@ -18,6 +18,8 @@ double		d_atoi(char *str)
 	res = parse_int_part(&str[i]);
 	while (str[i] >= '0' && str[i] <= '9' && str[i])
 		++i;
+	if (!str[i])
+		return (res * (double)sign);
 	if (str[i] == '.')
 	{
 		++i;
@@ -33,7 +35,7 @@ double 		parse_int_part(char *str)
 
 	i = 0;
 	res = 0;
-	while ((str[i] >= '0' && str[i] <= '9') && *str)
+	while (str[i] >= '0' && str[i] <= '9' && str[i])
 	{
 		res = res * 10 + (str[i] - '0');
 		++i;
@@ -48,7 +50,7 @@ double 		parse_d_part(char *str)
 
 	i = 0;
 	res = 0;
-	while (str[i] >= '0' && str[i] <= '9')
+	while (str[i] >= '0' && str[i] <= '9' && str[i])
 	{
 		res = res * 10 + (str[i] - '0');
 		++i;
@@ -66,17 +68,21 @@ s_color			col_parse(char *str)
 	if (str[i] < '0' || str[i] > '9') //add new error
 		killed_by_error(INV_COLOR);
 	res.r = (int)parse_int_part(&str[i]);
-	while ((str[i] >= '0' && str[i] <= '9') || str[i] == ' ')
+	while (str[i] >= '0' && str[i] <= '9' && str[i])
 		++i;
-	while (str[i] == ',' || str[i] == ' ')
+	if (str[i] == ',')
 		++i;
+	else
+		killed_by_error (INV_COLOR);
 	if (str[i] < '0' || str[i] > '9') //add new error
 		killed_by_error(INV_COLOR);
 	res.g = (int)parse_int_part(&str[i]);
-	while ((str[i] >= '0' && str[i] <= '9') || str[i] == ' ')
+	while (str[i] >= '0' && str[i] <= '9' && str[i])
 		++i;
-	while (str[i] == ',' || str[i] == ' ')
+	if (str[i] == ',')
 		++i;
+	else
+		killed_by_error (INV_COLOR);
 	if (str[i] < '0' || str[i] > '9') //add new error
 		killed_by_error(INV_COLOR);
 	res.b = (int)parse_int_part(&str[i]);
@@ -91,5 +97,11 @@ s_color			check_valid_color(s_color *c)
 		c->g = 255;
 	if (c->b > 255)
 		c->b = 255;
+	if (c->r < 0)
+		c->r = 0;
+	if (c->g < 0)
+		c->g = 0;
+	if (c->b < 0)
+		c->b = 0;
 	return (*c);
 }
