@@ -3,7 +3,7 @@
 
 typedef struct		t_figures {
 		void 		*content;
-		void	 	*next;
+		void		*next;
 		char 		specif;
 }					s_figures;
 

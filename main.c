@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/18 18:52:31 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/22 19:31:59 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int			main(int argc, char **argv)
 		parser(tmp, scene);
 		free(line);
 	}
+//	print_scene(scene);
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
 	scene->image = mlx_new_image(scene->mlx, scene->width, scene->height);
 	ray_trace(scene);

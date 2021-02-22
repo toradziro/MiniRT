@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/18 21:15:28 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/22 19:28:53 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void 			parse_ambl(char *str, s_scene *scene)
 {
 	s_ab_light	*new;
 
-	if (!(new = (s_ab_light*)malloc(sizeof(s_ab_light*))))
+	if (!(new = (s_ab_light*)malloc(sizeof(s_ab_light))))
 		killed_by_error(MALLOC_ERROR);
 	str = skip_spaces(str);
 	new->intensity = d_atoi(str);
@@ -150,37 +150,41 @@ void	 		parse_light(char *str, s_scene *scene)
 
 	str = skip_spaces(str);
 	coor = parse_coordinares(str);
+	//print_vector((s_vector*)coor);
 	str = skip_pattern(str);
 	intens = d_atoi(str);
+	//printf("%f\n", intens);
 	str = skip_nums(str);
 	str = skip_spaces(str);
 	color = col_parse(str);
+	//print_color(color);
+	//printf("\n\n\n");
 	new = new_light_node(coor, intens, color);
 	if (!(scene->lights))
 		scene->lights = new;
 	else
 		push_back_light(scene->lights, coor, intens, color);
+	//print_scene(scene);
 }
 
 void 			parse_sphere(char *str, s_scene *scene)
 {
-	s_sphere	*new;
 	double		radius;
 	s_point		*coordinates;
 	s_color 	color;
+	s_sphere	*new;
 
 	str = skip_spaces(str);
 	coordinates = parse_coordinares(str);
 	str = skip_pattern(str);
 	radius = d_atoi(str) / 2.0;
 	str = skip_pattern(str);
-//	printf("%s\n", str);
 	color = col_parse(str);
 	new = new_sphere(radius, coordinates, color);
 	if (!(scene->figures))
-		scene->figures = new_figur_list(new, S_SP);
+		scene->figures = new_figur_list((void*)new, S_SP);
 	else
-		push_back_figur(scene->figures, new, S_SP);
+		push_back_figur(scene->figures, (void*)new, S_SP);
 }
 
 void	 		parse_plane(char *str, s_scene *scene)
@@ -198,9 +202,9 @@ void	 		parse_plane(char *str, s_scene *scene)
 	color = col_parse(str);
 	new = new_plane((s_vector*)coor, normal, color);
 	if (!(scene->figures))
-		scene->figures = new_figur_list(new, S_PL);
+		scene->figures = new_figur_list((void*)new, S_PL);
 	else
-		push_back_figur(scene->figures, new, S_PL);
+		push_back_figur(scene->figures, (void*)new, S_PL);
 }
 
 void			parse_square(char *str, s_scene *scene)
@@ -221,9 +225,9 @@ void			parse_square(char *str, s_scene *scene)
 	color = col_parse(str);
 	new = new_square(center, normal, size, color);
 	if (!(scene->figures))
-		scene->figures = new_figur_list(new, S_SQ);
+		scene->figures = new_figur_list((void*)new, S_SQ);
 	else
-		push_back_figur(scene->figures, new, S_SQ);
+		push_back_figur(scene->figures, (void*)new, S_SQ);
 }
 
 void			parse_cylinder(char *str, s_scene *scene)
@@ -244,9 +248,9 @@ void			parse_cylinder(char *str, s_scene *scene)
 	color = col_parse(str);
 	new->color = &color;
 	if (!(scene->figures))
-		scene->figures = new_figur_list(new, S_CL);
+		scene->figures = new_figur_list((void*)new, S_CL);
 	else
-		push_back_figur(scene->figures, new, S_CL);
+		push_back_figur(scene->figures, (void*)new, S_CL);
 }
 
 void			parse_triangle(char *str, s_scene *scene)

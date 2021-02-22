@@ -19,6 +19,7 @@ SRC =		gnl/get_next_line.c \
 			vectors_funcs/vector_scalar_mult.c \
 			vectors_funcs/vectors_add_substract.c \
 			ray_trace/ray_trace.c \
+			ray_trace/print_scene.c \
 			main.c
 
 OBJS =		${SRC:.c=.o}
@@ -29,19 +30,20 @@ CC =		gcc
 
 all:		$(NAME)
 
+#for debug -fsanitize=address -g
 #MAC
-#%.o: %.c
-#			$(CC) -Wall -Wextra -Werror -I ./includes/ -I ./mlx/ -c $< -o $@
-#
-#$(NAME):	${OBJS}
-#			$(CC) $(MAC_FLAGS) $(OBJS) -o $(NAME)
+%.o: %.c
+			$(CC) -Wall -Wextra -Werror -I ./includes/ -I ./mlx/ -c $< -o $@
+
+$(NAME):	${OBJS}
+			$(CC) $(OBJS) -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
 
 #LINUX
-%.o: %.c
-			$(CC) -Wall -Wextra -I/usr/include -Imlx_linux -O3 -c $< -o $@
-
-$(NAME):	$(OBJS)
-			$(CC) $(OBJS) -Lmlx_Linux -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -o $(NAME)
+#%.o: %.c
+#			$(CC) -Wall -Wextra -I/usr/include -Imlx_linux -O3 -c $< -o $@
+#
+#$(NAME):	$(OBJS)
+#			$(CC) $(OBJS) -Lmlx_Linux -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -o $(NAME)
 
 clean:
 			${RM} ${OBJS}

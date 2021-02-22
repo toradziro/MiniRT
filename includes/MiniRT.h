@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/18 21:53:37 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/22 17:38:11 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,9 @@ int			shadow_intersec(s_figures *figures, s_ray *ray);
 
 s_color	multip_color(s_color color, double coeff);
 s_color	add_color(s_color color, s_color color_2);
+
+void	print_scene(s_scene *scene);
+void	print_color(s_color c);
+void	print_vector(s_vector *v);
 
 #endif
