@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/22 19:28:53 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/25 23:34:42 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,6 @@ void 			parse_ambl(char *str, s_scene *scene)
 	str = skip_nums(str);
 	str = skip_spaces(str);
 	new->color = col_parse(str);
-	new->color = multip_color(new->color, new->intensity);
 	scene->ab_light = new;
 }
 

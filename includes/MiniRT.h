@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/22 17:38:11 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/25 22:47:28 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@
 # define INV_FILE_NAME -3
 # define INV_COLOR -4
 # define UNKNWN_ARG -5
+# define COLOR_COEFF 0.003921568627
+# define MAX_COLOR 255
 
 enum e_spec
 {
@@ -62,6 +64,9 @@ int			shadow_intersec(s_figures *figures, s_ray *ray);
 
 s_color	multip_color(s_color color, double coeff);
 s_color	add_color(s_color color, s_color color_2);
+s_color		final_color(double coeff, s_color color, s_ab_light *ab_light, s_lights *light);
+s_color		normal_color(s_color color);
+s_color		anti_normal_color(s_color color);
 
 void	print_scene(s_scene *scene);
 void	print_color(s_color c);

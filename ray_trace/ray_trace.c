@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:36:02 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/22 19:33:39 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/25 23:42:54 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,13 +112,64 @@ s_color			find_color(s_ab_light *ab_light, s_lights *light, s_ray *ray, double m
 	else
 	{
 		coeff = vector_scalar_mult(vector_normalise(normal, vector_length(normal)), vector_normalise(l_coor, vector_length(l_coor)));
+		coeff = coeff * light->intensity;
 		if (spec == S_PL)
 			coeff *= -1;
 		if (coeff < 0)
 			coeff = 0;
-		res_color = multip_color(f_color, (coeff * light->intensity + ab_light->intensity));
+		res_color = multip_color(f_color, coeff + ab_light->intensity);
+		//res_color = add_color(res_color, multip_color(light->color, light->intensity));
+		//res_color = add_color(res_color, ab_light->color);
+		//res_color = final_color(coeff, f_color, ab_light, light);
 	}
 	return (res_color);
+}
+
+s_color		final_color(double coeff, s_color color, s_ab_light *ab_light, s_lights *light)
+{
+	s_color	tmp_res;
+	s_color	tmp_ab;
+	s_color	tmp_light;
+	s_color	tmp_ab_plus;
+
+	tmp_res = color;
+	tmp_ab = multip_color(ab_light->color, ab_light->intensity);
+	tmp_light = multip_color(light->color, light->intensity);
+	tmp_light = multip_color(light->color, coeff);
+	//tmp_ab = normal_color(tmp_ab);
+	//tmp_light = normal_color(tmp_light);
+	//tmp_res = add_color(tmp_ab, color);
+
+	tmp_ab_plus = add_color(tmp_light, tmp_ab);
+	//tmp_ab_plus = multip_color(tmp_ab_plus, coeff);
+
+	tmp_res = add_color(tmp_ab_plus, tmp_res);
+
+	//tmp_res = add_color(tmp_res, tmp_light);
+	//tmp_res = multip_color(tmp_res, res_coeff);
+	return (tmp_res);
+}
+
+s_color		normal_color(s_color color)
+{
+	color.r = color.r / 255;
+	color.g = color.g  / 255;
+	color.b = color.b / 255;
+	return (color);
+}
+
+s_color		anti_normal_color(s_color color)
+{
+	color.r = color.r * MAX_COLOR;
+	color.g = color.g * MAX_COLOR;
+	color.b = color.b * MAX_COLOR;
+	if (color.r > MAX_COLOR)
+		color.r = MAX_COLOR;
+	if (color.g > MAX_COLOR)
+		color.g = MAX_COLOR;
+	if (color.b > MAX_COLOR)
+		color.b = MAX_COLOR;
+	return (color);
 }
 
 int			shadow_intersec(s_figures *figures, s_ray *ray)
