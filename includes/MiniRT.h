@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/25 22:47:28 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/27 00:05:17 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include "colors.h"
 # include "parser.h"
 # include "../gnl/get_next_line.h"
+# include "mlx_image.h"
 
 # include <unistd.h>
 # include <math.h>
@@ -34,6 +35,10 @@
 # define UNKNWN_ARG -5
 # define COLOR_COEFF 0.003921568627
 # define MAX_COLOR 255
+
+# define KEY_TAB 48
+# define KEY_ESC 53
+# define KEY_W 13
 
 enum e_spec
 {
@@ -54,19 +59,22 @@ s_color		col_parse(char *str);
 s_color		check_valid_color(s_color *c);
 s_scene		*ft_init_scene(void);
 void		ray_trace(s_scene *scene);
-s_color		intersec(s_figures *figures, s_ray *ray, s_lights *light, s_ab_light *ab_light);
+s_color		intersec(s_figures *figures, s_ray *ray, s_lights *light, s_ab_light *ab_light, s_cameras *cam);
 s_color		find_color(s_ab_light *ab_light, s_lights *light, s_ray *ray, double min, s_vector *normal, s_figures *figures, s_color f_color, char spec);
 double		sphere_intersect(s_ray *ray, s_sphere *sp);
 void		free_scene(s_scene *scene);
 double		plane_intersect(s_ray *ray, s_plane *plane);
 
-int			shadow_intersec(s_figures *figures, s_ray *ray);
+int			shadow_intersec(s_figures *figures, s_ray *ray, double x_one);
 
 s_color	multip_color(s_color color, double coeff);
 s_color	add_color(s_color color, s_color color_2);
 s_color		final_color(double coeff, s_color color, s_ab_light *ab_light, s_lights *light);
 s_color		normal_color(s_color color);
 s_color		anti_normal_color(s_color color);
+s_color		mult_color_by_color(s_color one, s_color two);
+
+int		press_key(int key, s_scene *scene);
 
 void	print_scene(s_scene *scene);
 void	print_color(s_color c);

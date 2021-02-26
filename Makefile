@@ -10,8 +10,6 @@ SRC =		gnl/get_next_line.c \
 			parser/figures_creation.c \
 			utilits/killed_by_error.c \
 			vectors_funcs/cross_prod.c \
-			vectors_funcs/matrix_decl.c \
-			vectors_funcs/matrix_multip.c \
 			vectors_funcs/new_vector.c \
 			vectors_funcs/vector_by_matrix.c \
 			vectors_funcs/vector_length.c \
@@ -20,6 +18,7 @@ SRC =		gnl/get_next_line.c \
 			vectors_funcs/vectors_add_substract.c \
 			ray_trace/ray_trace.c \
 			ray_trace/print_scene.c \
+			vectors_funcs/place_camera.c \
 			main.c
 
 OBJS =		${SRC:.c=.o}
@@ -33,7 +32,7 @@ all:		$(NAME)
 #for debug -fsanitize=address -g
 #MAC
 %.o: %.c
-			$(CC) -Wall -Wextra -Werror -I ./includes/ -I ./mlx/ -c $< -o $@
+			$(CC) -Wall -Wextra -I ./includes/ -I ./mlx/ -c $< -o $@
 
 $(NAME):	${OBJS}
 			$(CC) $(OBJS) -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
@@ -52,3 +51,5 @@ fclean:		clean
 			${RM} ${NAME}
 
 re:			fclean all
+
+.SILENT:

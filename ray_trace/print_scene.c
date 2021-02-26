@@ -56,10 +56,10 @@ void	print_scene(s_scene *scene)
 
 void	print_vector(s_vector *v)
 {
-	printf("x = %f\ny = %f\nz = %f\n", v->v_x, v->v_y, v->v_z);
+	printf("x = %f\ty = %f\tz = %f\n\n", v->v_x, v->v_y, v->v_z);
 }
 
 void	print_color(s_color c)
 {
-	printf("r = %d\ng = %d\nb = %d\n", c.r, c.g, c.b);
+	printf("r = %f\ng = %f\nb = %f\n", c.r, c.g, c.b);
 }

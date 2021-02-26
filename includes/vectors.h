@@ -19,6 +19,10 @@ typedef struct		t_ray {
 		s_point		*orig;
 }					s_ray;
 
+typedef struct		t_cam_to_w {
+		double		matrix[4][4];
+}					s_cam_to_w;
+
 /**
  ** Subs (vec1 - vec2);
  ** add (vec1 + vec2);
@@ -29,10 +33,8 @@ typedef struct		t_ray {
 **/
 
 s_point			*new_point(double x, double y, double z);
-double			**matrix_multip(double **a, double **b);
 double			vector_scalar_mult(s_vector *a, s_vector *b);
 double			vector_length(s_vector *v);
-double			**matrix_decl(int num);
 s_vector		*vector_normalise(s_vector *v, double len);
 s_vector		*cross_prod(s_vector *a, s_vector *b);
 s_vector		*add_vectors(s_vector *a, s_vector *b);
@@ -40,5 +42,8 @@ s_vector		*subs_vectors(s_vector *a, s_vector *b);
 s_vector		*vector_by_scalar(s_vector *a, double num);
 s_vector		*new_vector(double x, double y, double z);
 s_vector		*vector_from_points(s_point *p1, s_point *p2);
+
+s_cam_to_w		matrix_place(s_vector *coor, s_vector *dir);
+s_vector		*matrix_mult(s_vector *vec, s_cam_to_w m);
 
 #endif

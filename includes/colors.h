@@ -2,9 +2,9 @@
 # define COLORS_H
 
 typedef struct	t_color {
-	int 	r;
-	int 	g;
-	int 	b;
+	double 	r;
+	double 	g;
+	double 	b;
 }				s_color;
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/25 23:34:42 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/27 00:15:55 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,10 @@ void 	parse_cam(char *str, s_scene *scene)
 	fov = d_atoi(str);
 	new = new_camera_node(coor, dir, fov);
 	if (!scene->cams)
-	 	scene->cams = new;
+	{
+		scene->cams = new;
+		scene->first_cam = scene->cams;
+	}
 	else
 		push_back_cam(scene->cams, coor, dir, fov);
 }

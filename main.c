@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/22 19:31:59 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/27 00:16:23 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int			main(int argc, char **argv)
 	fd = open(argv[1], O_RDONLY);
 	while (get_next_line(fd, &line))
 	{
-		if (line[0] == '\n' || !line[0])
+		if (line[0] == '\n' || !line[0] || line[0] == '#')
 		{
 			free (line);
 			continue ;
@@ -40,10 +40,27 @@ int			main(int argc, char **argv)
 	}
 //	print_scene(scene);
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
-	scene->image = mlx_new_image(scene->mlx, scene->width, scene->height);
+	mlx_hook(scene->window, 2, 0, press_key, scene);
 	ray_trace(scene);
 	mlx_loop(scene->mlx);
 	free_scene(scene);
+	return (0);
+}
+
+int		press_key(int key, s_scene *scene)
+{
+	if (key == KEY_TAB)
+	{
+		if (scene->cams->next)
+			scene->cams = scene->cams->next;
+		else
+			scene->cams = scene->first_cam;
+	}
+	else if (key == KEY_W)
+		scene->cams->coordinates->p_z += 1;
+	else if (key == KEY_ESC)
+		exit(0);
+	ray_trace(scene);
 	return (0);
 }
 
