@@ -19,6 +19,7 @@ SRC =		gnl/get_next_line.c \
 			ray_trace/ray_trace.c \
 			ray_trace/print_scene.c \
 			vectors_funcs/place_camera.c \
+			threads.c \
 			main.c
 
 OBJS =		${SRC:.c=.o}
@@ -32,7 +33,7 @@ all:		$(NAME)
 #for debug -fsanitize=address -g
 #MAC
 %.o: %.c
-			$(CC) -Wall -Wextra -I ./includes/ -I ./mlx/ -c $< -o $@
+			$(CC) -Wall -Wextra -O3 -I ./includes/ -I ./mlx/ -c $< -o $@
 
 $(NAME):	${OBJS}
 			$(CC) $(OBJS) -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)

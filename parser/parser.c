@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/27 00:15:55 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/27 18:36:51 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,15 @@ char		*skip_pattern(char *str)
 	str = skip_nums(str);
 	if (*str == ',')
 		str++;
+	if (*str < '0' && *str > '9')
+		killed_by_error(UNKNWN_ARG);
 	str = skip_nums(str);
 	if (*str == ',')
 		str++;
-	str = skip_nums(str);
-	if (!*str)
+	if (*str < '0' && *str > '9')
 		killed_by_error(UNKNWN_ARG);
-	if (*str != ' ')
+	str = skip_nums(str);
+	if (!*str || *str != ' ')
 		killed_by_error(UNKNWN_ARG);
 	str = skip_spaces(str);
 	return (str);
@@ -104,6 +106,7 @@ void 			parse_size(char *str, s_scene *scene)
 	str = skip_nums(str);
 	str = skip_spaces(str);
 	scene->height = (int)d_atoi(str);
+	scene->is_size++;
 }
 
 void 			parse_ambl(char *str, s_scene *scene)
@@ -118,6 +121,7 @@ void 			parse_ambl(char *str, s_scene *scene)
 	str = skip_spaces(str);
 	new->color = col_parse(str);
 	scene->ab_light = new;
+	scene->is_amb_l++;
 }
 
 void 	parse_cam(char *str, s_scene *scene)
@@ -141,6 +145,7 @@ void 	parse_cam(char *str, s_scene *scene)
 	}
 	else
 		push_back_cam(scene->cams, coor, dir, fov);
+	scene->is_cam++;
 }
 
 void	 		parse_light(char *str, s_scene *scene)
@@ -152,21 +157,17 @@ void	 		parse_light(char *str, s_scene *scene)
 
 	str = skip_spaces(str);
 	coor = parse_coordinares(str);
-	//print_vector((s_vector*)coor);
 	str = skip_pattern(str);
 	intens = d_atoi(str);
-	//printf("%f\n", intens);
 	str = skip_nums(str);
 	str = skip_spaces(str);
 	color = col_parse(str);
-	//print_color(color);
-	//printf("\n\n\n");
 	new = new_light_node(coor, intens, color);
 	if (!(scene->lights))
 		scene->lights = new;
 	else
 		push_back_light(scene->lights, coor, intens, color);
-	//print_scene(scene);
+	scene->is_light++;
 }
 
 void 			parse_sphere(char *str, s_scene *scene)

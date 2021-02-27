@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:10:13 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/27 00:14:40 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/27 14:11:54 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PARSER_H
 # include "figures.h"
 # include "lists.h"
+# include "mlx_image.h"
 
 typedef struct		t_scene {
 	s_cameras	*cams;
@@ -21,9 +22,9 @@ typedef struct		t_scene {
 	s_figures	*figures;
 	s_lights	*lights;
 	s_ab_light	*ab_light;
+	s_data		img;
 	void		*mlx;
 	void		*window;
-	void		*image;
 	int 		is_cam;
 	int 		is_light;
 	int 		is_size;

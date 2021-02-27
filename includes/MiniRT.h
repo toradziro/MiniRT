@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/27 00:05:17 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/27 17:53:53 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,38 @@
 # include "parser.h"
 # include "../gnl/get_next_line.h"
 # include "mlx_image.h"
+# include "threads.h"
+
 
 # include <unistd.h>
 # include <math.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>
+# include <string.h>
+# include <pthread.h>
 
 # define MALLOC_ERROR -1
 # define INV_AM_OF_ARG -2
 # define INV_FILE_NAME -3
 # define INV_COLOR -4
 # define UNKNWN_ARG -5
+
 # define COLOR_COEFF 0.003921568627
 # define MAX_COLOR 255
+
+# define THREADS_MAX 8
 
 # define KEY_TAB 48
 # define KEY_ESC 53
 # define KEY_W 13
+# define KEY_S 1
+# define KEY_A 0
+# define KEY_D 2
+# define KEY_Q 12
+# define KEY_E 14
+
+# define MAX_INTERSEC 100000
 
 enum e_spec
 {
@@ -58,17 +72,16 @@ double 		parse_d_part(char *str);
 s_color		col_parse(char *str);
 s_color		check_valid_color(s_color *c);
 s_scene		*ft_init_scene(void);
-void		ray_trace(s_scene *scene);
-s_color		intersec(s_figures *figures, s_ray *ray, s_lights *light, s_ab_light *ab_light, s_cameras *cam);
-s_color		find_color(s_ab_light *ab_light, s_lights *light, s_ray *ray, double min, s_vector *normal, s_figures *figures, s_color f_color, char spec);
+s_color		intersec(s_scene *scene, s_ray *ray);
+s_color		find_color(s_scene *scene, s_ray *ray, double min, s_vector *normal, s_color f_color);
 double		sphere_intersect(s_ray *ray, s_sphere *sp);
 void		free_scene(s_scene *scene);
 double		plane_intersect(s_ray *ray, s_plane *plane);
 
-int			shadow_intersec(s_figures *figures, s_ray *ray, double x_one);
+int			shadow_intersec(s_figures *figures, s_lights *lights, s_point *intersec_point, s_ray *orig_ray);
 
-s_color	multip_color(s_color color, double coeff);
-s_color	add_color(s_color color, s_color color_2);
+s_color		multip_color(s_color color, double coeff);
+s_color		add_color(s_color color, s_color color_2);
 s_color		final_color(double coeff, s_color color, s_ab_light *ab_light, s_lights *light);
 s_color		normal_color(s_color color);
 s_color		anti_normal_color(s_color color);
