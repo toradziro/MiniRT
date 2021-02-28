@@ -1,6 +1,6 @@
 #include "../includes/MiniRT.h"
 
-s_sphere		*new_sphere(double radius, s_point *coordinates, s_color color)
+s_sphere		*new_sphere(float radius, s_point *coordinates, s_color color)
 {
 	s_sphere	*new;
 
@@ -24,7 +24,7 @@ s_plane			*new_plane(s_vector *coordinates, s_vector *normal, s_color color)
 	return (new);
 }
 
-s_square		*new_square(s_point *center, s_vector *normal, double side, s_color color)
+s_square		*new_square(s_point *center, s_vector *normal, float side, s_color color)
 {
 	s_square	*new;
 
@@ -37,7 +37,7 @@ s_square		*new_square(s_point *center, s_vector *normal, double side, s_color co
 	return (new);
 }
 
-s_cylinder		*new_cylinder(s_point *coordinates, s_vector *normal, double diameter, double height, s_color *color)
+s_cylinder		*new_cylinder(s_point *coordinates, s_vector *normal, float diameter, float height, s_color color)
 {
 	s_cylinder	*new;
 
@@ -51,15 +51,15 @@ s_cylinder		*new_cylinder(s_point *coordinates, s_vector *normal, double diamete
 	return (new);
 }
 
-s_triangle		*new_triangle(s_point *frs_point, s_point *sec_point, s_point *thd_point, s_color *color)
+s_triangle		*new_triangle(s_point *frs_point, s_point *sec_point, s_point *thd_point, s_color color)
 {
 	s_triangle	*new;
 
 	if (!(new = (s_triangle*)malloc(sizeof(s_triangle))))
 		killed_by_error(MALLOC_ERROR);
-	new->frs_point = frs_point;
-	new->sec_point = sec_point;
-	new->thd_point = thd_point;
+	new->a = frs_point;
+	new->b = sec_point;
+	new->c = thd_point;
 	new->color = color;
 	return (new);
 }

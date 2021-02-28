@@ -1,5 +1,7 @@
 NAME =		MiniRT
 
+HEAD =		./includes/
+
 SRC =		gnl/get_next_line.c \
 			gnl/get_next_line_utils.c \
 			lists_funcs/list_camera_funcs.c \
@@ -23,27 +25,34 @@ SRC =		gnl/get_next_line.c \
 			main.c
 
 OBJS =		${SRC:.c=.o}
-MAC_FLAGS =	-Lmlx -lmlx -framework OpenGL -framework AppKit
-LNX_FLAGS =	-Lmlx -lmlx -Imlx -lXext -lX11 -lm -lz
+
+CFLAGS	= -Wall -Wextra -O3 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
+
+MLX_MAC_FLAGS =	-Lmlx -lmlx -framework OpenGL -O3 -framework AppKit
+
+MLX_LNX_FLAGS =	-Lmlx_Linux -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz
+
 RM =		rm -rf
-CC =		gcc
 
-all:		$(NAME)
+CC =		gcc -g
 
-#for debug -fsanitize=address -g
-#MAC
-%.o: %.c
-			$(CC) -Wall -Wextra -O3 -I ./includes/ -I ./mlx/ -c $< -o $@
+UNAME :=	$(shell uname)
+
+#for debug -fsanitize=address -g $(shell sysctl -n hw.ncpu)
+ifeq ($(UNAME),Darwin)
+	NUM_THREADS = $(shell sysctl -n hw.ncpu)
+	FLAGS = $(MLX_MAC_FLAGS)
+endif
+
+ifeq ($(UNAME),Linux)
+	NUM_THREADS = $(shell nproc --all)
+	FLAGS = $(MLX_LNX_FLAGS)
+endif
 
 $(NAME):	${OBJS}
-			$(CC) $(OBJS) -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
+			${CC} ${CFLAGS} $(OBJS) $(FLAGS) -o ${NAME}
 
-#LINUX
-#%.o: %.c
-#			$(CC) -Wall -Wextra -I/usr/include -Imlx_linux -O3 -c $< -o $@
-#
-#$(NAME):	$(OBJS)
-#			$(CC) $(OBJS) -Lmlx_Linux -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -o $(NAME)
+all:		$(NAME)
 
 clean:
 			${RM} ${OBJS}

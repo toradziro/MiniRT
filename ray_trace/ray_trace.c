@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:36:02 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/27 17:59:31 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/28 18:08:17 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ s_color			intersec(s_scene *scene, s_ray *ray)
 	s_figures		*tmp;
 	s_sphere		*sphere_tmp;
 	s_plane			*plane_tmp;
-	double			min;
-	double			intersec;
+	float			min;
+	float			intersec;
 
 
 	tmp = scene->figures;
@@ -50,34 +50,57 @@ s_color			intersec(s_scene *scene, s_ray *ray)
 				c_tmp = find_color(scene, ray, min, plane_tmp->normal, plane_tmp->color);
 			}
 		}
+		else if (tmp->specif == S_TR)
+		{
+			intersec = triangle_intersec(ray, (s_triangle*)tmp->content);
+			if (intersec < min && intersec > 0.0001)
+			{
+				s_triangle *triangle_tmp = (s_triangle*)tmp->content;
+				min = intersec;
+				c_tmp = find_color(scene, ray, min, triangle_tmp->normal, triangle_tmp->color);
+			}
+		}
 		tmp = tmp->next;
 	}
 	return (c_tmp);
 }
 
-s_color			find_color(s_scene *scene, s_ray *ray, double min, s_vector *normal, s_color f_color)
+s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector *normal, s_color f_color)
 {
 	s_point		*intersec_point;
-	s_vector	*l_coor;
-	double		coeff;
+	float		coeff;
 	s_color		res_color;
+	s_phong		*phong = malloc(sizeof(s_phong));
 
 	intersec_point = (s_point*)vector_by_scalar(ray->dir, min);
-	l_coor = subs_vectors((s_vector*)scene->lights->coordinates, (s_vector*)intersec_point);
+			//print_vector((s_vector*)intersec_point);
+			//printf ("%f\n", min);
+	//from here we start to compute phong light model
+	phong->intersec_point = intersec_point;
+	phong->light_dir = subs_vectors((s_vector*)scene->lights->coordinates, (s_vector*)intersec_point);
+	phong->light_dir = vector_normalise(phong->light_dir, vector_length(phong->light_dir));
+	//phong->view_dir = subs_vectors((s_vector*)scene->cams->coordinates, (s_vector*)intersec_point);
+	//phong->view_dir = vector_normalise(phong->view_dir, vector_length(phong->view_dir));
+	phong->view_dir = vector_by_scalar(scene->cams->direction, -1);
+	phong->halfway_dir = add_vectors(phong->light_dir, phong->view_dir);
+	phong->halfway_dir = vector_normalise(phong->halfway_dir, vector_length(phong->halfway_dir));
+	phong->spec = pow(MAX(vector_scalar_mult(normal, phong->halfway_dir), 0.0), SHININESS);
+	phong->specular = multip_color(scene->lights->color, phong->spec);
+
 	if (shadow_intersec(scene->figures, scene->lights, intersec_point, ray) == 1)
-			res_color = multip_color(f_color, 0.2);
+		res_color = multip_color(f_color, scene->ab_light->intensity);
 	else
 	{
-		coeff = vector_scalar_mult(normal, vector_normalise(l_coor, vector_length(l_coor)));
+		coeff = vector_scalar_mult(normal, phong->light_dir);
 		coeff = coeff * scene->lights->intensity;
 		if (coeff < 0)
 			coeff *= -1;
-		res_color = final_color(coeff, f_color, scene->ab_light, scene->lights);
+		res_color = final_color(coeff, f_color, scene->ab_light, scene->lights, phong);
 	}
 	return (res_color);
 }
 
-s_color		final_color(double coeff, s_color color, s_ab_light *ab_light, s_lights *light)
+s_color		final_color(float coeff, s_color color, s_ab_light *ab_light, s_lights *light, s_phong *phong)
 {
 	s_color	tmp_res = {0, 0, 0};
 	s_color	tmp_one;
@@ -94,6 +117,7 @@ s_color		final_color(double coeff, s_color color, s_ab_light *ab_light, s_lights
 	tmp_one = normal_color(tmp_one);
 	tmp_one = mult_color_by_color(color, tmp_one);
 	tmp_res = add_color(tmp_res, tmp_one);
+	tmp_res = add_color(tmp_res, phong->specular);
 	return (tmp_res);
 }
 
@@ -135,8 +159,8 @@ int			shadow_intersec(s_figures *figures, s_lights *lights, s_point *intersec_po
 	s_figures	*tmp_two;
 	s_lights	*light_tmp;
 	s_ray		*ray = malloc(sizeof(s_ray));
-	double 		res;
-	double		x_one;
+	float 		res;
+	float		x_one;
 
 	light_tmp = lights;
 	tmp = figures;
@@ -157,6 +181,12 @@ int			shadow_intersec(s_figures *figures, s_lights *lights, s_point *intersec_po
 				if (res < x_one && res > 0.0001)
 					return (1);
 			}
+			else if (tmp->specif == S_TR)
+			{
+				res = triangle_intersec(ray, (s_triangle*)tmp->content);
+				if (res < x_one && res > 0.0001)
+					return (1);
+			}
 			tmp = tmp->next;
 		}
 		light_tmp = light_tmp->next;
@@ -164,12 +194,12 @@ int			shadow_intersec(s_figures *figures, s_lights *lights, s_point *intersec_po
 	return (0);
 }
 
-double			sphere_intersect(s_ray *ray, s_sphere *sp)
+float			sphere_intersect(s_ray *ray, s_sphere *sp)
 {
-	double		b;
-	double		c;
-	double		discr;
-	double		x_one;
+	float		b;
+	float		c;
+	float		discr;
+	float		x_one;
 	s_vector	*res;
 
 	x_one = 0;
@@ -181,7 +211,7 @@ double			sphere_intersect(s_ray *ray, s_sphere *sp)
 	if (discr < 0)
 		return (0);
 	x_one = (-b - sqrt(discr)) / 2;
-//	double x_two = (-b + sqrt(discr)) / 2;
+	//float x_two = (-b + sqrt(discr)) / 2;
 	// printf("solved with [%.3f %.3f]\n", x_one, x_two);
 //	printf("%f\n", x_one);
 	if (x_one > 0)
@@ -189,11 +219,10 @@ double			sphere_intersect(s_ray *ray, s_sphere *sp)
 	return (0);
 }
 
-double			plane_intersect(s_ray *ray, s_plane *plane)
+float			plane_intersect(s_ray *ray, s_plane *plane)
 {
-	double		denom = vector_scalar_mult(plane->normal, ray->dir);
-//		printf("%f\n", denom);
-	double		t;
+	float		denom = vector_scalar_mult(plane->normal, ray->dir);
+	float		t;
 	if (denom > 0.000001)
 	{
 		s_vector *p0l0 = subs_vectors(plane->coordinates, (s_vector*)ray->orig);
@@ -204,7 +233,43 @@ double			plane_intersect(s_ray *ray, s_plane *plane)
 	return (0);
 }
 
-s_color	multip_color(s_color color, double coeff)
+float			triangle_intersec(s_ray *ray, s_triangle *triangle)
+{
+	s_vector	*ab;
+	s_vector	*ac;
+	s_vector	*bc;
+	s_vector	*pre_det;
+	s_vector	*tvec;
+	s_vector	*qvec;
+	float		u;
+	float		v;
+	float		t;
+	float		deter;
+	float		inv_deter;
+
+	ab = subs_vectors((s_vector*)triangle->b, (s_vector*)triangle->a);
+	ac = subs_vectors((s_vector*)triangle->c, (s_vector*)triangle->a);
+	bc = subs_vectors((s_vector*)triangle->c, (s_vector*)triangle->b);
+	triangle->normal = cross_prod(ab, bc);
+	triangle->normal = vector_normalise(triangle->normal, vector_length(triangle->normal));
+	pre_det = cross_prod(ray->dir, ac);
+	deter = vector_scalar_mult(ab, pre_det);
+	if (deter < 0.000001)
+		return (0);
+	inv_deter = 1.0 / deter;
+	tvec = subs_vectors((s_vector*)ray->orig, (s_vector*)triangle->a);
+	u = vector_scalar_mult(tvec, pre_det) * inv_deter;
+	if (u < 0.0 || u > 1.0)
+		return (0);
+	qvec = cross_prod(tvec, ab);
+	v = vector_scalar_mult(ray->dir, qvec) * inv_deter;
+	if (v < 0.0 || u + v > 1.0)
+		return (0);
+	t = vector_scalar_mult(ac, qvec) * inv_deter;
+	return (t);
+}
+
+s_color	multip_color(s_color color, float coeff)
 {
 	s_color		res;
 

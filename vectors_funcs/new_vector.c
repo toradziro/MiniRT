@@ -1,6 +1,6 @@
 #include "../includes/MiniRT.h"
 
-s_vector		*new_vector(double x, double y, double z)
+s_vector		*new_vector(float x, float y, float z)
 {
 	s_vector	*new;
 
@@ -12,7 +12,7 @@ s_vector		*new_vector(double x, double y, double z)
 	return (new);
 }
 
-s_point			*new_point(double x, double y, double z)
+s_point			*new_point(float x, float y, float z)
 {
 	s_point		*new;
 

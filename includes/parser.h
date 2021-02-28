@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:10:13 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/27 14:11:54 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/28 17:40:51 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ typedef struct		t_scene {
 	s_figures	*figures;
 	s_lights	*lights;
 	s_ab_light	*ab_light;
+	s_cam_to_w	mtrx;
 	s_data		img;
 	void		*mlx;
 	void		*window;

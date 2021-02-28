@@ -3,13 +3,13 @@
 # include "MiniRT.h"
 
 typedef struct	t_vplane {
-		double	width;
-		double	hieght;
-		double	x_pixel;
-		double	y_pixel;
+		float	width;
+		float	hieght;
+		float	x_pixel;
+		float	y_pixel;
 }				s_vplane;
 
-//s_vplane		*get_view_plane(double width, double height, double fov);
+//s_vplane		*get_view_plane(float width, float height, float fov);
 //void			ray_trace(void *mlx, void *window, s_scene *scene);
 
 #endif

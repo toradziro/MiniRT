@@ -1,6 +1,6 @@
 #include "../includes/MiniRT.h"
 
-s_lights	*new_light_node(s_point *coordinates, double intensity, s_color color)
+s_lights	*new_light_node(s_point *coordinates, float intensity, s_color color)
 {
 	s_lights	*new;
 
@@ -13,7 +13,7 @@ s_lights	*new_light_node(s_point *coordinates, double intensity, s_color color)
 	return (new);
 }
 
-void 		push_back_light(s_lights *list, s_point *coordinates, double intensity, s_color color)
+void 		push_back_light(s_lights *list, s_point *coordinates, float intensity, s_color color)
 {
 	s_lights	*tmp;
 

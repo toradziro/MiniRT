@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/02/27 17:53:53 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/02/28 17:50:09 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@
 # include <string.h>
 # include <pthread.h>
 
+# define MAX(a, b)(((a)> (b))?(a):(b))
+# define POW(a)((a)*(a))
+
 # define MALLOC_ERROR -1
 # define INV_AM_OF_ARG -2
 # define INV_FILE_NAME -3
@@ -40,8 +43,7 @@
 
 # define COLOR_COEFF 0.003921568627
 # define MAX_COLOR 255
-
-# define THREADS_MAX 8
+# define SHININESS 20.0
 
 # define KEY_TAB 48
 # define KEY_ESC 53
@@ -66,23 +68,25 @@ enum e_spec
 
 void		killed_by_error(int num);
 void 		check_valid_name(char *str);
-double		d_atoi(char *str);
-double 		parse_int_part(char *str);
-double 		parse_d_part(char *str);
+float		d_atoi(char *str);
+float 		parse_int_part(char *str);
+float 		parse_d_part(char *str);
 s_color		col_parse(char *str);
 s_color		check_valid_color(s_color *c);
 s_scene		*ft_init_scene(void);
-s_color		intersec(s_scene *scene, s_ray *ray);
-s_color		find_color(s_scene *scene, s_ray *ray, double min, s_vector *normal, s_color f_color);
-double		sphere_intersect(s_ray *ray, s_sphere *sp);
 void		free_scene(s_scene *scene);
-double		plane_intersect(s_ray *ray, s_plane *plane);
+
+s_color		find_color(s_scene *scene, s_ray *ray, float min, s_vector *normal, s_color f_color);
+s_color		intersec(s_scene *scene, s_ray *ray);
+float		sphere_intersect(s_ray *ray, s_sphere *sp);
+float		plane_intersect(s_ray *ray, s_plane *plane);
+float		triangle_intersec(s_ray *ray, s_triangle *triangle);
 
 int			shadow_intersec(s_figures *figures, s_lights *lights, s_point *intersec_point, s_ray *orig_ray);
 
-s_color		multip_color(s_color color, double coeff);
+s_color		multip_color(s_color color, float coeff);
 s_color		add_color(s_color color, s_color color_2);
-s_color		final_color(double coeff, s_color color, s_ab_light *ab_light, s_lights *light);
+s_color		final_color(float coeff, s_color color, s_ab_light *ab_light, s_lights *light, s_phong *phong);
 s_color		normal_color(s_color color);
 s_color		anti_normal_color(s_color color);
 s_color		mult_color_by_color(s_color one, s_color two);

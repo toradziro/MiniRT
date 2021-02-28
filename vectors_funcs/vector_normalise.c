@@ -1,6 +1,6 @@
 #include "../includes/MiniRT.h"
 
-s_vector		*vector_normalise(s_vector *v, double len)
+s_vector		*vector_normalise(s_vector *v, float len)
 {
 	s_vector	*n;
 

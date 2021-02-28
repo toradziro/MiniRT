@@ -1,14 +1,14 @@
 #include "../includes/MiniRT.h"
 
-double		vector_scalar_mult(s_vector *a, s_vector *b)
+float		vector_scalar_mult(s_vector *a, s_vector *b)
 {
-	double	res;
+	float	res;
 
 	res = a->v_x * b->v_x + a->v_y * b->v_y + a->v_z * b->v_z;
 	return (res);
 }
 
-s_vector		*vector_by_scalar(s_vector *a, double num)
+s_vector		*vector_by_scalar(s_vector *a, float num)
 {
 	s_vector	*res;
 
