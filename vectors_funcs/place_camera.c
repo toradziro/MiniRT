@@ -9,12 +9,12 @@ s_cam_to_w		matrix_place(s_vector *coor, s_vector *dir)
 
 	tmp = new_vector(0, 1, 0);
 	tmp = cross_prod(tmp, dir);
-	tmp = vector_normalise(tmp, vector_length(tmp));
+	tmp = vector_normalise(tmp);
 	res.matrix[0][0] = tmp->v_x;
 	res.matrix[0][1] = tmp->v_y;
 	res.matrix[0][2] = tmp->v_z;
 	tmp = cross_prod(dir, tmp);
-	tmp = vector_normalise(tmp, vector_length(tmp));
+	tmp = vector_normalise(tmp);
 	res.matrix[1][0] = tmp->v_x;
 	res.matrix[1][1] = tmp->v_y;
 	res.matrix[1][2] = tmp->v_z;

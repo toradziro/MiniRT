@@ -276,7 +276,7 @@ void			parse_triangle(char *str, s_scene *scene)
 	new->ac = subs_vectors((s_vector*)new->c, (s_vector*)new->a);
 	new->bc = subs_vectors((s_vector*)new->c, (s_vector*)new->b);
 	new->normal = cross_prod(new->bc, new->ab);
-	new->normal = vector_normalise(new->normal, vector_length(new->normal));
+	new->normal = vector_normalise(new->normal);
 	if (!(scene->figures))
 		scene->figures = new_figur_list(new, S_TR);
 	else

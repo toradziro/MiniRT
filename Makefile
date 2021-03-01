@@ -45,7 +45,7 @@ ifeq ($(UNAME),Darwin)
 endif
 
 ifeq ($(UNAME),Linux)
-	NUM_THREADS = $(shell nproc --all)
+	NUM_THREADS = 8
 	FLAGS = $(MLX_LNX_FLAGS)
 endif
 

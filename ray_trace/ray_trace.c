@@ -36,8 +36,10 @@ s_color			intersec(s_scene *scene, s_ray *ray)
 				s_point	*intersec_point = (s_point*)vector_by_scalar(ray->dir, min);
 				intersec_point = (s_point*)add_vectors((s_vector*)intersec_point, (s_vector*)scene->cams->coordinates);
 				s_vector *normal = subs_vectors((s_vector*)intersec_point, (s_vector*)sphere_tmp->coordinates);
-				normal = vector_normalise(normal, vector_length(normal));
+				normal = vector_normalise(normal);
 				c_tmp = find_color(scene, ray, min, normal, sphere_tmp->color);
+				free(intersec_point);
+				free(normal);
 			}
 		}
 		else if (tmp->specif == S_PL)
@@ -73,11 +75,11 @@ s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector *normal, s_
 
 	intersec_point = (s_point*)vector_by_scalar(ray->dir, min);
 	s_vector	*light_dir = subs_vectors((s_vector*)scene->lights->coordinates, (s_vector*)intersec_point);
-	light_dir = vector_normalise(light_dir, vector_length(light_dir));
-	// if (shadow_intersec(scene->figures, scene->lights, intersec_point, ray) == 1)
-	// 	res_color = multip_color(f_color, scene->ab_light->intensity);
-	// else
-	// {
+	light_dir = vector_normalise(light_dir);
+	//if (shadow_intersec(scene->figures, scene->lights, intersec_point, ray) == 1)
+	//	res_color = multip_color(f_color, scene->ab_light->intensity);
+	//else
+	//{
 		coeff = vector_scalar_mult(normal, light_dir);
 		if (coeff < 0)
 		{
@@ -88,6 +90,8 @@ s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector *normal, s_
 		if (coeff < 0)
 			coeff = 0;
 		res_color = final_color(coeff, f_color, scene->ab_light, scene->lights, NULL);
+		free (intersec_point);
+		free (light_dir);
 	//}
 	return (res_color);
 }
@@ -170,25 +174,38 @@ int			shadow_intersec(s_figures *figures, s_lights *lights, s_point *intersec_po
 		tmp = tmp_two;
 		ray->dir = vector_from_points(intersec_point, light_tmp->coordinates);
 		x_one = vector_length(ray->dir);
-		ray->dir = vector_normalise(ray->dir, x_one);
+		ray->dir = vector_normalise(ray->dir);
 		while (tmp->next)
 		{
 			if (tmp->specif == S_SP)
 			{
 				res = sphere_intersect(ray, (s_sphere*)tmp->content);
-				if (res < x_one && res > 0.01)
+				if (res < x_one && res > 0.0001)
+				{
+					free(ray->dir);
+					free(ray->orig);
+					free(ray);
 					return (1);
+				}
 			}
 			else if (tmp->specif == S_TR)
 			{
 				res = triangle_intersec(ray, (s_triangle*)tmp->content);
-				if (res < x_one && res > 0.01)
+				if (res < x_one && res > 0.0001)
+				{
+					free(ray->dir);
+					free(ray->orig);
+					free(ray);
 					return (1);
+				}
 			}
 			tmp = tmp->next;
 		}
 		light_tmp = light_tmp->next;
 	}
+	free(ray->dir);
+	free(ray->orig);
+	free(ray);
 	return (0);
 }
 
@@ -208,7 +225,7 @@ float			sphere_intersect(s_ray *ray, s_sphere *sp)
 	free(res);
 	if (discr < 0)
 		return (0);
-	x_one = (-b - sqrt(discr)) / 2;
+	x_one = (-b - sqrt(discr)) * 0.5;
 	//float x_two = (-b + sqrt(discr)) / 2;
 	// printf("solved with [%.3f %.3f]\n", x_one, x_two);
 //	printf("%f\n", x_one);
@@ -226,6 +243,7 @@ float			plane_intersect(s_ray *ray, s_plane *plane)
 	{
 		s_vector *p0l0 = subs_vectors(plane->coordinates, (s_vector*)ray->orig);
 		t = vector_scalar_mult(p0l0, plane->normal);
+		free(p0l0);
 		if (t >= 0)
 			return (t / denom);
 	}
@@ -246,17 +264,32 @@ float			triangle_intersec(s_ray *ray, s_triangle *triangle)
 	pre_det = cross_prod(ray->dir, triangle->ac);
 	deter = vector_scalar_mult(triangle->ab, pre_det);
 	if (deter > 0.01)
+	{
+		free(pre_det);
 		return (0);
+	}
 	inv_deter = 1.0 / deter;
 	tvec = subs_vectors((s_vector*)ray->orig, (s_vector*)triangle->a);
 	u = vector_scalar_mult(tvec, pre_det) * inv_deter;
 	if (u < 0.0 || u > 1.0)
+	{
+		free(tvec);
+		free(pre_det);
 		return (0);
+	}
 	qvec = cross_prod(tvec, triangle->ab);
 	v = vector_scalar_mult(ray->dir, qvec) * inv_deter;
 	if (v < 0.0 || u + v > 1.0)
+	{
+		free(qvec);
+		free(tvec);
+		free(pre_det);
 		return (0);
+	}
 	t = vector_scalar_mult(triangle->ac, qvec) * inv_deter;
+	free(qvec);
+	free(tvec);
+	free(pre_det);
 	return (t);
 }
 

@@ -35,7 +35,7 @@ typedef struct		t_cam_to_w {
 s_point			*new_point(float x, float y, float z);
 float			vector_scalar_mult(s_vector *a, s_vector *b);
 float			vector_length(s_vector *v);
-s_vector		*vector_normalise(s_vector *v, float len);
+s_vector		*vector_normalise(s_vector *v);
 s_vector		*cross_prod(s_vector *a, s_vector *b);
 s_vector		*add_vectors(s_vector *a, s_vector *b);
 s_vector		*subs_vectors(s_vector *a, s_vector *b);

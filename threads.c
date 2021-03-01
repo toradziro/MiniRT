@@ -43,25 +43,28 @@ void			*ray_trace_thread(void* thread)
 	s_color		color;
 	x_pixel = curr_thr->id * (max_pixel_x);
 	x_end = x_pixel + (max_pixel_x);
-
 	if (!(ray = (s_ray*)malloc(sizeof(s_ray))))
+	{
 		killed_by_error(MALLOC_ERROR);
+	}
 	ray->orig = scene->cams->coordinates;
+
 	while (x_pixel < x_end)
 	{
 		y_pixel = 0;
 		while (y_pixel < scene->height)
 		{
-			coefs[0] = x_pixel - (scene->width / 2);
-			coefs[1] = -y_pixel + (scene->height / 2);
-			coefs[2] = scene->width / (2 * tan(scene->cams->field_of_v / 2 * M_PI / 180));
+			coefs[1] = -y_pixel + (scene->height * 0.5);
+			coefs[0] = x_pixel - (scene->width * 0.5);
+			coefs[2] = scene->width / (2 * tan(scene->cams->field_of_v * 0.5 * M_PI * 0.00555555555));
 			ray->dir = new_vector(coefs[0], coefs[1], coefs[2]);
 			ray->dir = matrix_mult(ray->dir, scene->mtrx);
-			ray->dir = vector_normalise(ray->dir, vector_length(ray->dir));
+			ray->dir = vector_normalise(ray->dir);
 			color = intersec(scene, ray);
 			res_color = (int)color.r << 16 | (int)color.g << 8 | (int)color.b;
 			my_mlx_pixel_put(&scene->img, x_pixel, y_pixel, res_color);
 			y_pixel++;
+			free(ray->dir);
 		}
 		x_pixel++;
 	}
