@@ -43,7 +43,7 @@
 
 # define COLOR_COEFF 0.003921568627
 # define MAX_COLOR 255
-# define SHININESS 20.0
+# define SHININESS 60.0
 
 # define KEY_TAB 48
 # define KEY_ESC 53

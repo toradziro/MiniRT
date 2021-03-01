@@ -34,7 +34,7 @@ s_color			intersec(s_scene *scene, s_ray *ray)
 				sphere_tmp = (s_sphere*)tmp->content;
 				min = intersec;
 				s_point	*intersec_point = (s_point*)vector_by_scalar(ray->dir, min);
-				intersec_point = (s_point*)add_vectors((s_vector*)intersec_point, (s_vector*)scene->cams->coordinates);
+				intersec_point = (s_point*)add_vectors((s_vector*)intersec_point, (s_vector*)ray->orig);
 				s_vector *normal = subs_vectors((s_vector*)intersec_point, (s_vector*)sphere_tmp->coordinates);
 				normal = vector_normalise(normal, vector_length(normal));
 				c_tmp = find_color(scene, ray, min, normal, sphere_tmp->color);
@@ -73,6 +73,7 @@ s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector *normal, s_
 	s_phong		*phong = malloc(sizeof(s_phong));
 
 	intersec_point = (s_point*)vector_by_scalar(ray->dir, min);
+	intersec_point = (s_point*)add_vectors((s_vector*)intersec_point, (s_vector*)ray->orig);
 			//print_vector((s_vector*)intersec_point);
 			//printf ("%f\n", min);
 	//from here we start to compute phong light model
@@ -104,10 +105,11 @@ s_color		final_color(float coeff, s_color color, s_ab_light *ab_light, s_lights 
 {
 	s_color	tmp_res = {0, 0, 0};
 	s_color	tmp_one;
+	coeff = coeff * light->intensity;
 
 	while (light)
 	{
-		tmp_one = multip_color(light->color, light->intensity * coeff);
+		tmp_one = multip_color(light->color, coeff);
 		tmp_one = normal_color(tmp_one);
 		tmp_one = mult_color_by_color(color, tmp_one);
 		tmp_res = add_color(tmp_res, tmp_one);

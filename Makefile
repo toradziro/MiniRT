@@ -26,11 +26,11 @@ SRC =		gnl/get_next_line.c \
 
 OBJS =		${SRC:.c=.o}
 
-CFLAGS	= -Wall -Wextra -O3 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
+CFLAGS	= -Wall -Wextra -msse3 -O3 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
 
-MLX_MAC_FLAGS =	-Lmlx -lmlx -framework OpenGL -O3 -framework AppKit
+MLX_MAC_FLAGS =	-Lmlx -lmlx -framework OpenGL -msse3 -O3 -framework AppKit
 
-MLX_LNX_FLAGS =	-Lmlx_Linux -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz
+MLX_LNX_FLAGS =	-Lmlx_Linux -msse3 -O3 -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -lpthread
 
 RM =		rm -rf
 
