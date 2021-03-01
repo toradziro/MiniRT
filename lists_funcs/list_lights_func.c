@@ -9,6 +9,7 @@ s_lights	*new_light_node(s_point *coordinates, float intensity, s_color color)
 	new->coordinates = coordinates;
 	new->intensity = intensity;
 	new->color = color;
+	new->light_dir = NULL;
 	new->next = NULL;
 	return (new);
 }

@@ -60,6 +60,10 @@ s_triangle		*new_triangle(s_point *frs_point, s_point *sec_point, s_point *thd_p
 	new->a = frs_point;
 	new->b = sec_point;
 	new->c = thd_point;
+	new->ab = NULL;
+	new->ac = NULL;
+	new->bc = NULL;
+	new->normal = NULL;
 	new->color = color;
 	return (new);
 }

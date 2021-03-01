@@ -35,6 +35,9 @@ typedef struct		t_triangle {
 		s_point		*b;
 		s_point		*c;
 		s_vector	*normal;
+		s_vector	*ab;
+		s_vector	*ac;
+		s_vector	*bc;
 		s_color		color;
 }					s_triangle;
 

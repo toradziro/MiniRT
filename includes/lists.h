@@ -16,6 +16,7 @@ typedef struct 		t_cameras {
 
 typedef struct		t_lights {
 		s_point		*coordinates;
+		s_vector	*light_dir;
 		void		*next;
 		s_color		color;
 		float		intensity;
