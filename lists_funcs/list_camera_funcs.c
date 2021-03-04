@@ -1,6 +1,6 @@
 #include "../includes/MiniRT.h"
 
-s_cameras		*new_camera_node(s_point *coordinates, s_vector *dir, float fov)
+s_cameras		*new_camera_node(s_point coordinates, s_vector dir, float fov)
 {
 	s_cameras	*new;
 
@@ -13,7 +13,7 @@ s_cameras		*new_camera_node(s_point *coordinates, s_vector *dir, float fov)
 	return (new);
 }
 
-void 			push_back_cam(s_cameras *list, s_point *coordinates, s_vector *dir, float fov)
+void 			push_back_cam(s_cameras *list, s_point coordinates, s_vector dir, float fov)
 {
 	s_cameras	*tmp;
 

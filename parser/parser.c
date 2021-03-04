@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/01 22:44:52 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/04 22:22:02 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,23 +78,19 @@ char		*skip_nums(char *str)
 	return (str);
 }
 
-s_point		*parse_coordinares(char *str)
+s_point		parse_coordinares(char *str)
 {
-	float	x;
-	float	y;
-	float	z;
-	s_point	*new;
+	s_point	new;
 
-	x = d_atoi(str);
+	new.p_x = d_atoi(str);
 	str = skip_nums(str);
 	if (*str == ',')
 		str++;
-	y = d_atoi(str);
+	new.p_y = d_atoi(str);
 	str = skip_nums(str);
 	if (*str == ',')
 		str++;
-	z = d_atoi(str);
-	new = new_point(x, y, z);
+	new.p_z = d_atoi(str);
 	return (new);
 
 }
@@ -127,14 +123,14 @@ void 			parse_ambl(char *str, s_scene *scene)
 void 	parse_cam(char *str, s_scene *scene)
 {
 	s_cameras	*new;
-	s_vector	*dir;
-	s_point		*coor;
+	s_vector	dir;
+	s_point		coor;
 	float 		fov;
 
 	str = skip_spaces(str);
 	coor = parse_coordinares(str);
 	str = skip_pattern(str);
-	dir = (s_vector*)parse_coordinares(str);
+	dir = p_t_v(parse_coordinares(str));
 	str = skip_pattern(str);
 	fov = d_atoi(str);
 	new = new_camera_node(coor, dir, fov);
@@ -151,7 +147,7 @@ void 	parse_cam(char *str, s_scene *scene)
 void	 		parse_light(char *str, s_scene *scene)
 {
 	s_lights	*new;
-	s_point		*coor;
+	s_point		coor;
 	float		intens;
 	s_color		color;
 
@@ -173,7 +169,7 @@ void	 		parse_light(char *str, s_scene *scene)
 void 			parse_sphere(char *str, s_scene *scene)
 {
 	float		radius;
-	s_point		*coordinates;
+	s_point		coordinates;
 	s_color 	color;
 	s_sphere	*new;
 
@@ -193,17 +189,17 @@ void 			parse_sphere(char *str, s_scene *scene)
 void	 		parse_plane(char *str, s_scene *scene)
 {
 	s_plane		*new;
-	s_point		*coor;
-	s_vector	*normal;
+	s_point		coor;
+	s_point		normal;
 	s_color		color;
 
 	str = skip_spaces(str);
 	coor = parse_coordinares(str);
 	str = skip_pattern(str);
-	normal = (s_vector*)parse_coordinares(str);
+	normal = parse_coordinares(str);
 	str = skip_pattern(str);
 	color = col_parse(str);
-	new = new_plane((s_vector*)coor, normal, color);
+	new = new_plane(p_t_v(coor), p_t_v(normal), color);
 	if (!(scene->figures))
 		scene->figures = new_figur_list((void*)new, S_PL);
 	else
@@ -213,15 +209,15 @@ void	 		parse_plane(char *str, s_scene *scene)
 void			parse_square(char *str, s_scene *scene)
 {
 	s_square	*new;
-	s_point		*center;
-	s_vector	*normal;
+	s_point		center;
+	s_vector	normal;
 	float		size;
 	s_color		color;
 
 	str = skip_spaces(str);
 	center = parse_coordinares(str);
 	str = skip_pattern(str);
-	normal = (s_vector*)parse_coordinares(str);
+	normal = p_t_v(parse_coordinares(str));
 	str = skip_pattern(str);
 	size = d_atoi(str);
 	str = skip_pattern(str);
@@ -237,12 +233,16 @@ void			parse_cylinder(char *str, s_scene *scene)
 {
 	s_cylinder	*new;
 	s_color		color = {0, 0, 0};
+	s_point		tmp = {0, 0, 0};
+	s_vector	tmp_n = {0, 0, 0};
 
-	new = new_cylinder(NULL, NULL, 0, 0, color);
+	new = new_cylinder(tmp, tmp_n, 0, 0, color);
 	str = skip_spaces(str);
-	new->coordinates = parse_coordinares(str);
+	tmp = parse_coordinares(str);
+	new->coordinates = tmp;
 	str = skip_pattern(str);
-	new->normal = (s_vector*)parse_coordinares(str);
+	tmp_n = p_t_v(parse_coordinares(str));
+	new->normal = tmp_n;
 	str = skip_pattern(str);
 	new->diameter = d_atoi(str);
 	str = skip_pattern(str);
@@ -260,23 +260,35 @@ void			parse_triangle(char *str, s_scene *scene)
 {
 	s_triangle	*new;
 	s_color		color = {0, 0, 0};
+	s_point		tmp_a;
+	s_point		tmp_b;
+	s_point		tmp_c;
+	s_vector	tmp_ab;
+	s_vector	tmp_ac;
+	s_vector	tmp_bc;
+	s_vector	normal;
 
-	new = new_triangle(NULL, NULL, NULL, color);
+
 	str = skip_spaces(str);
-	new->a = parse_coordinares(str);
+	tmp_a = parse_coordinares(str);
 	str = skip_pattern(str);
-	new->b = parse_coordinares(str);
+	tmp_b = parse_coordinares(str);
 	str = skip_pattern(str);
-	new->c = parse_coordinares(str);
+	tmp_c = parse_coordinares(str);
 	str = skip_pattern(str);
 	color = col_parse(str);
-	new->color = color;
-	new->normal = NULL;
-	new->ab = subs_vectors((s_vector*)new->b, (s_vector*)new->a);
-	new->ac = subs_vectors((s_vector*)new->c, (s_vector*)new->a);
-	new->bc = subs_vectors((s_vector*)new->c, (s_vector*)new->b);
-	new->normal = cross_prod(new->bc, new->ab);
-	new->normal = vector_normalise(new->normal);
+
+	tmp_ab = subs_vectors(p_t_v(tmp_b), p_t_v(tmp_a));
+	tmp_ac = subs_vectors(p_t_v(tmp_c), p_t_v(tmp_a));
+	tmp_bc = subs_vectors(p_t_v(tmp_c), p_t_v(tmp_b));
+
+	new = new_triangle(tmp_a, tmp_b, tmp_c, color);
+	new->ab = tmp_ab;
+	new->ac = tmp_ac;
+	new->bc = tmp_bc;
+	normal = cross_prod(new->bc, new->ab);
+	normal = vector_normalise(normal);
+	new->normal = normal;
 	if (!(scene->figures))
 		scene->figures = new_figur_list(new, S_TR);
 	else

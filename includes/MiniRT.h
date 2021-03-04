@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/01 21:09:23 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/04 22:36:14 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@
 # include <fcntl.h>
 # include <string.h>
 # include <pthread.h>
+
+#ifndef THREADS_MAX
+# define THREADS_MAX 4
+#endif
 
 # define MAX(a, b)(((a)> (b))?(a):(b))
 # define POW(a)((a)*(a))
@@ -76,13 +80,13 @@ s_color		check_valid_color(s_color *c);
 s_scene		*ft_init_scene(void);
 void		free_scene(s_scene *scene);
 
-s_color		find_color(s_scene *scene, s_ray *ray, float min, s_vector *normal, s_color f_color);
-s_color		intersec(s_scene *scene, s_ray *ray);
-float		sphere_intersect(s_ray *ray, s_sphere *sp);
-float		plane_intersect(s_ray *ray, s_plane *plane);
-float		triangle_intersec(s_ray *ray, s_triangle *triangle);
+s_color		find_color(s_scene *scene, s_ray *ray, float min, s_vector normal, s_color f_color);
+s_color		intersec(s_scene *scene, s_ray ray);
+float		sphere_intersect(s_ray ray, s_sphere *sp);
+float		plane_intersect(s_ray ray, s_plane *plane);
+float		triangle_intersec(s_ray ray, s_triangle *triangle);
 
-int			shadow_intersec(s_figures *figures, s_lights *lights, s_point *intersec_point, s_ray *orig_ray);
+int			shadow_intersec(s_figures *figures, s_lights *lights, s_point intersec_point, s_ray orig_ray);
 
 s_color		multip_color(s_color color, float coeff);
 s_color		add_color(s_color color, s_color color_2);
@@ -95,6 +99,6 @@ int		press_key(int key, s_scene *scene);
 
 void	print_scene(s_scene *scene);
 void	print_color(s_color c);
-void	print_vector(s_vector *v);
+void	print_vector(s_vector v);
 
 #endif

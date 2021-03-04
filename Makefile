@@ -13,22 +13,21 @@ SRC =		gnl/get_next_line.c \
 			utilits/killed_by_error.c \
 			vectors_funcs/cross_prod.c \
 			vectors_funcs/new_vector.c \
-			vectors_funcs/vector_by_matrix.c \
 			vectors_funcs/vector_length.c \
 			vectors_funcs/vector_normalise.c \
 			vectors_funcs/vector_scalar_mult.c \
 			vectors_funcs/vectors_add_substract.c \
 			ray_trace/ray_trace.c \
-			ray_trace/print_scene.c \
 			vectors_funcs/place_camera.c \
 			threads.c \
+			ray_trace/print_scene.c \
 			main.c
 
 OBJS =		${SRC:.c=.o}
 
-CFLAGS	= -Wall -Wextra -msse3 -O2 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
+CFLAGS	= -fsanitize=address -g -Wall -Wextra -msse3 -O2 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
 
-MLX_MAC_FLAGS =	-msse3 -O2 -Lmlx -lmlx -framework OpenGL -msse3 -O3 -framework AppKit
+MLX_MAC_FLAGS =	-fsanitize=address -g -msse3 -O2 -Lmlx -lmlx -framework OpenGL -msse3 -O3 -framework AppKit
 
 MLX_LNX_FLAGS =	-Lmlx_Linux -msse3 -O2 -msse3 -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -lpthread
 

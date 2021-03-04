@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/01 22:46:16 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/04 22:47:25 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ int			main(int argc, char **argv)
 		parser(tmp, scene);
 		free(line);
 	}
-	printf("start\n");
+	//printf("start\n");
+	//print_scene(scene);
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
 	mlx_hook(scene->window, 2, 0, press_key, scene);
 	threads(scene);
@@ -57,17 +58,17 @@ int		press_key(int key, s_scene *scene)
 			scene->cams = scene->first_cam;
 	}
 	else if (key == KEY_W)
-		scene->cams->coordinates->p_z += 5;
+		scene->cams->coordinates.p_z += 2;
 	else if (key == KEY_S)
-		scene->cams->coordinates->p_z -= 5;
+		scene->cams->coordinates.p_z -= 2;
 	else if (key == KEY_A)
-		scene->cams->coordinates->p_x -= 5;
+		scene->cams->coordinates.p_x += 2;
 	else if (key == KEY_D)
-		scene->cams->coordinates->p_x += 5;
+		scene->cams->coordinates.p_x -= 2;
 	else if (key == KEY_Q)
-		scene->cams->coordinates->p_y += 5;
+		scene->cams->coordinates.p_y += 2;
 	else if (key == KEY_E)
-		scene->cams->coordinates->p_y -= 5;
+		scene->cams->coordinates.p_y -= 2;
 	else if (key == KEY_ESC)
 		exit(0);
 	threads(scene);
