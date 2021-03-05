@@ -6,9 +6,11 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:36:02 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/05 20:01:22 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/06 01:10:45 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+// sse sse2 sse3 sse4 avx
 
 #include "../includes/MiniRT.h"
 
@@ -20,18 +22,21 @@ s_color			intersec(s_scene *scene, s_ray ray)
 	s_plane			*plane_tmp;
 	float			min;
 	float			intersec;
+	int				i;
+	int				finish;
 
-
-	tmp = scene->figures;
+	i = 0;
+	tmp = scene->figures->node;
+	finish = scene->figures->length;
 	min = MAX_INTERSEC;
-	while (tmp)
+	while (i < finish)
 	{
-		if (tmp->specif == S_SP)
+		if (tmp[i].specif == S_SP)
 		{
-			intersec = sphere_intersect(ray, (s_sphere*)tmp->content);
+			intersec = sphere_intersect(ray, (s_sphere*)tmp[i].content);
 			if (intersec < min && intersec > 0)
 			{
-				sphere_tmp = (s_sphere*)tmp->content;
+				sphere_tmp = (s_sphere*)tmp[i].content;
 				min = intersec;
 				s_vector	intersec_point = vector_by_scalar(ray.dir, min);
 				intersec_point = add_vectors(intersec_point, scene->cams->coordinates);
@@ -40,44 +45,66 @@ s_color			intersec(s_scene *scene, s_ray ray)
 				c_tmp = find_color(scene, &ray, min, normal, sphere_tmp->color);
 			}
 		}
-		else if (tmp->specif == S_PL)
+		else if (tmp[i].specif == S_PL)
 		{
-			intersec = plane_intersect(ray, (s_plane*)tmp->content);
+			intersec = plane_intersect(ray, (s_plane*)tmp[i].content);
 			if (intersec < min && intersec > 0.01)
 			{
-				plane_tmp = (s_plane*)tmp->content;
+				plane_tmp = (s_plane*)tmp[i].content;
 				min = intersec;
 				c_tmp = find_color(scene, &ray, min, plane_tmp->normal, plane_tmp->color);
 			}
 		}
-		else if (tmp->specif == S_TR)
+		else if (tmp[i].specif == S_TR)
 		{
-			intersec = triangle_intersec(ray, (s_triangle*)tmp->content);
+			intersec = triangle_intersec(ray, (s_triangle*)tmp[i].content);
 			if (intersec < min && intersec > 0.01)
 			{
-				s_triangle *triangle_tmp = (s_triangle*)tmp->content;
+				s_triangle *triangle_tmp = (s_triangle*)tmp[i].content;
 				min = intersec;
 				c_tmp = find_color(scene, &ray, min, triangle_tmp->normal, triangle_tmp->color);
 			}
 		}
-		tmp = tmp->next;
+		else if (tmp[i].specif == S_SQ)
+		{
+			intersec = square_intersec(ray, (s_square*)tmp[i].content, min);
+			if (intersec < min && intersec > 0.01)
+			{
+				s_square *square_tmp = (s_square*)tmp[i].content;
+				min = intersec;
+				c_tmp = find_color(scene, &ray, min, square_tmp->normal, square_tmp->color);
+			}
+		}
+		++i;
 	}
 	return (c_tmp);
 }
 
 s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector normal, s_color f_color)
 {
-	s_vector		intersec_point;
+	s_vector	intersec_point;
 	float		coeff;
 	s_color		res_color;
 
 	intersec_point = vector_by_scalar(ray->dir, min);
 	s_vector	light_dir = subs_vectors(scene->lights->coordinates, intersec_point);
 	light_dir = vector_normalise(light_dir);
-	//if (shadow_intersec(scene->figures, scene->lights, intersec_point, ray) == 1)
+	//	if (shadow_intersec(scene->figures, scene->lights, intersec_point, *(ray)) == 1)
 	//	res_color = multip_color(f_color, scene->ab_light->intensity);
 	//else
 	//{
+
+		//s_phong		*phong = malloc(sizeof(s_phong));
+		s_phong		phong;
+		phong.intersec_point = intersec_point;
+		phong.view_dir = subs_vectors(scene->cams->coordinates, intersec_point);
+		phong.view_dir = vector_normalise(phong.view_dir);
+		phong.halfway_dir = add_vectors(phong.light_dir, phong.view_dir);
+		phong.halfway_dir = vector_normalise(phong.halfway_dir);
+		phong.spec = pow(MAX(vector_scalar_mult(normal, phong.halfway_dir), 0.0), SHININESS);
+		phong.specular = multip_color(scene->lights->color, phong.spec);
+
+
 		coeff = vector_scalar_mult(normal, light_dir);
 		if (coeff < 0)
 		{
@@ -87,18 +114,17 @@ s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector normal, s_c
 		coeff = coeff * scene->lights->intensity;
 		if (coeff < 0)
 			coeff = 0;
-		res_color = final_color(coeff, f_color, scene->ab_light, scene->lights, NULL);
+		res_color = final_color(coeff, f_color, scene->ab_light, scene->lights, phong);
 	//}
 	return (res_color);
 }
 
-s_color		final_color(float coeff, s_color color, s_ab_light *ab_light, s_lights *light, s_phong *phong)
+s_color		final_color(float coeff, s_color color, s_ab_light *ab_light, s_lights *light, s_phong phong)
 {
 	s_color	tmp_res = {0, 0, 0};
 	s_color	tmp_one;
 	s_color tmp;
 
-	phong = NULL;
 	if (tmp.r > 255)
 		tmp.r = 255;
 	if (tmp.g > 255)
@@ -115,7 +141,7 @@ s_color		final_color(float coeff, s_color color, s_ab_light *ab_light, s_lights 
 	tmp_one = multip_color(ab_light->color, ab_light->intensity);
 	tmp_one = normal_color(tmp_one);
 	tmp_res = add_color(tmp_res, tmp_one);
-	//tmp_res = add_color(tmp_res, phong->specular);
+	tmp_res = add_color(tmp_res, phong.specular);
 	return (tmp_res);
 }
 
@@ -151,41 +177,41 @@ s_color		anti_normal_color(s_color color)
 	return (color);
 }
 
-int			shadow_intersec(s_figures *figures, s_lights *lights, s_vector intersec_point, s_ray orig_ray)
+int			shadow_intersec(s_vec_fig *figures, s_lights *lights, s_vector intersec_point, s_ray orig_ray)
 {
-	s_figures	*tmp;
-	s_figures	*tmp_two;
+	s_vec_fig	*tmp;
 	s_lights	*light_tmp;
 	s_ray		ray;
 	float 		res;
 	float		x_one;
+	int			i;
 
+	i = 0;
 	light_tmp = lights;
 	tmp = figures;
-	tmp_two = tmp;
 	ray.orig = intersec_point;
 	ray.orig = add_vectors(ray.orig, orig_ray.orig);
 	while (light_tmp)
 	{
-		tmp = tmp_two;
+		i = 0;
 		ray.dir = subs_vectors(intersec_point, light_tmp->coordinates);
 		x_one = vector_length(ray.dir);
 		ray.dir = vector_normalise(ray.dir);
-		while (tmp->next)
+		while (i < tmp->length)
 		{
-			if (tmp->specif == S_SP)
+			if (tmp->node[i].specif == S_SP)
 			{
-				res = sphere_intersect(ray, (s_sphere*)tmp->content);
+				res = sphere_intersect(ray, (s_sphere*)tmp->node[i].content);
 				if (res < x_one && res > 0.0001)
 					return (1);
 			}
-			else if (tmp->specif == S_TR)
+			else if (tmp->node[i].specif == S_TR)
 			{
-				res = triangle_intersec(ray, (s_triangle*)tmp->content);
+				res = triangle_intersec(ray, (s_triangle*)tmp->node[i].content);
 				if (res < x_one && res > 0.0001)
 					return (1);
 			}
-			tmp = tmp->next;
+			++i;
 		}
 		light_tmp = light_tmp->next;
 	}
@@ -257,6 +283,36 @@ float			triangle_intersec(s_ray ray, s_triangle *triangle)
 		return (0);
 	t = vector_scalar_mult(triangle->ac, qvec) * inv_deter;
 	return (t);
+}
+
+float			square_intersec(s_ray ray, s_square *sq, float min_t)
+{
+	s_cam_to_w	b;
+	s_vector	a_new;
+	s_vector	intersec_point;
+	s_vector	a_p;
+	float		res;
+	float		dot;
+
+	if ((res = plane_intersect(ray, (s_plane*)sq)) < min_t)
+	{
+		b = matrix_place(new_vector(0, 0, 0), sq->normal);
+		intersec_point = vector_by_scalar(ray.dir, res);
+		a_new = subs_vectors(sq->center, ray.orig);
+		a_new = matrix_mult(a_new, b);
+		intersec_point = matrix_mult(intersec_point, b);
+		intersec_point = add_vectors(a_new, intersec_point);
+		a_new = add_vectors(a_new, a_new);
+		a_p = subs_vectors(a_new, intersec_point);
+		dot = vector_scalar_mult(a_p, new_vector(b.matrix[1][0], b.matrix[1][1], b.matrix[1][2]));
+		if (dot >= -sq->side * 0.5 && dot <= sq->side * 0.5)
+		{
+			dot = vector_scalar_mult(a_p, new_vector(b.matrix[0][0], b.matrix[0][1], b.matrix[0][2]));
+			if (dot >= -sq->side * 0.5 && dot <= sq->side * 0.5)
+				return (res);
+		}
+	}
+	return (0);
 }
 
 s_color	multip_color(s_color color, float coeff)

@@ -9,16 +9,5 @@ s_figures		*new_figur_list(void *content, char spec)
 	new->specif = S_NUL;
 	new->content = content;
 	new->specif = spec;
-	new->next = NULL;
 	return (new);
-}
-
-void		push_back_figur(s_figures *start, void *content, char spec)
-{
-	s_figures	*new;
-
-	new = new_figur_list(content, spec);
-	while (start->next)
-		start = start->next;
-	start->next = new;
 }

@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/05 19:59:07 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/05 23:30:24 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,9 +169,10 @@ void	 		parse_light(char *str, s_scene *scene)
 void 			parse_sphere(char *str, s_scene *scene)
 {
 	float		radius;
-	s_vector		coordinates;
+	s_vector	coordinates;
 	s_color 	color;
 	s_sphere	*new;
+	s_figures	*tmp;
 
 	str = skip_spaces(str);
 	coordinates = parse_coordinares(str);
@@ -180,18 +181,23 @@ void 			parse_sphere(char *str, s_scene *scene)
 	str = skip_pattern(str);
 	color = col_parse(str);
 	new = new_sphere(radius, coordinates, color);
+	tmp = new_figur_list((void*)new, S_SP);
 	if (!(scene->figures))
-		scene->figures = new_figur_list((void*)new, S_SP);
+	{
+		scene->figures = new_vec_fig();
+		scene->figures = add_elem_vec(scene->figures, tmp);
+	}
 	else
-		push_back_figur(scene->figures, (void*)new, S_SP);
+		scene->figures = add_elem_vec(scene->figures, tmp);
 }
 
 void	 		parse_plane(char *str, s_scene *scene)
 {
 	s_plane		*new;
-	s_vector		coor;
-	s_vector		normal;
+	s_vector	coor;
+	s_vector	normal;
 	s_color		color;
+	s_figures	*tmp;
 
 	str = skip_spaces(str);
 	coor = parse_coordinares(str);
@@ -200,19 +206,24 @@ void	 		parse_plane(char *str, s_scene *scene)
 	str = skip_pattern(str);
 	color = col_parse(str);
 	new = new_plane(coor, normal, color);
+	tmp = new_figur_list((void*)new, S_PL);
 	if (!(scene->figures))
-		scene->figures = new_figur_list((void*)new, S_PL);
+	{
+		scene->figures = new_vec_fig();
+		scene->figures = add_elem_vec(scene->figures, tmp);
+	}
 	else
-		push_back_figur(scene->figures, (void*)new, S_PL);
+		scene->figures = add_elem_vec(scene->figures, tmp);
 }
 
 void			parse_square(char *str, s_scene *scene)
 {
 	s_square	*new;
-	s_vector		center;
+	s_vector	center;
 	s_vector	normal;
 	float		size;
 	s_color		color;
+	s_figures	*tmp;
 
 	str = skip_spaces(str);
 	center = parse_coordinares(str);
@@ -223,18 +234,23 @@ void			parse_square(char *str, s_scene *scene)
 	str = skip_pattern(str);
 	color = col_parse(str);
 	new = new_square(center, normal, size, color);
+	tmp = new_figur_list((void*)new, S_SQ);
 	if (!(scene->figures))
-		scene->figures = new_figur_list((void*)new, S_SQ);
+	{
+		scene->figures = new_vec_fig();
+		scene->figures = add_elem_vec(scene->figures, tmp);
+	}
 	else
-		push_back_figur(scene->figures, (void*)new, S_SQ);
+		scene->figures = add_elem_vec(scene->figures, tmp);
 }
 
 void			parse_cylinder(char *str, s_scene *scene)
 {
 	s_cylinder	*new;
 	s_color		color = {0, 0, 0};
-	s_vector		tmp = {0, 0, 0};
+	s_vector	tmp = {0, 0, 0};
 	s_vector	tmp_n = {0, 0, 0};
+	s_figures	*tmp_fig;
 
 	new = new_cylinder(tmp, tmp_n, 0, 0, color);
 	str = skip_spaces(str);
@@ -250,24 +266,28 @@ void			parse_cylinder(char *str, s_scene *scene)
 	str = skip_pattern(str);
 	color = col_parse(str);
 	new->color = color;
+	tmp_fig = new_figur_list((void*)new, S_CL);
 	if (!(scene->figures))
-		scene->figures = new_figur_list((void*)new, S_CL);
+	{
+		scene->figures = new_vec_fig();
+		scene->figures = add_elem_vec(scene->figures, tmp_fig);
+	}
 	else
-		push_back_figur(scene->figures, (void*)new, S_CL);
+		scene->figures = add_elem_vec(scene->figures, tmp_fig);
 }
 
 void			parse_triangle(char *str, s_scene *scene)
 {
 	s_triangle	*new;
 	s_color		color = {0, 0, 0};
-	s_vector		tmp_a;
-	s_vector		tmp_b;
-	s_vector		tmp_c;
+	s_vector	tmp_a;
+	s_vector	tmp_b;
+	s_vector	tmp_c;
 	s_vector	tmp_ab;
 	s_vector	tmp_ac;
 	s_vector	tmp_bc;
 	s_vector	normal;
-
+	s_figures	*tmp_fig;
 
 	str = skip_spaces(str);
 	tmp_a = parse_coordinares(str);
@@ -289,8 +309,12 @@ void			parse_triangle(char *str, s_scene *scene)
 	normal = cross_prod(new->bc, new->ab);
 	normal = vector_normalise(normal);
 	new->normal = normal;
+	tmp_fig = new_figur_list((void*)new, S_TR);
 	if (!(scene->figures))
-		scene->figures = new_figur_list(new, S_TR);
+	{
+		scene->figures = new_vec_fig();
+		scene->figures = add_elem_vec(scene->figures, tmp_fig);
+	}
 	else
-		push_back_figur(scene->figures, new, S_TR);
+		scene->figures = add_elem_vec(scene->figures, tmp_fig);
 }

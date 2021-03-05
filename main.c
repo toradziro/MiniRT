@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/05 19:57:23 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/05 23:02:56 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,17 +58,17 @@ int		press_key(int key, s_scene *scene)
 			scene->cams = scene->first_cam;
 	}
 	else if (key == KEY_W)
-		scene->cams->coordinates.v_z += 2;
+		scene->cams->coordinates.v_z += 5;
 	else if (key == KEY_S)
-		scene->cams->coordinates.v_z -= 2;
+		scene->cams->coordinates.v_z -= 5;
 	else if (key == KEY_A)
-		scene->cams->coordinates.v_x += 2;
+		scene->cams->coordinates.v_x += 5;
 	else if (key == KEY_D)
-		scene->cams->coordinates.v_x -= 2;
+		scene->cams->coordinates.v_x -= 5;
 	else if (key == KEY_Q)
-		scene->cams->coordinates.v_y += 2;
+		scene->cams->coordinates.v_y += 5;
 	else if (key == KEY_E)
-		scene->cams->coordinates.v_y -= 2;
+		scene->cams->coordinates.v_y -= 5;
 	else if (key == KEY_ESC)
 		exit(0);
 	threads(scene);

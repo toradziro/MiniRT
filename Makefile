@@ -20,16 +20,17 @@ SRC =		gnl/get_next_line.c \
 			ray_trace/ray_trace.c \
 			vectors_funcs/place_camera.c \
 			threads.c \
-			ray_trace/print_scene.c \
+			lists_funcs/array_funcs.c \
 			main.c
+			#ray_trace/print_scene.c \
 
 OBJS =		${SRC:.c=.o}
 
-CFLAGS	= -fsanitize=address -g -Wall -Wextra -msse3 -O2 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
+CFLAGS	= -fsanitize=address -g -Wall -Wextra -msse3 -O3 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
 
 MLX_MAC_FLAGS =	-fsanitize=address -g -msse3 -O2 -Lmlx -lmlx -framework OpenGL -msse3 -O3 -framework AppKit
 
-MLX_LNX_FLAGS =	-Lmlx_Linux -msse3 -O2 -msse3 -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -lpthread
+MLX_LNX_FLAGS =	-Lmlx_Linux -msse3 -O3 -msse3 -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -lpthread
 
 RM =		rm -rf
 

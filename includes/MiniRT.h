@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/05 19:53:49 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/06 01:11:07 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include "../gnl/get_next_line.h"
 # include "mlx_image.h"
 # include "threads.h"
-
+# include "array.h"
 
 # include <unistd.h>
 # include <math.h>
@@ -31,6 +31,7 @@
 # include <fcntl.h>
 # include <string.h>
 # include <pthread.h>
+#include <sys/time.h>
 
 #ifndef THREADS_MAX
 # define THREADS_MAX 4
@@ -85,12 +86,13 @@ s_color		intersec(s_scene *scene, s_ray ray);
 float		sphere_intersect(s_ray ray, s_sphere *sp);
 float		plane_intersect(s_ray ray, s_plane *plane);
 float		triangle_intersec(s_ray ray, s_triangle *triangle);
+float		square_intersec(s_ray ray, s_square *sq, float min_t);
 
-int			shadow_intersec(s_figures *figures, s_lights *lights, s_vector intersec_point, s_ray orig_ray);
+int			shadow_intersec(s_vec_fig *figures, s_lights *lights, s_vector intersec_point, s_ray orig_ray);
 
 s_color		multip_color(s_color color, float coeff);
 s_color		add_color(s_color color, s_color color_2);
-s_color		final_color(float coeff, s_color color, s_ab_light *ab_light, s_lights *light, s_phong *phong);
+s_color		final_color(float coeff, s_color color, s_ab_light *ab_light, s_lights *light, s_phong phong);
 s_color		normal_color(s_color color);
 s_color		anti_normal_color(s_color color);
 s_color		mult_color_by_color(s_color one, s_color two);

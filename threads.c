@@ -2,10 +2,13 @@
 
 void	threads(s_scene *scene)
 {
-	int			i;
-	s_thread	thread_id[THREADS_MAX];
-	pthread_t	thread[THREADS_MAX];
+	int				i;
+	s_thread		thread_id[THREADS_MAX];
+	pthread_t		thread[THREADS_MAX];
+	struct timeval	time_start;
+	struct timeval	time_end;
 
+	gettimeofday(&time_start, NULL);
 	i = 0;
 	scene->img.img = mlx_new_image(scene->mlx, scene->width, scene->height);
 	scene->img.addr = mlx_get_data_addr(scene->img.img, &scene->img.bits_per_pixel, &scene->img.line_length, &scene->img.endian);
@@ -25,7 +28,9 @@ void	threads(s_scene *scene)
 		pthread_join(thread[i], NULL);
 		++i;
 	}
+	gettimeofday(&time_end, NULL);
 	mlx_put_image_to_window(scene->mlx, scene->window, scene->img.img, 0, 0);
+	printf("Fps if ! %d !\n", 1000 / ((time_end.tv_usec - time_start.tv_usec) / 1000));
 }
 
 void			*ray_trace_thread(void* thread)

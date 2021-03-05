@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:10:13 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/05 19:53:49 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/05 22:00:57 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,12 @@
 # include "figures.h"
 # include "lists.h"
 # include "mlx_image.h"
+# include "array.h"
 
 typedef struct		t_scene {
 	s_cameras	*cams;
 	s_cameras	*first_cam;
-	s_figures	*figures;
+	s_vec_fig	*figures;
 	s_lights	*lights;
 	s_ab_light	*ab_light;
 	s_cam_to_w	mtrx;
