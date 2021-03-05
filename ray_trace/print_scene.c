@@ -13,7 +13,7 @@ void	print_scene(s_scene *scene)
 	{
 		s_sphere *sp_tmp = (s_sphere*)tmp->figures->content;
 		printf("----------SPHERE IS------------\n");
-		print_vector(p_t_v(sp_tmp->coordinates));
+		print_vector(sp_tmp->coordinates);
 		print_color(sp_tmp->color);
 		printf("%f\n\n\n", sp_tmp->radius);
 		tmp->figures = tmp->figures->next;
@@ -36,7 +36,7 @@ void	print_scene(s_scene *scene)
 	while (scene->lights)
 	{
 		printf("----------LIGHT IS------------\n");
-		print_vector(p_t_v(tmp->lights->coordinates));
+		print_vector(tmp->lights->coordinates);
 		print_color(tmp->lights->color);
 		printf("%f\n\n\n", tmp->lights->intensity);
 		tmp->lights = tmp->lights->next;
@@ -49,7 +49,7 @@ void	print_scene(s_scene *scene)
 	while (scene->cams)
 	{
 		printf("----------CAM IS------------\n");
-		print_vector(p_t_v(tmp->cams->coordinates));
+		print_vector(tmp->cams->coordinates);
 		print_vector(tmp->cams->direction);
 		printf("%f\n\n\n", tmp->cams->field_of_v);
 		tmp->cams = tmp->cams->next;

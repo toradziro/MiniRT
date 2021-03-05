@@ -9,7 +9,7 @@ typedef struct	t_color {
 
 typedef struct	t_phong
 {
-	s_point		*intersec_point;
+	s_vector		*intersec_point;
 	s_vector	*light_dir;
 	s_vector	*view_dir;
 	s_vector	*halfway_dir;

@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/04 22:36:14 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/05 19:53:49 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ float		sphere_intersect(s_ray ray, s_sphere *sp);
 float		plane_intersect(s_ray ray, s_plane *plane);
 float		triangle_intersec(s_ray ray, s_triangle *triangle);
 
-int			shadow_intersec(s_figures *figures, s_lights *lights, s_point intersec_point, s_ray orig_ray);
+int			shadow_intersec(s_figures *figures, s_lights *lights, s_vector intersec_point, s_ray orig_ray);
 
 s_color		multip_color(s_color color, float coeff);
 s_color		add_color(s_color color, s_color color_2);

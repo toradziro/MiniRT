@@ -9,7 +9,7 @@ void	threads(s_scene *scene)
 	i = 0;
 	scene->img.img = mlx_new_image(scene->mlx, scene->width, scene->height);
 	scene->img.addr = mlx_get_data_addr(scene->img.img, &scene->img.bits_per_pixel, &scene->img.line_length, &scene->img.endian);
-	scene->mtrx = matrix_place(p_t_v(scene->cams->coordinates), scene->cams->direction);
+	scene->mtrx = matrix_place(scene->cams->coordinates, scene->cams->direction);
 	while (i < THREADS_MAX)
 	{
 		thread_id[i].id = i;
