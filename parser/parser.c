@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/05 23:30:24 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/06 19:37:48 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ void 			parse_ambl(char *str, s_scene *scene)
 	str = skip_nums(str);
 	str = skip_spaces(str);
 	new->color = col_parse(str);
+	new->color = multip_color(new->color, new->intensity);
 	scene->ab_light = new;
 	scene->is_amb_l++;
 }
@@ -306,7 +307,7 @@ void			parse_triangle(char *str, s_scene *scene)
 	new->ab = tmp_ab;
 	new->ac = tmp_ac;
 	new->bc = tmp_bc;
-	normal = cross_prod(new->bc, new->ab);
+	normal = cross_prod(new->ac, new->ab);
 	normal = vector_normalise(normal);
 	new->normal = normal;
 	tmp_fig = new_figur_list((void*)new, S_TR);

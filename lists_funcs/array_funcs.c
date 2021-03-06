@@ -22,13 +22,13 @@ s_vec_fig		*new_vec_fig(void)
 s_vec_fig		*add_elem_vec(s_vec_fig *vec, s_figures *next)
 {
 	if (vec->length + 1 >= vec->capacity)
-		vec = realloc_vec(vec, next);
+		vec = realloc_vec(vec);
 	vec->node[vec->length] = *next;
 	++vec->length;
 	return (vec);
 }
 
-s_vec_fig		*realloc_vec(s_vec_fig *old, s_figures *next)
+s_vec_fig		*realloc_vec(s_vec_fig *old)
 {
 	s_vec_fig	*new;
 

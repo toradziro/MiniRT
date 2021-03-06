@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/06 01:11:07 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/06 20:32:18 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@
 
 # define COLOR_COEFF 0.003921568627
 # define MAX_COLOR 255
-# define SHININESS 60.0
+# define SHININESS 120.0
 
 # define KEY_TAB 48
 # define KEY_ESC 53
@@ -85,17 +85,20 @@ s_color		find_color(s_scene *scene, s_ray *ray, float min, s_vector normal, s_co
 s_color		intersec(s_scene *scene, s_ray ray);
 float		sphere_intersect(s_ray ray, s_sphere *sp);
 float		plane_intersect(s_ray ray, s_plane *plane);
-float		triangle_intersec(s_ray ray, s_triangle *triangle);
+float		triangle_intersec(s_ray *ray, s_triangle *triangle);
 float		square_intersec(s_ray ray, s_square *sq, float min_t);
 
-int			shadow_intersec(s_vec_fig *figures, s_lights *lights, s_vector intersec_point, s_ray orig_ray);
+int			shadow_intersec(s_vec_fig *figures, s_lights *lights, s_vector *intersec_point, s_vector *dir_to_light);
 
 s_color		multip_color(s_color color, float coeff);
 s_color		add_color(s_color color, s_color color_2);
-s_color		final_color(float coeff, s_color color, s_ab_light *ab_light, s_lights *light, s_phong phong);
+s_color		final_color(float coeff, s_color color, s_lights *light, s_phong phong);
 s_color		normal_color(s_color color);
 s_color		anti_normal_color(s_color color);
 s_color		mult_color_by_color(s_color one, s_color two);
+s_color		shad_color(s_color figur, s_color ab_light);
+
+s_phong		calc_phong(s_vector intersec_point, s_scene *scene, s_vector normal);
 
 int		press_key(int key, s_scene *scene);
 
