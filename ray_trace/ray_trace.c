@@ -47,12 +47,12 @@ s_color			intersec(s_scene *scene, s_ray ray)
 		}
 		else if (tmp[i].specif == S_PL)
 		{
-			intersec = plane_intersect(ray, (s_plane*)tmp[i].content);
-			if (intersec < min && intersec > 0.000001)
+			plane_tmp = (s_plane*)tmp[i].content;
+			//if (vector_scalar_mult(scene->cams->direction, plane_tmp->normal) > 0)
+			//plane_tmp->normal = vector_by_scalar(plane_tmp->normal, -1);
+			intersec = plane_intersect(ray, plane_tmp);
+			if (intersec < min && intersec > 0.001)
 			{
-				plane_tmp = (s_plane*)tmp[i].content;
-				// if (vector_scalar_mult(scene->cams->direction, plane_tmp->normal) < 0)
-				// 	plane_tmp->normal = vector_by_scalar(plane_tmp->normal, -1.0);
 				min = intersec;
 				c_tmp = find_color(scene, &ray, min, plane_tmp->normal, plane_tmp->color);
 			}
@@ -100,6 +100,7 @@ s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector normal, s_c
 	{
 		dir_to_light = subs_vectors(tmp_light->coordinates, intersec_point);
 		dir_to_light = vector_normalise(dir_to_light);
+
 		if (!(shadow_intersec(scene->figures, tmp_light, &intersec_point, &dir_to_light)))
 		{
 			phong = calc_phong(intersec_point, scene, normal);
@@ -220,7 +221,7 @@ int			shadow_intersec(s_vec_fig *figures, s_lights *lights, s_vector *intersec_p
 			if (node[i].specif == S_SP)
 			{
 				res = sphere_intersect(ray, (s_sphere*)node[i].content);
-				if (res < x_one && res > 0.000001)
+				if (res < x_one && res > 0.001)
 				{
 //					last_intersec = &node[i];
 					return (1);
@@ -229,7 +230,7 @@ int			shadow_intersec(s_vec_fig *figures, s_lights *lights, s_vector *intersec_p
 			else if (node[i].specif == S_TR)
 			{
 				res = triangle_intersec(&ray, (s_triangle*)node[i].content);
-				if (res < x_one && res > 0.000001)
+				if (res < x_one && res > 0.001)
 				{
 //					last_intersec = &node[i];
 					return (1);
@@ -238,7 +239,7 @@ int			shadow_intersec(s_vec_fig *figures, s_lights *lights, s_vector *intersec_p
 			else if (node[i].specif == S_SQ)
 			{
 				res = square_intersec(ray, (s_square*)node[i].content, x_one);
-				if (res < x_one && res > 0.000001)
+				if (res < x_one && res > 0.001)
 				{
 //					last_intersec = &node[i];
 					return (1);
@@ -278,15 +279,14 @@ float			sphere_intersect(s_ray ray, s_sphere *sp)
 
 float			plane_intersect(s_ray ray, s_plane *plane)
 {
-	float		denom = vector_scalar_mult(plane->normal, ray.dir);
-	float		t;
-
-	if (denom > 0.01 || -denom > 0.01)
+	float denom = vector_scalar_mult(plane->normal, ray.dir);
+	s_vector tmp;
+	if (ABS(denom) > 0.01)
 	{
-		s_vector p0l0 = subs_vectors(plane->coordinates, ray.orig);
-		t = vector_scalar_mult(p0l0, plane->normal);
-		if (t >= 0)
-			return (t / denom);
+		tmp = subs_vectors(plane->coordinates, ray.orig);
+		float t = vector_scalar_mult(tmp, plane->normal) / denom;
+		if (t > 0)
+			return t;
 	}
 	return (0);
 }

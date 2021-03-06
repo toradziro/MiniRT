@@ -37,8 +37,8 @@
 # define THREADS_MAX 4
 #endif
 
-# define MAX(a, b)(((a)> (b))?(a):(b))
-# define POW(a)((a)*(a))
+# define MAX(a,b)(((a)>(b))?(a):(b))
+# define ABS(a)((a)>(0))?(a):(-a)
 
 # define MALLOC_ERROR -1
 # define INV_AM_OF_ARG -2
