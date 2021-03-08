@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/05 23:02:56 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/08 19:18:35 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int			main(int argc, char **argv)
 	//print_scene(scene);
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
 	mlx_hook(scene->window, 2, 0, press_key, scene);
+	//mlx_hook(scene->window, 17, 0, killed_by_error, 0);
 	threads(scene);
 	mlx_loop(scene->mlx);
 	free_scene(scene);

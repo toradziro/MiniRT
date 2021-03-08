@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:36:02 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/06 22:29:50 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/08 20:09:35 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ s_color			intersec(s_scene *scene, s_ray ray)
 		if (tmp[i].specif == S_SP)
 		{
 			intersec = sphere_intersect(ray, (s_sphere*)tmp[i].content);
-			if (intersec < min && intersec > 0.000001)
+			if (intersec < min && intersec > MIN_I)
 			{
 				sphere_tmp = (s_sphere*)tmp[i].content;
 				min = intersec;
@@ -48,10 +48,8 @@ s_color			intersec(s_scene *scene, s_ray ray)
 		else if (tmp[i].specif == S_PL)
 		{
 			plane_tmp = (s_plane*)tmp[i].content;
-			//if (vector_scalar_mult(scene->cams->direction, plane_tmp->normal) > 0)
-			//plane_tmp->normal = vector_by_scalar(plane_tmp->normal, -1);
 			intersec = plane_intersect(ray, plane_tmp);
-			if (intersec < min && intersec > 0.001)
+			if (intersec < min && intersec > MIN_I)
 			{
 				min = intersec;
 				c_tmp = find_color(scene, &ray, min, plane_tmp->normal, plane_tmp->color);
@@ -60,7 +58,7 @@ s_color			intersec(s_scene *scene, s_ray ray)
 		else if (tmp[i].specif == S_TR)
 		{
 			intersec = triangle_intersec(&ray, (s_triangle*)tmp[i].content);
-			if (intersec < min && intersec > 0.000001)
+			if (intersec < min && intersec > MIN_I)
 			{
 				s_triangle *triangle_tmp = (s_triangle*)tmp[i].content;
 				min = intersec;
@@ -70,7 +68,7 @@ s_color			intersec(s_scene *scene, s_ray ray)
 		else if (tmp[i].specif == S_SQ)
 		{
 			intersec = square_intersec(ray, (s_square*)tmp[i].content, min);
-			if (intersec < min && intersec > 0.000001)
+			if (intersec < min && intersec > MIN_I)
 			{
 				s_square *square_tmp = (s_square*)tmp[i].content;
 				min = intersec;
@@ -87,10 +85,12 @@ s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector normal, s_c
 	s_vector	intersec_point;
 	float		coeff;
 	s_color		res_color;
-	s_color		tmp_color;
 	s_phong		phong;
 	s_vector	dir_to_light;
 	s_lights	*tmp_light;
+
+	if (vector_scalar_mult(scene->cams->direction, normal) > 0)
+		normal = vector_by_scalar(normal, -1);
 
 	tmp_light = scene->lights;
 	intersec_point = vector_by_scalar(ray->dir, min);
@@ -99,10 +99,10 @@ s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector normal, s_c
 	while (tmp_light)
 	{
 		dir_to_light = subs_vectors(tmp_light->coordinates, intersec_point);
-		dir_to_light = vector_normalise(dir_to_light);
 
 		if (!(shadow_intersec(scene->figures, tmp_light, &intersec_point, &dir_to_light)))
 		{
+			dir_to_light = vector_normalise(dir_to_light);
 			phong = calc_phong(intersec_point, scene, normal);
 			coeff = vector_scalar_mult(normal, dir_to_light);
 			if (coeff < 0)
@@ -148,9 +148,8 @@ s_color		shad_color(s_color figur, s_color ab_light)
 	return (res);
 }
 
-s_color		final_color(float coeff, s_color color, s_lights *light, s_phong phong)
+s_color		final_color(float coeff, s_color color, s_lights *light)
 {
-	s_color	tmp_res = {0, 0, 0};
 	s_color tmp;
 
 	tmp = multip_color(light->color, coeff);
@@ -211,45 +210,43 @@ int			shadow_intersec(s_vec_fig *figures, s_lights *lights, s_vector *intersec_p
 	node = figures->node;
 	light_tmp = lights;
 	ray.orig = *(intersec_point);
-	ray.dir = *(dir_to_light);
-	//while (light_tmp)
-	//{
-		i = 0;
-		x_one = vector_length(*intersec_point);
-		while (i < len)
+	ray.dir = vector_normalise(*(dir_to_light));
+	i = 0;
+	x_one = vector_length(*dir_to_light);
+	while (i < len)
+	{
+		if (node[i].specif == S_SP)
 		{
-			if (node[i].specif == S_SP)
+			res = sphere_intersect(ray, (s_sphere*)node[i].content);
+			if (res < x_one && res > MIN_I)
 			{
-				res = sphere_intersect(ray, (s_sphere*)node[i].content);
-				if (res < x_one && res > 0.001)
-				{
 //					last_intersec = &node[i];
-					return (1);
-				}
+				return (1);
 			}
-			else if (node[i].specif == S_TR)
-			{
-				res = triangle_intersec(&ray, (s_triangle*)node[i].content);
-				if (res < x_one && res > 0.001)
-				{
-//					last_intersec = &node[i];
-					return (1);
-				}
-			}
-			else if (node[i].specif == S_SQ)
-			{
-				res = square_intersec(ray, (s_square*)node[i].content, x_one);
-				if (res < x_one && res > 0.001)
-				{
-//					last_intersec = &node[i];
-					return (1);
-				}
-			}
-			++i;
 		}
-	//	}
+		else if (node[i].specif == S_TR)
+		{
+			res = triangle_intersec(&ray, (s_triangle*)node[i].content);
+			//printf("%f, %f, %f\n", ray.orig.v_x, ray.orig.v_y, ray.orig.v_z);
+			//printf("%f\n", res);
+			if (res < x_one && res > MIN_I)
+			{
+//					last_intersec = &node[i];
+				return (1);
+			}
+		}
+		else if (node[i].specif == S_SQ)
+		{
+			res = square_intersec(ray, (s_square*)node[i].content, x_one);
+			if (res < x_one && res > MIN_I)
+			{
+//					last_intersec = &node[i];
+				return (1);
+			}
+		}
+		++i;
+	}
 	//	light_tmp = light_tmp->next;
-	//}
 	return (0);
 }
 
@@ -293,30 +290,23 @@ float			plane_intersect(s_ray ray, s_plane *plane)
 
 float			triangle_intersec(s_ray *ray, s_triangle *triangle)
 {
-	s_vector	pre_det;
-	s_vector	tvec;
-	s_vector	qvec;
-	float		u;
-	float		v;
-	float		t;
-	float		deter;
-	float		inv_deter;
+	//v0 - a, v1 - b, v2 - c, e1 - ab, e2 - ac
+	s_vector	pvec = cross_prod(triangle->ac, ray->dir); //maybe exchange args
+	float		det = vector_scalar_mult(triangle->ab, pvec);
+	float		inv_det;
 
-	pre_det = cross_prod(ray->dir, triangle->ac);
-	deter = vector_scalar_mult(triangle->ab, pre_det);
-	if (deter > 0.01)
+	if (det < MIN_I && det > MIN_I)
 		return (0);
-	inv_deter = 1.0 / deter;
-	tvec = subs_vectors(ray->orig, triangle->a);
-	u = vector_scalar_mult(tvec, pre_det) * inv_deter;
-	if (u < 0.0 || u > 1.0)
+	inv_det = 1.0 / det;
+	s_vector tvec = subs_vectors(ray->orig, triangle->a);
+	float u = vector_scalar_mult(tvec, pvec) * inv_det;
+	if (u < 0 || u > 1)
 		return (0);
-	qvec = cross_prod(tvec, triangle->ab);
-	v = vector_scalar_mult(ray->dir, qvec) * inv_deter;
-	if (v < 0.0 || u + v > 1.0)
+	s_vector qvec = cross_prod(triangle->ab, tvec);
+	float v = vector_scalar_mult(ray->dir, qvec) * inv_det;
+	if (v < 0 || u + v > 1)
 		return (0);
-	t = vector_scalar_mult(triangle->ac, qvec) * inv_deter;
-	return (t);
+	return (vector_scalar_mult(triangle->ac, qvec) * inv_det);
 }
 
 float			square_intersec(s_ray ray, s_square *sq, float min_t)

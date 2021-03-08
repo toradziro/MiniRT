@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/06 19:37:48 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/08 19:41:47 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,7 +307,7 @@ void			parse_triangle(char *str, s_scene *scene)
 	new->ab = tmp_ab;
 	new->ac = tmp_ac;
 	new->bc = tmp_bc;
-	normal = cross_prod(new->ac, new->ab);
+	normal = cross_prod(new->ab, new->ac);
 	normal = vector_normalise(normal);
 	new->normal = normal;
 	tmp_fig = new_figur_list((void*)new, S_TR);
