@@ -4,9 +4,9 @@
 #include "colors.h"
 
 typedef struct		t_sphere {
-		s_vector		coordinates;
-		float		radius;
+		s_vector	coordinates;
 		s_color 	color;
+		float		radius;
 }					s_sphere;
 
 typedef struct		t_plane {
@@ -16,14 +16,14 @@ typedef struct		t_plane {
 }					s_plane;
 
 typedef struct		t_square {
-		s_vector		center;
+		s_vector	center;
 		s_vector	normal;
 		float		side;
 		s_color		color;
 }					s_square;
 
 typedef struct		t_cylinder {
-		s_vector		coordinates;
+		s_vector	coordinates;
 		s_vector	normal;
 		float		diameter;
 		float		height;
@@ -31,9 +31,9 @@ typedef struct		t_cylinder {
 }					s_cylinder;
 
 typedef struct		t_triangle {
-		s_vector		a;
-		s_vector		b;
-		s_vector		c;
+		s_vector	a;
+		s_vector	b;
+		s_vector	c;
 		s_vector	normal;
 		s_vector	ab;
 		s_vector	ac;

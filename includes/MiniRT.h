@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/08 20:09:50 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/09 22:05:26 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ s_color		check_valid_color(s_color *c);
 s_scene		*ft_init_scene(void);
 void		free_scene(s_scene *scene);
 
-s_color		find_color(s_scene *scene, s_ray *ray, float min, s_vector normal, s_color f_color);
+s_color		find_color(s_scene *scene, s_ray *ray, float min, s_vector normal, s_color *f_color);
 s_color		intersec(s_scene *scene, s_ray ray);
 float		sphere_intersect(s_ray ray, s_sphere *sp);
 float		plane_intersect(s_ray ray, s_plane *plane);

@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/08 19:41:47 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/09 20:27:36 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 
 void 	parser(char *str, s_scene *scene)
 {
-	if (str[0] == 'R')
+	if (str[0] == 'c' && str[1] == 'y')
+		parse_cylinder(str + 2, scene);
+	else if (str[0] == 'R')
 		parse_size(str + 1, scene);
 	else if (str[0] == 'A')
 		parse_ambl(str + 1, scene);
@@ -29,8 +31,6 @@ void 	parser(char *str, s_scene *scene)
 		parse_plane(str + 2, scene);
 	else if (str[0] == 's' && str[1] == 'q')
 		parse_square(str + 2, scene);
-	else if (str[0] == 'c' && str[1] == 'y')
-		parse_cylinder(str + 2, scene);
 	else if (str[0] == 't' && str[1] == 'r')
 		parse_triangle(str + 2, scene);
 	else

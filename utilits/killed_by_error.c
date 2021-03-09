@@ -24,6 +24,8 @@ void 		check_valid_name(char *str)
 	int		i;
 
 	i = 0;
+	while (str[i] == '.')
+		++i;
 	while (((str[i] >= 32 && str[i] < 127)) && str[i] != '.' && str[i])
 		++i;
 	if (str[i] != '.')
