@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:10:13 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/05 22:00:57 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/11 19:42:12 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void 			parser(char *str, s_scene *scene);
 char			*skip_spaces(char *str);
 char			*skip_pattern(char *str);
 char			*skip_nums(char *str);
-s_vector			parse_coordinares(char *str);
+s_vector		parse_coordinares(char *str);
 void	 		parse_size(char *str, s_scene *scene);
 void 			parse_ambl(char *str, s_scene *scene);
 void 			parse_cam(char *str, s_scene *scene);

@@ -28,7 +28,7 @@ OBJS =		${SRC:.c=.o}
 
 CFLAGS	= -fsanitize=address -g -Wall -Wextra -msse3 -O3 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
 
-MLX_MAC_FLAGS =	-fsanitize=address -g -msse3 -O2 -Lmlx -lmlx -framework OpenGL -msse3 -O3 -framework AppKit
+MLX_MAC_FLAGS =	-fsanitize=address -g -Lmlx -lmlx -framework OpenGL -framework AppKit
 
 MLX_LNX_FLAGS =	-Lmlx_Linux -msse3 -O3 -msse3 -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -lpthread
 
@@ -49,8 +49,8 @@ ifeq ($(UNAME),Linux)
 	FLAGS = $(MLX_LNX_FLAGS)
 endif
 
-$(NAME):	${OBJS}
-			${CC} ${CFLAGS} $(OBJS) $(FLAGS) -o ${NAME}
+$(NAME):	$(OBJS)
+			$(CC) $(CFLAGS) $(OBJS) $(FLAGS) -o $(NAME)
 
 all:		$(NAME)
 

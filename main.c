@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/09 19:23:25 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/11 21:07:47 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,7 @@ int			main(int argc, char **argv)
 		parser(tmp, scene);
 		free(line);
 	}
-	//printf("start\n");
-	//print_scene(scene);
+	check_scene(scene);
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
 	mlx_hook(scene->window, 2, 0, press_key, scene);
 	//mlx_hook(scene->window, 17, 0, killed_by_error, 0);
@@ -49,8 +48,15 @@ int			main(int argc, char **argv)
 	return (0);
 }
 
+void	check_scene(s_scene *scene)
+{
+	if (!scene->is_amb_l || !scene->is_cam || !scene->is_figur || !scene->is_light || !scene->is_size)
+		killed_by_error(NOT_ENOUGH);
+}
+
 int		press_key(int key, s_scene *scene)
 {
+	mlx_destroy_image(scene->mlx, scene->img.img);
 	if (key == KEY_TAB)
 	{
 		if (scene->cams->next)
@@ -71,7 +77,10 @@ int		press_key(int key, s_scene *scene)
 	else if (key == KEY_E)
 		scene->cams->coordinates.v_y -= 5;
 	else if (key == KEY_ESC)
+	{
+		free_scene(scene);
 		exit(0);
+	}
 	threads(scene);
 	return (0);
 }
@@ -101,10 +110,59 @@ s_scene		*ft_init_scene(void)
 
 void		free_scene(s_scene *scene)
 {
-	free (scene->cams);
-	free (scene->figures);
+	free_cams(scene->cams);
+	free_light (scene->lights);
+	free_fig_test (scene->figures);
 	free (scene->mlx);
 	free (scene->window);
-	free (scene->lights);
 	free (scene);
+}
+
+void			free_fig_test(s_vec_fig *v)
+{
+	int			i;
+	int			len;
+
+	i = 0;
+	len = v->length;
+	while (i < len)
+	{
+		if (v->node[i].specif == S_SP)
+			free((s_sphere*)v->node[i].content);
+		else if (v->node[i].specif == S_PL)
+			free((s_plane*)v->node[i].content);
+		else if (v->node[i].specif == S_SQ)
+			free((s_square*)v->node[i].content);
+		else if (v->node[i].specif == S_TR)
+			free((s_triangle*)v->node[i].content);
+		else if (v->node[i].specif == S_CL)
+			free((s_cylinder*)v->node[i].content);
+		++i;
+	}
+	free (v->node);
+	free (v);
+}
+
+void		free_cams(s_cameras *cam)
+{
+	s_cameras	*tmp;
+
+	while (cam)
+	{
+		tmp = cam->next;
+		free (cam);
+		cam = tmp;
+	}
+}
+
+void		free_light(s_lights *light)
+{
+	s_lights	*tmp;
+
+	while (light)
+	{
+		tmp = light->next;
+		free (light);
+		light = tmp;
+	}
 }

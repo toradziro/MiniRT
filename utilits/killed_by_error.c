@@ -15,6 +15,8 @@ void	killed_by_error(int num)
 		error_num = write(2, "Error: invalid color.\n", 22);
 	else if (num == UNKNWN_ARG)
 		error_num = write(2, "Error: unknown argument.\n", 25);
+	else if (num == NOT_ENOUGH)
+		error_num = write(2, "Error: NOT ENOUGH ARGUMENTS, JUST FIX FILE, DON'T TOUCH MY PARSER!\n", 67);
 	error_num += 1;
 	exit(num);
 }

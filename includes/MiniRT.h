@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/09 22:05:26 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/11 21:08:20 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@
 # define INV_FILE_NAME -3
 # define INV_COLOR -4
 # define UNKNWN_ARG -5
+# define NOT_ENOUGH -6
 
 # define COLOR_COEFF 0.003921568627
 # define MAX_COLOR 255
@@ -107,5 +108,9 @@ int		press_key(int key, s_scene *scene);
 void	print_scene(s_scene *scene);
 void	print_color(s_color c);
 void	print_vector(s_vector v);
+void	check_scene(s_scene *scene);
+
+void		free_cams(s_cameras *cam);
+void		free_light(s_lights *light);
 
 #endif

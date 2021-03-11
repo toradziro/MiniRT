@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/09 20:27:36 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/11 21:13:29 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,16 +92,23 @@ s_vector		parse_coordinares(char *str)
 		str++;
 	new.v_z = d_atoi(str);
 	return (new);
-
 }
 
 void 			parse_size(char *str, s_scene *scene)
 {
-	str = skip_spaces(str); //add check for num
-	scene->width = (int)d_atoi(str);
+	int			x;
+	int			y;
+	int			tmp_x;
+	int			tmp_y;
+
+	mlx_get_screen_size(scene->mlx, &x, &y);
+	str = skip_spaces(str);
+	tmp_x = (int)d_atoi(str);
+	scene->width = MAX(tmp_x, x);
 	str = skip_nums(str);
 	str = skip_spaces(str);
-	scene->height = (int)d_atoi(str);
+	tmp_y = (int)d_atoi(str);
+	scene->height = MAX(tmp_y, y);
 	scene->is_size++;
 }
 
@@ -190,6 +197,7 @@ void 			parse_sphere(char *str, s_scene *scene)
 	}
 	else
 		scene->figures = add_elem_vec(scene->figures, tmp);
+	scene->is_figur++;
 }
 
 void	 		parse_plane(char *str, s_scene *scene)
@@ -215,6 +223,7 @@ void	 		parse_plane(char *str, s_scene *scene)
 	}
 	else
 		scene->figures = add_elem_vec(scene->figures, tmp);
+	scene->is_figur++;
 }
 
 void			parse_square(char *str, s_scene *scene)
@@ -243,6 +252,7 @@ void			parse_square(char *str, s_scene *scene)
 	}
 	else
 		scene->figures = add_elem_vec(scene->figures, tmp);
+	scene->is_figur++;
 }
 
 void			parse_cylinder(char *str, s_scene *scene)
@@ -275,6 +285,7 @@ void			parse_cylinder(char *str, s_scene *scene)
 	}
 	else
 		scene->figures = add_elem_vec(scene->figures, tmp_fig);
+	scene->is_figur++;
 }
 
 void			parse_triangle(char *str, s_scene *scene)
@@ -318,4 +329,5 @@ void			parse_triangle(char *str, s_scene *scene)
 	}
 	else
 		scene->figures = add_elem_vec(scene->figures, tmp_fig);
+	scene->is_figur++;
 }
