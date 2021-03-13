@@ -35,6 +35,8 @@ typedef struct		t_scene {
 	int 			is_figur;
 	int				width;
 	int				height;
+	int 			mouse_x;
+	int 			mouse_y;
 }					s_scene;
 
 void 			parser(char *str, s_scene *scene);

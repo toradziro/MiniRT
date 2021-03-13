@@ -53,7 +53,7 @@ void			*ray_trace_thread(void* thread)
 	while (y_pixel < y_end)
 	{
 		x_pixel = 0;
-		while (x_pixel < scene->height)
+		while (x_pixel < scene->width)
 		{
 			coefs[1] = -y_pixel + (scene->height * 0.5);
 			coefs[0] = x_pixel - (scene->width * 0.5);

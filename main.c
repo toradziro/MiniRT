@@ -42,8 +42,13 @@ int			main(int argc, char **argv)
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
 	mlx_hook(scene->window, 2, 0, press_key, scene);
 	mlx_hook(scene->window, 17, 0, exit_rt, scene);
+
+//	mlx_hook(scene->window, 2, 0, mouse_press, scene); change to mouse;
+
 	if (argc == 3 && !strcmp(argv[2], "--save"))
 		scene->is_save = 1;
+	else if (argc == 3 && strcmp(argv[2], "--save"))
+		killed_by_error(UNKNWN_ARG);
 	threads(scene);
 	mlx_loop(scene->mlx);
 	free_scene(scene);
@@ -61,6 +66,18 @@ void	check_scene(s_scene *scene)
 {
 	if (!scene->is_amb_l || !scene->is_cam || !scene->is_figur || !scene->is_light || !scene->is_size)
 		killed_by_error(NOT_ENOUGH);
+}
+
+int		mouse_press(int key, s_scene *scene)
+{
+	int	x;
+	int y;
+
+	printf("%f\n", scene->cams->coordinates.v_x);
+	mlx_mouse_get_pos(scene->window, &scene->mouse_x, &scene->mouse_y);
+	printf("%d, %d\n", scene->mouse_x, scene->mouse_y);
+	if (key == 1)
+	return (0);
 }
 
 int		press_key(int key, s_scene *scene)
@@ -115,6 +132,8 @@ s_scene		*ft_init_scene(void)
 	scene->window = NULL;
 	scene->mlx = NULL;
 	scene->img.addr = 0;
+	scene->mouse_x = 0;
+	scene->mouse_y = 0;
 	return (scene);
 }
 

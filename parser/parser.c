@@ -123,7 +123,7 @@ void 			parse_ambl(char *str, s_scene *scene)
 	str = skip_nums(str);
 	str = skip_spaces(str);
 	new->color = col_parse(str);
-	new->color = multip_color(new->color, new->intensity);
+	new->color = multip_color(&new->color, new->intensity);
 	scene->ab_light = new;
 	scene->is_amb_l++;
 }

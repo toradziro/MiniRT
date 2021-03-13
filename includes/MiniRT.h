@@ -100,17 +100,18 @@ float		square_intersec(s_ray *ray, s_square *sq, float min_t);
 
 int			shadow_intersec(s_vec_fig *figures, s_vector *intersec_point, s_vector *dir_to_light);
 
-s_color		multip_color(s_color color, float coeff);
-s_color		add_color(s_color color, s_color color_2);
+s_color		multip_color(s_color *color, float coeff);
+s_color		add_color(s_color *color, s_color *color_s);
 s_color		final_color(float coeff, s_color color, s_lights *light);
 s_color		normal_color(s_color color);
 s_color		anti_normal_color(s_color color);
 s_color		mult_color_by_color(s_color one, s_color two);
-s_color		shad_color(s_color figur, s_color ab_light);
+s_color		shad_color(s_color *figur, s_color *ab_light);
 
 s_phong		calc_phong(s_vector intersec_point, s_scene *scene, s_vector normal);
 
 int			press_key(int key, s_scene *scene);
+int			mouse_press(int key, s_scene *scene);
 
 void		print_scene(s_scene *scene);
 void		print_color(s_color c);

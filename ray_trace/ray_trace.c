@@ -55,11 +55,10 @@ s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector *normal, s_
 	tmp_light = scene->lights;
 	intersec_point = vector_by_scalar(&ray->dir, min);
 	intersec_point = add_vectors(&intersec_point, &ray->orig);
-	res_color = shad_color(*f_color, scene->ab_light->color);
+	res_color = shad_color(f_color, &scene->ab_light->color);
 	while (tmp_light)
 	{
 		dir_to_light = subs_vectors(&tmp_light->coordinates, &intersec_point);
-
 		if (!(shadow_intersec(scene->figures, &intersec_point, &dir_to_light)))
 		{
 			dir_to_light = vector_normalise(&dir_to_light);
@@ -67,11 +66,13 @@ s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector *normal, s_
 			if (coeff < 0)
 				coeff = 0;
 			coeff = coeff * scene->lights->intensity;
-			res_color = add_color(res_color, shad_color(*f_color, multip_color(tmp_light->color, coeff)));
+			s_color tmp_color = multip_color(&tmp_light->color, coeff);
+			tmp_color = shad_color(f_color, &tmp_color);
+			res_color = add_color(&res_color, &tmp_color);
 			if (PHONG)
 			{
 				phong = calc_phong(intersec_point, scene, *normal);
-				res_color = add_color(res_color, phong.specular);
+				res_color = add_color(&res_color, &phong.specular);
 			}
 		}
 		tmp_light = tmp_light->next;
@@ -91,17 +92,18 @@ s_phong		calc_phong(s_vector intersec_point, s_scene *scene, s_vector normal)
 	phong.halfway_dir = add_vectors(&phong.light_dir, &phong.view_dir);
 	phong.halfway_dir = vector_normalise(&phong.halfway_dir);
 	phong.spec = pow(MAX(vector_scalar_mult(&normal, &phong.halfway_dir), 0.0), SHININESS);
-	phong.specular = multip_color(multip_color(scene->lights->color, scene->lights->intensity), phong.spec);
+	phong.specular = multip_color(&scene->lights->color, scene->lights->intensity);
+	phong.specular = multip_color(&phong.specular, phong.spec);
 	return (phong);
 }
 
-s_color		shad_color(s_color figur, s_color ab_light)
+s_color		shad_color(s_color *figur, s_color *ab_light)
 {
 	s_color	res;
 
-	res.r = figur.r * ab_light.r * COLOR_COEFF;
-	res.g = figur.g * ab_light.g * COLOR_COEFF;
-	res.b = figur.b * ab_light.b * COLOR_COEFF;
+	res.r = figur->r * ab_light->r * COLOR_COEFF;
+	res.g = figur->g * ab_light->g * COLOR_COEFF;
+	res.b = figur->b * ab_light->b * COLOR_COEFF;
 	if (res.r > MAX_COLOR)
 		res.r = MAX_COLOR;
 	if (res.g > MAX_COLOR)
@@ -247,32 +249,32 @@ float			square_intersec(s_ray *ray, s_square *sq, float min_t)
 
 // }
 
-s_color	multip_color(s_color color, float coeff)
+s_color	multip_color(s_color *color, float coeff)
 {
 	s_color		res;
 
-	res.r = coeff * color.r;
+	res.r = coeff * color->r;
 	if (res.r >= 255)
 		res.r = 255;
-	res.g = coeff * color.g;
+	res.g = coeff * color->g;
 	if (res.g >= 255)
 		res.g = 255;
-	res.b = coeff * color.b;
+	res.b = coeff * color->b;
 	if (res.b >= 255)
 		res.b = 255;
 	return (res);
 }
 
-s_color	add_color(s_color color, s_color color_s)
+s_color	add_color(s_color *color, s_color *color_s)
 {
-	color.r = color.r + color_s.r;
-	if (color.r >= 255)
-		color.r = 255;
-	color.g = color.g + color_s.g;
-	if (color.g >= 255)
-		color.g = 255;
-	color.b = color.b + color_s.b;
-	if (color.b >= 255)
-		color.b = 255;
-	return (color);
+	color->r = color->r + color_s->r;
+	if (color->r >= 255)
+		color->r = 255;
+	color->g = color->g + color_s->g;
+	if (color->g >= 255)
+		color->g = 255;
+	color->b = color->b + color_s->b;
+	if (color->b >= 255)
+		color->b = 255;
+	return (*color);
 }
