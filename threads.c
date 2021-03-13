@@ -43,17 +43,17 @@ void			*ray_trace_thread(void* thread)
 	float		coefs[3];
 	int			x_pixel;
 	int			y_pixel;
-	int			x_end;
+	int			y_end;
 	int			res_color;
 
-	x_pixel = curr_thr->id * (max_pixel_x);
-	x_end = x_pixel + (max_pixel_x);
+	y_pixel = curr_thr->id * (scene->height / THREADS_MAX);
+	y_end = y_pixel + (scene->height / THREADS_MAX);
 	ray.orig = scene->cams->coordinates;
 
-	while (x_pixel < x_end)
+	while (y_pixel < y_end)
 	{
-		y_pixel = 0;
-		while (y_pixel < scene->height)
+		x_pixel = 0;
+		while (x_pixel < scene->height)
 		{
 			coefs[1] = -y_pixel + (scene->height * 0.5);
 			coefs[0] = x_pixel - (scene->width * 0.5);
@@ -64,9 +64,9 @@ void			*ray_trace_thread(void* thread)
 			color = intersec(scene, &ray);
 			res_color = (int)color.r << 16 | (int)color.g << 8 | (int)color.b;
 			my_mlx_pixel_put(&scene->img, x_pixel, y_pixel, res_color);
-			y_pixel++;
+			x_pixel++;
 		}
-		x_pixel++;
+		y_pixel++;
 	}
 	pthread_exit(NULL);
 }
