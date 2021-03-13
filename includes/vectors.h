@@ -17,22 +17,13 @@ typedef struct		t_cam_to_w {
 		float		matrix[4][4];
 }					s_cam_to_w;
 
-/**
- ** Subs (vec1 - vec2);
- ** add (vec1 + vec2);
- ** vec_scal_mult = (vector * vector) = dot product
- ** vector_cross = (vec * vec) = cross product
- ** vector_by_scalar = mult vector by const
- ** new_vector = create new vector
-**/
-
-float			vector_scalar_mult(s_vector a, s_vector b);
+float			vector_scalar_mult(s_vector *a, s_vector *b);
 float			vector_length(s_vector v);
-s_vector		vector_normalise(s_vector v);
+s_vector		vector_normalise(s_vector *v);
 s_vector		cross_prod(s_vector a, s_vector b);
-s_vector		add_vectors(s_vector a, s_vector b);
-s_vector		subs_vectors(s_vector a, s_vector b);
-s_vector		vector_by_scalar(s_vector a, float num);
+s_vector		add_vectors(s_vector *a, s_vector *b);
+s_vector		subs_vectors(s_vector *a, s_vector *b);
+s_vector		vector_by_scalar(s_vector *a, float num);
 s_vector		new_vector(float x, float y, float z);
 
 s_cam_to_w		matrix_place(s_vector coor, s_vector dir);

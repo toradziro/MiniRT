@@ -1,4 +1,4 @@
-#include "./includes/MiniRT.h"
+#include "includes/MiniRT.h"
 
 void	threads(s_scene *scene)
 {
@@ -24,6 +24,11 @@ void	threads(s_scene *scene)
 	{
 		pthread_join(thread[i], NULL);
 		++i;
+	}
+	if (scene->is_save)
+	{
+		save_to_bmp(scene);
+		exit_rt(scene);
 	}
 	mlx_put_image_to_window(scene->mlx, scene->window, scene->img.img, 0, 0);
 }
@@ -55,8 +60,8 @@ void			*ray_trace_thread(void* thread)
 			coefs[2] = scene->width / (2 * tan(scene->cams->field_of_v * 0.5 * M_PI * 0.00555555555));
 			ray.dir = new_vector(coefs[0], coefs[1], coefs[2]);
 			ray.dir = matrix_mult(ray.dir, scene->mtrx);
-			ray.dir = vector_normalise(ray.dir);
-			color = intersec(scene, ray);
+			ray.dir = vector_normalise(&ray.dir);
+			color = intersec(scene, &ray);
 			res_color = (int)color.r << 16 | (int)color.g << 8 | (int)color.b;
 			my_mlx_pixel_put(&scene->img, x_pixel, y_pixel, res_color);
 			y_pixel++;

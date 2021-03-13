@@ -1,3 +1,4 @@
+
 #include "../includes/MiniRT.h"
 
 s_figures		*new_figur_list(void *content, char spec)

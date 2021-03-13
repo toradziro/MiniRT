@@ -1,3 +1,4 @@
+
 #include "../includes/MiniRT.h"
 
 s_cameras		*new_camera_node(s_vector coordinates, s_vector dir, float fov)

@@ -104,11 +104,11 @@ void 			parse_size(char *str, s_scene *scene)
 	mlx_get_screen_size(scene->mlx, &x, &y);
 	str = skip_spaces(str);
 	tmp_x = (int)d_atoi(str);
-	scene->width = MAX(tmp_x, x);
+	scene->width = MIN(tmp_x, x);
 	str = skip_nums(str);
 	str = skip_spaces(str);
 	tmp_y = (int)d_atoi(str);
-	scene->height = MAX(tmp_y, y);
+	scene->height = MIN(tmp_y, y);
 	scene->is_size++;
 }
 
@@ -239,6 +239,7 @@ void			parse_square(char *str, s_scene *scene)
 	center = parse_coordinares(str);
 	str = skip_pattern(str);
 	normal = parse_coordinares(str);
+	normal = vector_normalise(&normal);
 	str = skip_pattern(str);
 	size = d_atoi(str);
 	str = skip_pattern(str);
@@ -310,16 +311,16 @@ void			parse_triangle(char *str, s_scene *scene)
 	str = skip_pattern(str);
 	color = col_parse(str);
 
-	tmp_ab = subs_vectors(tmp_b, tmp_a);
-	tmp_ac = subs_vectors(tmp_c, tmp_a);
-	tmp_bc = subs_vectors(tmp_c, tmp_b);
+	tmp_ab = subs_vectors(&tmp_b, &tmp_a);
+	tmp_ac = subs_vectors(&tmp_c, &tmp_a);
+	tmp_bc = subs_vectors(&tmp_c, &tmp_b);
 
 	new = new_triangle(tmp_a, tmp_b, tmp_c, color);
 	new->ab = tmp_ab;
 	new->ac = tmp_ac;
 	new->bc = tmp_bc;
 	normal = cross_prod(new->ab, new->ac);
-	normal = vector_normalise(normal);
+	normal = vector_normalise(&normal);
 	new->normal = normal;
 	tmp_fig = new_figur_list((void*)new, S_TR);
 	if (!(scene->figures))

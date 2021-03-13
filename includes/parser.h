@@ -18,22 +18,23 @@
 # include "array.h"
 
 typedef struct		t_scene {
-	s_cameras	*cams;
-	s_cameras	*first_cam;
-	s_vec_fig	*figures;
-	s_lights	*lights;
-	s_ab_light	*ab_light;
-	s_cam_to_w	mtrx;
-	s_data		img;
-	void		*mlx;
-	void		*window;
-	int 		is_cam;
-	int 		is_light;
-	int 		is_size;
-	int 		is_amb_l;
-	int 		is_figur;
-	int			width;
-	int			height;
+	s_cameras		*cams;
+	s_cameras		*first_cam;
+	s_vec_fig		*figures;
+	s_lights		*lights;
+	s_ab_light		*ab_light;
+	s_cam_to_w		mtrx;
+	s_data			img;
+	void			*mlx;
+	void			*window;
+	int 			is_save;
+	int 			is_cam;
+	int 			is_light;
+	int 			is_size;
+	int 			is_amb_l;
+	int 			is_figur;
+	int				width;
+	int				height;
 }					s_scene;
 
 void 			parser(char *str, s_scene *scene);

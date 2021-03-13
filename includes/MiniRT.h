@@ -23,6 +23,7 @@
 # include "mlx_image.h"
 # include "threads.h"
 # include "array.h"
+# include "intersect.h"
 
 # include <unistd.h>
 # include <math.h>
@@ -37,10 +38,15 @@
 # define THREADS_MAX 4
 #endif
 
+#ifndef PHONG
+# define PHONG 1
+#endif
+
 # define MAX(a,b)(((a)>(b))?(a):(b))
 # define ABS(a)((a)>(0))?(a):(-a)
+# define MIN(a,b)(((a)<(b))?(a):(b))
 
-# define MIN_I 0.004
+# define MIN_I 0.01
 
 # define MALLOC_ERROR -1
 # define INV_AM_OF_ARG -2
@@ -84,14 +90,15 @@ s_color		check_valid_color(s_color *c);
 s_scene		*ft_init_scene(void);
 void		free_scene(s_scene *scene);
 
-s_color		find_color(s_scene *scene, s_ray *ray, float min, s_vector normal, s_color *f_color);
-s_color		intersec(s_scene *scene, s_ray ray);
-float		sphere_intersect(s_ray ray, s_sphere *sp);
-float		plane_intersect(s_ray ray, s_plane *plane);
-float		triangle_intersec(s_ray *ray, s_triangle *triangle);
-float		square_intersec(s_ray ray, s_square *sq, float min_t);
+s_color		find_color(s_scene *scene, s_ray *ray, float min, s_vector *normal, s_color *f_color);
+s_color		intersec(s_scene *scene, s_ray *ray);
 
-int			shadow_intersec(s_vec_fig *figures, s_lights *lights, s_vector *intersec_point, s_vector *dir_to_light);
+float		sphere_intersect(s_ray *ray, s_sphere *sp);
+float		plane_intersect(s_ray *ray, s_plane *plane);
+float		triangle_intersec(s_ray *ray, s_triangle *triangle);
+float		square_intersec(s_ray *ray, s_square *sq, float min_t);
+
+int			shadow_intersec(s_vec_fig *figures, s_vector *intersec_point, s_vector *dir_to_light);
 
 s_color		multip_color(s_color color, float coeff);
 s_color		add_color(s_color color, s_color color_2);
@@ -103,14 +110,20 @@ s_color		shad_color(s_color figur, s_color ab_light);
 
 s_phong		calc_phong(s_vector intersec_point, s_scene *scene, s_vector normal);
 
-int		press_key(int key, s_scene *scene);
+int			press_key(int key, s_scene *scene);
 
-void	print_scene(s_scene *scene);
-void	print_color(s_color c);
-void	print_vector(s_vector v);
-void	check_scene(s_scene *scene);
+void		print_scene(s_scene *scene);
+void		print_color(s_color c);
+void		print_vector(s_vector v);
+void		check_scene(s_scene *scene);
 
 void		free_cams(s_cameras *cam);
 void		free_light(s_lights *light);
 
+void 		save_to_bmp(s_scene *scene);
+
+int			exit_rt(s_scene *scene);
+
+
+void 		save_to_bmp(s_scene *scene);
 #endif

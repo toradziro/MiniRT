@@ -1,5 +1,7 @@
 NAME =		MiniRT
 
+#NAME_B =		MiniRT_b
+
 HEAD =		./includes/
 
 SRC =		gnl/get_next_line.c \
@@ -21,14 +23,18 @@ SRC =		gnl/get_next_line.c \
 			vectors_funcs/place_camera.c \
 			threads.c \
 			lists_funcs/array_funcs.c \
+			intersec/interset.c \
+			save_to_bmp.c \
 			main.c
-			#ray_trace/print_scene.c \
 
 OBJS =		${SRC:.c=.o}
+OBJ_B =		${SRC:.c=.o}
 
 CFLAGS	= -fsanitize=address -g -Wall -Wextra -msse3 -O3 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
 
-MLX_MAC_FLAGS =	-fsanitize=address -g -Lmlx -lmlx -framework OpenGL -framework AppKit
+#C_B_F	= -fsanitize=address -g -Wall -Wextra -msse3 -O3 -I $(HEAD) -I ./mlx/ -D PHONG=1 -D THREADS_MAX=$(NUM_THREADS)
+
+MLX_MAC_FLAGS = -g -msse3 -O3 -Lmlx -lmlx -framework OpenGL -framework AppKit
 
 MLX_LNX_FLAGS =	-Lmlx_Linux -msse3 -O3 -msse3 -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -lpthread
 
@@ -38,7 +44,6 @@ CC =		gcc -g
 
 UNAME :=	$(shell uname)
 
-#for debug -fsanitize=address -g $(shell sysctl -n hw.ncpu)
 ifeq ($(UNAME),Darwin)
 	NUM_THREADS = $(shell sysctl -n hw.ncpu)
 	FLAGS = $(MLX_MAC_FLAGS)
@@ -50,7 +55,11 @@ ifeq ($(UNAME),Linux)
 endif
 
 $(NAME):	$(OBJS)
-			$(CC) $(CFLAGS) $(OBJS) $(FLAGS) -o $(NAME)
+			cd mlx && $(MAKE) && mv libmlx.dylib ../libmlx.dylib
+			$(CC) $(CFLAGS) $(OBJS) $(FLAGS) libmlx.dylib -o $(NAME)
+
+#$(NAME_B):	$(OBJ_B)
+#			$(CC) $(C_B_F) $(OBJ_B) $(FLAGS) libmlx.dylib -o $(NAME_B)
 
 all:		$(NAME)
 
@@ -60,6 +69,8 @@ clean:
 fclean:		clean
 			${RM} ${NAME}
 
+#bonus:		$(NAME_B)
+
 re:			fclean all
 
-.SILENT:
+#.SILENT:

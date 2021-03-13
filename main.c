@@ -41,10 +41,19 @@ int			main(int argc, char **argv)
 	check_scene(scene);
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
 	mlx_hook(scene->window, 2, 0, press_key, scene);
-	//mlx_hook(scene->window, 17, 0, killed_by_error, 0);
+	mlx_hook(scene->window, 17, 0, exit_rt, scene);
+	if (argc == 3 && !strcmp(argv[2], "--save"))
+		scene->is_save = 1;
 	threads(scene);
 	mlx_loop(scene->mlx);
 	free_scene(scene);
+	return (0);
+}
+
+int 	exit_rt(s_scene *scene)
+{
+	free_scene(scene);
+	exit(0);
 	return (0);
 }
 
@@ -102,6 +111,7 @@ s_scene		*ft_init_scene(void)
 	scene->is_figur = 0;
 	scene->is_light = 0;
 	scene->is_size = 0;
+	scene->is_save = 0;
 	scene->window = NULL;
 	scene->mlx = NULL;
 	scene->img.addr = 0;
