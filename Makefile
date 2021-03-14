@@ -1,7 +1,5 @@
 NAME =		MiniRT
 
-#NAME_B =		MiniRT_b
-
 HEAD =		./includes/
 
 SRC =		gnl/get_next_line.c \
@@ -28,15 +26,12 @@ SRC =		gnl/get_next_line.c \
 			main.c
 
 OBJS =		${SRC:.c=.o}
-OBJ_B =		${SRC:.c=.o}
 
 CFLAGS	= -fsanitize=address -g -Wall -Wextra -msse3 -O3 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
 
-#C_B_F	= -fsanitize=address -g -Wall -Wextra -msse3 -O3 -I $(HEAD) -I ./mlx/ -D PHONG=1 -D THREADS_MAX=$(NUM_THREADS)
-
 MLX_MAC_FLAGS = -g -msse3 -O3 -Lmlx -lmlx -framework OpenGL -framework AppKit
 
-MLX_LNX_FLAGS =	-Lmlx_Linux -msse3 -O3 -msse3 -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -lpthread
+MLX_LNX_FLAGS =	-ggdb3 -g -Lmlx_Linux -msse3 -O3 -msse3 -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -lpthread
 
 RM =		rm -rf
 
@@ -55,11 +50,8 @@ ifeq ($(UNAME),Linux)
 endif
 
 $(NAME):	$(OBJS)
-			cd mlx && $(MAKE) && mv libmlx.dylib ../libmlx.dylib
-			$(CC) $(CFLAGS) $(OBJS) $(FLAGS) libmlx.dylib -o $(NAME)
-
-#$(NAME_B):	$(OBJ_B)
-#			$(CC) $(C_B_F) $(OBJ_B) $(FLAGS) libmlx.dylib -o $(NAME_B)
+#			cd mlx && $(MAKE) && mv libmlx.dylib ../libmlx.dylib
+			$(CC) $(CFLAGS) $(OBJS) $(FLAGS) libmlx_Linux.a -o $(NAME)
 
 all:		$(NAME)
 
@@ -69,8 +61,8 @@ clean:
 fclean:		clean
 			${RM} ${NAME}
 
-#bonus:		$(NAME_B)
+bonus:
 
 re:			fclean all
 
-#.SILENT:
+.SILENT:

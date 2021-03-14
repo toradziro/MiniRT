@@ -21,8 +21,7 @@ int			main(int argc, char **argv)
 
 	if (argc != 2 && argc != 3)
 		killed_by_error(INV_AM_OF_ARG);
-	if (argc == 2)
-		check_valid_name(argv[1]);
+	check_valid_name(argv[1]);
 	scene = ft_init_scene();
 	if (!(scene->mlx = mlx_init()))
 		killed_by_error(MALLOC_ERROR);
@@ -40,18 +39,25 @@ int			main(int argc, char **argv)
 	}
 	check_scene(scene);
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
-	mlx_hook(scene->window, 2, 0, press_key, scene);
-	mlx_hook(scene->window, 17, 0, exit_rt, scene);
-
-//	mlx_hook(scene->window, 2, 0, mouse_press, scene); change to mouse;
-
 	if (argc == 3 && !strcmp(argv[2], "--save"))
 		scene->is_save = 1;
 	else if (argc == 3 && strcmp(argv[2], "--save"))
 		killed_by_error(UNKNWN_ARG);
 	threads(scene);
+	loop_keys(scene);
+	mlx_loop_hook(scene->mlx, loop_keys, scene);
 	mlx_loop(scene->mlx);
 	free_scene(scene);
+	return (0);
+}
+
+int 	loop_keys(s_scene *scene)
+{
+	//mlx_hook(scene->window, 2, 0, press_key, scene);
+	mlx_key_hook(scene->window, press_key, scene);
+	mlx_hook(scene->window, 17, 0, exit_rt, scene);
+	//mlx_hook(scene->window, 4, 0, mouse_press, scene);
+	mlx_mouse_hook(scene->window, mouse_press, scene);
 	return (0);
 }
 
@@ -68,15 +74,32 @@ void	check_scene(s_scene *scene)
 		killed_by_error(NOT_ENOUGH);
 }
 
-int		mouse_press(int key, s_scene *scene)
+int			mouse_press(int b, int x, int y, s_scene *scene)
 {
-	int	x;
-	int y;
+	s_ray		ray;
+	float		coefs[3];
+	int 		i;
+	s_sphere	*sp;
 
-	printf("%f\n", scene->cams->coordinates.v_x);
-	mlx_mouse_get_pos(scene->window, &scene->mouse_x, &scene->mouse_y);
-	printf("%d, %d\n", scene->mouse_x, scene->mouse_y);
-	if (key == 1)
+	mlx_destroy_image(scene->mlx, scene->img.img);
+	sp = NULL;
+	i = -1;
+	coefs[1] = -y + (scene->height * 0.5);
+	coefs[0] = x - (scene->width * 0.5);
+	coefs[2] = scene->width / (2 * tan(scene->cams->field_of_v * 0.5 * M_PI * 0.00555555555));
+	ray.orig = scene->cams->coordinates;
+	ray.dir = new_vector(coefs[0], coefs[1], coefs[2]);
+	ray.dir = matrix_mult(ray.dir, scene->mtrx);
+	ray.dir = vector_normalise(&ray.dir);
+	while (++i < scene->figures->length)
+		if (scene->figures->node[i].specif == S_SP)
+			if (sphere_intersect(&ray, scene->figures->node[i].content) > 0)
+				sp = (s_sphere*) scene->figures->node[i].content;
+	if (b == 1 && sp)
+		++sp->radius;
+	if (b == 3 && sp)
+		--sp->radius;
+	threads(scene);
 	return (0);
 }
 
@@ -107,6 +130,8 @@ int		press_key(int key, s_scene *scene)
 		free_scene(scene);
 		exit(0);
 	}
+	else if (key == 65474)
+		save_to_bmp(scene);
 	threads(scene);
 	return (0);
 }
@@ -139,12 +164,13 @@ s_scene		*ft_init_scene(void)
 
 void		free_scene(s_scene *scene)
 {
+	free(scene->ab_light);
 	free_cams(scene->cams);
-	free_light (scene->lights);
-	free_fig_test (scene->figures);
-	free (scene->mlx);
-	free (scene->window);
-	free (scene);
+	free_light(scene->lights);
+	free_fig_test(scene->figures);
+	free(scene->mlx);
+	free(scene->window);
+	free(scene);
 }
 
 void			free_fig_test(s_vec_fig *v)

@@ -28,5 +28,7 @@ s_vector		new_vector(float x, float y, float z);
 
 s_cam_to_w		matrix_place(s_vector coor, s_vector dir);
 s_vector		matrix_mult(s_vector vec, s_cam_to_w m);
+float			vec_matrix_mult_first_row(s_vector vec, s_cam_to_w c);
+float			vec_matrix_mult_second_row(s_vector vec, s_cam_to_w c);
 
 #endif

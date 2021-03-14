@@ -37,3 +37,19 @@ s_vector		matrix_mult(s_vector vec, s_cam_to_w m)
 			vec.v_z * m.matrix[2][2] + m.matrix[3][2];
 	return (v);
 }
+
+float		vec_matrix_mult_first_row(s_vector vec, s_cam_to_w c)
+{
+	s_vector 	tmp;
+
+	tmp = new_vector(c.matrix[0][0], c.matrix[0][1], c.matrix[0][2]);
+	return (vector_scalar_mult(&vec, &tmp));
+}
+
+float		vec_matrix_mult_second_row(s_vector vec, s_cam_to_w c)
+{
+	s_vector 	tmp;
+
+	tmp = new_vector(c.matrix[1][0], c.matrix[1][1], c.matrix[1][2]);
+	return (vector_scalar_mult(&vec, &tmp));
+}

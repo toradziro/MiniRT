@@ -13,8 +13,7 @@ void	threads(s_scene *scene)
 	while (i < THREADS_MAX)
 	{
 		thread_id[i].id = i;
-		thread_id[i].scene = (s_scene*)malloc(sizeof(s_scene));
-		memcpy(thread_id[i].scene, scene, sizeof(s_scene));
+		thread_id[i].scene = scene;
 		if (pthread_create(&thread[i], NULL, ray_trace_thread, &thread_id[i]))
 			killed_by_error(MALLOC_ERROR);
 		++i;
@@ -28,6 +27,7 @@ void	threads(s_scene *scene)
 	if (scene->is_save)
 	{
 		save_to_bmp(scene);
+		mlx_destroy_image(scene->mlx, scene->img.img);
 		exit_rt(scene);
 	}
 	mlx_put_image_to_window(scene->mlx, scene->window, scene->img.img, 0, 0);
@@ -37,7 +37,6 @@ void			*ray_trace_thread(void* thread)
 {
 	s_thread 	*curr_thr = (s_thread*)thread;
 	s_scene		*scene = curr_thr->scene;
-	int max_pixel_x = scene->width / THREADS_MAX;
 	s_ray		ray;
 	s_color		color;
 	float		coefs[3];
@@ -49,10 +48,10 @@ void			*ray_trace_thread(void* thread)
 	y_pixel = curr_thr->id * (scene->height / THREADS_MAX);
 	y_end = y_pixel + (scene->height / THREADS_MAX);
 	ray.orig = scene->cams->coordinates;
-
 	while (y_pixel < y_end)
 	{
 		x_pixel = 0;
+		y_pixel++;
 		while (x_pixel < scene->width)
 		{
 			coefs[1] = -y_pixel + (scene->height * 0.5);
@@ -66,7 +65,6 @@ void			*ray_trace_thread(void* thread)
 			my_mlx_pixel_put(&scene->img, x_pixel, y_pixel, res_color);
 			x_pixel++;
 		}
-		y_pixel++;
 	}
 	pthread_exit(NULL);
 }

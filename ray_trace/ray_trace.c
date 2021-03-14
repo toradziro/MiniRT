@@ -213,35 +213,34 @@ float			triangle_intersec(s_ray *ray, s_triangle *triangle)
 
 float			square_intersec(s_ray *ray, s_square *sq, float min_t)
 {
-	float		denom;
-	float		t;
-	s_vector	hit_point;
-	s_vector	p0l0;
-	s_vector	ray_t;
-	float		half;
+	/*
+Для того, чтобы посччитать квадрат, нужно
+1. Пересечение с плоскостью
+2. Найти вектор AP (A - центр квадрата, P - точка пересечения луча и плоскости)
+3. Создать матрицу перехода в базис нормали квадрата (как делал с камерой)
+4. Проверить скалярное умножение вектора AP с первой строкой матрицы и со второй
+5. Если они оба меньше чем сторона квадрата / 2, то значит тока внутри квадрата
+	 */
+	s_cam_to_w	b;
+	s_vector	intersec_point;
+	s_vector	a_p;
+	float		res;
+	float		tmp_1;
+	float		tmp_2;
 
-	min_t = 0;
-	half = sq->side * 0.5;
-	denom = vector_scalar_mult(&sq->normal, &ray->dir);
-	if (ABS(denom) > MIN_I)
+	res = 0;
+	if ((res = plane_intersect(ray, (s_plane*)sq)) > 0)
 	{
-		p0l0 = subs_vectors(&sq->center, &ray->orig);
-		t = vector_scalar_mult(&p0l0, &sq->normal) / denom;
-		ray_t = vector_by_scalar(&ray->dir, t);
-		hit_point = add_vectors(&ray->orig, &ray_t);
-		if (ABS(t) >= 0)
-		{
-			if (ABS(hit_point.v_x - sq->center.v_x) > half)
-				return (0);
-			if (ABS(hit_point.v_y - sq->center.v_y) > half)
-				return (0);
-			if (ABS(hit_point.v_z - sq->center.v_z) > half)
-				return (0);
-			else
-				return (t);
-		}
+		intersec_point = vector_by_scalar(&ray->dir, res);
+		intersec_point = add_vectors(&intersec_point, &ray->orig);
+		a_p = subs_vectors(&intersec_point, &sq->center);
+		b = matrix_place(sq->center, sq->normal);
+		tmp_1 = vec_matrix_mult_first_row(a_p, b);
+		tmp_2 = vec_matrix_mult_second_row(a_p, b);
+		if ((ABS(tmp_1) > sq->side * 0.5) || (ABS(tmp_2) > sq->side * 0.5))
+			return (0);
 	}
-	return (0);
+	return (res);
 }
 
 // float			cy_intersect(s_ray *ray, s_sphere *sp)

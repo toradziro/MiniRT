@@ -33,6 +33,6 @@ void 		check_valid_name(char *str)
 	if (str[i] != '.')
 		killed_by_error(INV_FILE_NAME);
 	++i;
-	if (str[i] != 'r' && str[i + 1] != 't')
+	if (str[i] != 'r' || str[i + 1] != 't')
 		killed_by_error(INV_FILE_NAME);
 }
