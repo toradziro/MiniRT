@@ -31,7 +31,7 @@ CFLAGS	= -fsanitize=address -g -Wall -Wextra -msse3 -O3 -I $(HEAD) -I ./mlx/ -D 
 
 MLX_MAC_FLAGS = -g -msse3 -O3 -Lmlx -lmlx -framework OpenGL -framework AppKit
 
-MLX_LNX_FLAGS =	-ggdb3 -g -Lmlx_Linux -msse3 -O3 -msse3 -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -lpthread
+MLX_LNX_FLAGS =	-Lmlx_Linux -msse3 -O3 -msse3 -lmlx_Linux -L/usr/lib -Imlx_Linux -lXext -lX11 -lm -lz -lpthread
 
 RM =		rm -rf
 
@@ -50,8 +50,8 @@ ifeq ($(UNAME),Linux)
 endif
 
 $(NAME):	$(OBJS)
-#			cd mlx && $(MAKE) && mv libmlx.dylib ../libmlx.dylib
-			$(CC) $(CFLAGS) $(OBJS) $(FLAGS) libmlx_Linux.a -o $(NAME)
+			cd mlx && $(MAKE) && mv libmlx.dylib ../libmlx.dylib
+			$(CC) $(CFLAGS) $(OBJS) $(FLAGS) libmlx.dylib -o $(NAME)
 
 all:		$(NAME)
 

@@ -59,12 +59,12 @@
 # define MAX_COLOR 255
 # define SHININESS 120.0
 
-# define KEY_TAB 65289 //48
-# define KEY_ESC 65307//53
-# define KEY_W 119//13
-# define KEY_S 115//1
-# define KEY_A 97//0
-# define KEY_D 100//2
+# define KEY_TAB 48
+# define KEY_ESC 53
+# define KEY_W 13
+# define KEY_S 1
+# define KEY_A 0
+# define KEY_D 2
 # define KEY_Q 12
 # define KEY_E 14
 
@@ -112,7 +112,6 @@ s_phong		calc_phong(s_vector intersec_point, s_scene *scene, s_vector normal);
 
 int			press_key(int key, s_scene *scene);
 int			mouse_press(int b, int x, int y, s_scene *scene);
-int		 	loop_keys(s_scene *scene);
 
 void		print_scene(s_scene *scene);
 void		print_color(s_color c);

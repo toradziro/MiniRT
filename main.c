@@ -39,25 +39,18 @@ int			main(int argc, char **argv)
 	}
 	check_scene(scene);
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
+
+	mlx_hook(scene->window, 2, 0, press_key, scene);
+	mlx_hook(scene->window, 17, 0, exit_rt, scene);
+	mlx_hook(scene->window, 4, 0, mouse_press, scene);
+
 	if (argc == 3 && !strcmp(argv[2], "--save"))
 		scene->is_save = 1;
 	else if (argc == 3 && strcmp(argv[2], "--save"))
 		killed_by_error(UNKNWN_ARG);
 	threads(scene);
-	loop_keys(scene);
-	mlx_loop_hook(scene->mlx, loop_keys, scene);
 	mlx_loop(scene->mlx);
 	free_scene(scene);
-	return (0);
-}
-
-int 	loop_keys(s_scene *scene)
-{
-	//mlx_hook(scene->window, 2, 0, press_key, scene);
-	mlx_key_hook(scene->window, press_key, scene);
-	mlx_hook(scene->window, 17, 0, exit_rt, scene);
-	//mlx_hook(scene->window, 4, 0, mouse_press, scene);
-	mlx_mouse_hook(scene->window, mouse_press, scene);
 	return (0);
 }
 
@@ -97,7 +90,7 @@ int			mouse_press(int b, int x, int y, s_scene *scene)
 				sp = (s_sphere*) scene->figures->node[i].content;
 	if (b == 1 && sp)
 		++sp->radius;
-	if (b == 3 && sp)
+	if (b == 2 && sp)
 		--sp->radius;
 	threads(scene);
 	return (0);
@@ -130,8 +123,6 @@ int		press_key(int key, s_scene *scene)
 		free_scene(scene);
 		exit(0);
 	}
-	else if (key == 65474)
-		save_to_bmp(scene);
 	threads(scene);
 	return (0);
 }
@@ -164,7 +155,6 @@ s_scene		*ft_init_scene(void)
 
 void		free_scene(s_scene *scene)
 {
-	free(scene->ab_light);
 	free_cams(scene->cams);
 	free_light(scene->lights);
 	free_fig_test(scene->figures);
@@ -194,8 +184,8 @@ void			free_fig_test(s_vec_fig *v)
 			free((s_cylinder*)v->node[i].content);
 		++i;
 	}
-	free (v->node);
-	free (v);
+	free(v->node);
+	free(v);
 }
 
 void		free_cams(s_cameras *cam)

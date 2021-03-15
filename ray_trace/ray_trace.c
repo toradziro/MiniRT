@@ -213,14 +213,6 @@ float			triangle_intersec(s_ray *ray, s_triangle *triangle)
 
 float			square_intersec(s_ray *ray, s_square *sq, float min_t)
 {
-	/*
-Для того, чтобы посччитать квадрат, нужно
-1. Пересечение с плоскостью
-2. Найти вектор AP (A - центр квадрата, P - точка пересечения луча и плоскости)
-3. Создать матрицу перехода в базис нормали квадрата (как делал с камерой)
-4. Проверить скалярное умножение вектора AP с первой строкой матрицы и со второй
-5. Если они оба меньше чем сторона квадрата / 2, то значит тока внутри квадрата
-	 */
 	s_cam_to_w	b;
 	s_vector	intersec_point;
 	s_vector	a_p;
@@ -228,6 +220,7 @@ float			square_intersec(s_ray *ray, s_square *sq, float min_t)
 	float		tmp_1;
 	float		tmp_2;
 
+	min_t = 0;
 	res = 0;
 	if ((res = plane_intersect(ray, (s_plane*)sq)) > 0)
 	{

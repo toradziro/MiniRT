@@ -128,11 +128,11 @@ void 			parse_ambl(char *str, s_scene *scene)
 	scene->is_amb_l++;
 }
 
-void		parse_cam(char *str, s_scene *scene)
+void 	parse_cam(char *str, s_scene *scene)
 {
 	s_cameras	*new;
 	s_vector	dir;
-	s_vector	coor;
+	s_vector		coor;
 	float 		fov;
 
 	str = skip_spaces(str);
