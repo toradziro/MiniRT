@@ -28,33 +28,53 @@ s_color			intersec(s_scene *scene, s_ray *ray)
 	{
 		if (tmp[i].specif == S_SP)
 			sphere_start(scene, tmp[i].content, &min, ray, &c_tmp);
-		else if (tmp[i].specif == S_PL)
+		if (tmp[i + 1].specif == S_SP)
+			sphere_start(scene, tmp[i + 1].content, &min, ray, &c_tmp);
+		if (tmp[i].specif == S_PL)
 			plane_start(scene, tmp[i].content, &min, ray, &c_tmp);
-		else if (tmp[i].specif == S_TR)
+		if (tmp[i + 1].specif == S_PL)
+			plane_start(scene, tmp[i + 1].content, &min, ray, &c_tmp);
+		if (tmp[i].specif == S_TR)
 			triangle_start(scene, tmp[i].content, &min, ray, &c_tmp);
-		else if (tmp[i].specif == S_SQ)
+		if (tmp[i + 1].specif == S_TR)
+			triangle_start(scene, tmp[i + 1].content, &min, ray, &c_tmp);
+		if (tmp[i].specif == S_SQ)
 			sq_start(scene, tmp[i].content, &min, ray, &c_tmp);
-		// else if (tmp[i].specif == S_CL)
-		// {
+		if (tmp[i + 1].specif == S_SQ)
+			sq_start(scene, tmp[i + 1].content, &min, ray, &c_tmp);
+		if (tmp[i].specif == S_CL)
+		{
 		// 	//?????
-		// }
-		++i;
+		}
+		i += 2;
 	}
 	return (c_tmp);
 }
 
-s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector *normal, s_color *f_color)
+s_color			find_color(s_scene *scene, s_ray *ray, float min,
+					 s_vector *normal, s_color *f_color)
 {
 	s_vector	intersec_point;
-	float		coeff;
-	s_color		res_color;
-	s_phong		phong;
+	s_color		res_color = {0, 0, 0};
 	s_vector	dir_to_light;
 	s_lights	*tmp_light;
 
+	dir_to_light = new_vector(0, 0, 0);
 	tmp_light = scene->lights;
 	intersec_point = vector_by_scalar(&ray->dir, min);
 	intersec_point = add_vectors(&intersec_point, &ray->orig);
+	return (find_color_sec(scene, normal, f_color, dir_to_light, intersec_point,
+						tmp_light, res_color));
+}
+
+s_color		find_color_sec(s_scene *scene,
+							  s_vector *normal, s_color *f_color, s_vector dir_to_light,
+							  s_vector intersec_point, s_lights *tmp_light,
+							  s_color res_color)
+{
+	float	coeff;
+	s_phong	phong;
+
 	res_color = shad_color(f_color, &scene->ab_light->color);
 	while (tmp_light)
 	{
@@ -69,11 +89,8 @@ s_color			find_color(s_scene *scene, s_ray *ray, float min, s_vector *normal, s_
 			s_color tmp_color = multip_color(&tmp_light->color, coeff);
 			tmp_color = shad_color(f_color, &tmp_color);
 			res_color = add_color(&res_color, &tmp_color);
-			if (PHONG)
-			{
-				phong = calc_phong(intersec_point, scene, *normal);
-				res_color = add_color(&res_color, &phong.specular);
-			}
+			phong = calc_phong(intersec_point, scene, *normal);
+			res_color = add_color(&res_color, &phong.specular);
 		}
 		tmp_light = tmp_light->next;
 	}
@@ -113,7 +130,8 @@ s_color		shad_color(s_color *figur, s_color *ab_light)
 	return (res);
 }
 
-int			shadow_intersec(s_vec_fig *figures, s_vector *intersec_point, s_vector *dir_to_light)
+int			shadow_intersec(s_vec_fig *figures, s_vector *intersec_point,
+					  s_vector *dir_to_light)
 {
 	int				len = figures->length;
 	s_figures		*node;
@@ -236,10 +254,24 @@ float			square_intersec(s_ray *ray, s_square *sq, float min_t)
 	return (res);
 }
 
-// float			cy_intersect(s_ray *ray, s_sphere *sp)
-// {
-
-// }
+float			cy_intersect(s_ray *ray, s_cylinder *cy)
+{
+	/*
+	 Бесконечный цилиндр:
+Переменные a, b, c, det, co,
+axis - направляющая цилиндра r_d - ray->dir
+(__) - скалярное умножение,
+[__] - простые скобки перед множителем,
+^ - возвести резульат в кварадрат
+——————————————————————————
+	co =  вектор из ray orig в центр цилиндра
+	a = (ray->dir, axis) ^ 2 - 1
+	b = 2 *[ (co, axis) * ( r_d, axis) - (r_d, co)
+	c = (co, axis) ^ 2 - (co, axis) - (coco) ^ 2
+	det = b * b - 4 * a * c
+	x_one, x_two как в сфере, возаращаете минимальный положительный
+	 */
+}
 
 s_color	multip_color(s_color *color, float coeff)
 {

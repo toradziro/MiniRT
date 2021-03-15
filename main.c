@@ -39,16 +39,16 @@ int			main(int argc, char **argv)
 	}
 	check_scene(scene);
 	scene->window = mlx_new_window(scene->mlx, scene->width, scene->height, "MiniRT");
-
-	mlx_hook(scene->window, 2, 0, press_key, scene);
-	mlx_hook(scene->window, 17, 0, exit_rt, scene);
-	mlx_hook(scene->window, 4, 0, mouse_press, scene);
-
 	if (argc == 3 && !strcmp(argv[2], "--save"))
 		scene->is_save = 1;
 	else if (argc == 3 && strcmp(argv[2], "--save"))
 		killed_by_error(UNKNWN_ARG);
+
+	mlx_hook(scene->window, 2, 0, press_key, scene);
+	mlx_hook(scene->window, 17, 0, exit_rt, scene);
+	mlx_hook(scene->window, 4, 0, mouse_press, scene);
 	threads(scene);
+
 	mlx_loop(scene->mlx);
 	free_scene(scene);
 	return (0);

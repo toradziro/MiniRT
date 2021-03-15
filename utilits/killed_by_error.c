@@ -8,7 +8,8 @@ void	killed_by_error(int num)
 	if (num == MALLOC_ERROR)
 		error_num = write(2, "Error: malloc error.\n", 20);
 	else if (num == INV_AM_OF_ARG)
-		error_num = write(2, "Error: invalid amount of the arguments.\n", 40);
+		error_num = write(2, "Error: invalid amount of the arguments"
+					   ".\n", 40);
 	else if (num == INV_FILE_NAME)
 		error_num = write(2, "Error: invalid file name.\n", 26);
 	else if (num == INV_COLOR)
@@ -16,7 +17,8 @@ void	killed_by_error(int num)
 	else if (num == UNKNWN_ARG)
 		error_num = write(2, "Error: unknown argument.\n", 25);
 	else if (num == NOT_ENOUGH)
-		error_num = write(2, "Error: NOT ENOUGH ARGUMENTS, JUST FIX FILE, DON'T TOUCH MY PARSER!\n", 67);
+		error_num = write(2, "Error: NOT ENOUGH ARGUMENTS, JUST FIX "
+					   "FILE, DON'T TOUCH MY PARSER!\n", 67);
 	error_num += 1;
 	exit(num);
 }

@@ -28,8 +28,11 @@ typedef struct	t_ab_light {
 
 s_figures		*new_figur_list(void *content, char spec);
 s_cameras		*new_camera_node(s_vector coordinates, s_vector dir, float fov);
-void 			push_back_cam(s_cameras *list, s_vector coordinates, s_vector dir, float fov);
-s_lights		*new_light_node(s_vector coordinates, float intensity, s_color color);
-void 			push_back_light(s_lights *list, s_vector coordinates, float intensity, s_color color);
+void 			push_back_cam(s_cameras *list, s_vector coordinates,
+					  s_vector dir, float fov);
+s_lights		*new_light_node(s_vector coordinates,
+						  float intensity, s_color color);
+void 			push_back_light(s_lights *list, s_vector coordinates,
+						float intensity, s_color color);
 
 #endif

@@ -38,10 +38,6 @@
 # define THREADS_MAX 4
 #endif
 
-#ifndef PHONG
-# define PHONG 1
-#endif
-
 # define MAX(a,b)(((a)>(b))?(a):(b))
 # define ABS(a)((a)>(0))?(a):(-a)
 # define MIN(a,b)(((a)<(b))?(a):(b))
@@ -107,6 +103,11 @@ s_color		normal_color(s_color color);
 s_color		anti_normal_color(s_color color);
 s_color		mult_color_by_color(s_color one, s_color two);
 s_color		shad_color(s_color *figur, s_color *ab_light);
+
+s_color		find_color_sec(s_scene *scene,
+							  s_vector *normal, s_color *f_color, s_vector dir_to_light,
+							  s_vector intersec_point, s_lights *tmp_light,
+							  s_color res_color);
 
 s_phong		calc_phong(s_vector intersec_point, s_scene *scene, s_vector normal);
 

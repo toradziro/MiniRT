@@ -4,7 +4,6 @@ void 		save_to_bmp(s_scene *scene)
 {
 	int 					fd;
 	char					filler_head[54];
-	int 					fill_row;
 	int 					row;
 	int 					file_size = 54 + 4 * scene->width * scene->height;
 
