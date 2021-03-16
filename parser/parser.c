@@ -259,25 +259,24 @@ void			parse_square(char *str, s_scene *scene)
 void			parse_cylinder(char *str, s_scene *scene)
 {
 	s_cylinder	*new;
-	s_color		color = {0, 0, 0};
-	s_vector	tmp = {0, 0, 0};
-	s_vector	tmp_n = {0, 0, 0};
+	s_color		color;
+	s_vector	tmp;
+	s_vector	tmp_n;
 	s_figures	*tmp_fig;
+	float		diameter;
+	float		height;
 
-	new = new_cylinder(tmp, tmp_n, 0, 0, color);
 	str = skip_spaces(str);
 	tmp = parse_coordinares(str);
-	new->coordinates = tmp;
 	str = skip_pattern(str);
 	tmp_n = parse_coordinares(str);
-	new->normal = tmp_n;
 	str = skip_pattern(str);
-	new->diameter = d_atoi(str);
+	diameter = d_atoi(str);
 	str = skip_pattern(str);
-	new->height = d_atoi(str);
+	height = d_atoi(str);
 	str = skip_pattern(str);
 	color = col_parse(str);
-	new->color = color;
+	new = new_cylinder(tmp, tmp_n, diameter, height, color);
 	tmp_fig = new_figur_list((void*)new, S_CL);
 	if (!(scene->figures))
 	{

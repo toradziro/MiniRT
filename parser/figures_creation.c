@@ -44,10 +44,11 @@ s_cylinder		*new_cylinder(s_vector coordinates, s_vector normal, float diameter,
 	if (!(new = (s_cylinder*)malloc(sizeof(s_cylinder))))
 		killed_by_error(MALLOC_ERROR);
 	new->coordinates = coordinates;
-	new->normal = normal;
+	new->axis = normal;
 	new->diameter = diameter;
 	new->height = height;
 	new->color = color;
+	new->normal = new_vector(0, 0, 0);
 	return (new);
 }
 

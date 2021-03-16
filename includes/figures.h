@@ -27,6 +27,7 @@ typedef struct		t_cylinder {
 		s_vector	normal;
 		float		diameter;
 		float		height;
+		s_vector	axis;
 		s_color		color;
 }					s_cylinder;
 

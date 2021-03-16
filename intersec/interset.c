@@ -67,3 +67,22 @@ void 		sq_start(s_scene *scene, s_square *sq, float *min, s_ray *ray, s_color *c
 		*(c_tmp) = find_color(scene, ray, *(min), &square_tmp->normal, &square_tmp->color);
 	}
 }
+
+void 		cy_start(s_scene *scene, s_cylinder *cy, float *min, s_ray *ray, s_color *c_tmp)
+{
+	float		intersec;
+	s_cylinder	*cy_tmp;
+	s_vector	normal;
+
+	cy_tmp = cy;
+	intersec = cy_intersect(ray, cy_tmp);
+	if (intersec < *(min) && intersec > MIN_I)
+	{
+		normal = find_cy_normal(intersec, cy, ray);
+		normal = vector_normalise(&normal);
+		if (vector_scalar_mult(&ray->dir, &normal) > 0)
+			normal = vector_by_scalar(&normal, -1);
+		*(min) = intersec;
+		*(c_tmp) = find_color(scene, ray, intersec, &normal, &cy_tmp->color);
+	}
+}

@@ -107,17 +107,23 @@ int		press_key(int key, s_scene *scene)
 			scene->cams = scene->first_cam;
 	}
 	else if (key == KEY_W)
-		scene->cams->coordinates.v_z += 5;
+		scene->cams->coordinates.v_z += 4;
 	else if (key == KEY_S)
-		scene->cams->coordinates.v_z -= 5;
+		scene->cams->coordinates.v_z -= 4;
 	else if (key == KEY_A)
-		scene->cams->coordinates.v_x += 5;
+		scene->cams->coordinates.v_x += 4;
 	else if (key == KEY_D)
-		scene->cams->coordinates.v_x -= 5;
+		scene->cams->coordinates.v_x -= 4;
 	else if (key == KEY_Q)
-		scene->cams->coordinates.v_y += 5;
+	{
+		scene->cams->direction.v_x += 0.2;
+		scene->cams->direction = vector_normalise(&scene->cams->direction);
+	}
 	else if (key == KEY_E)
-		scene->cams->coordinates.v_y -= 5;
+	{
+		scene->cams->direction.v_x -= 0.2;
+		scene->cams->direction = vector_normalise(&scene->cams->direction);
+	}
 	else if (key == KEY_ESC)
 	{
 		free_scene(scene);

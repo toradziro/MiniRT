@@ -42,7 +42,7 @@
 # define ABS(a)((a)>(0))?(a):(-a)
 # define MIN(a,b)(((a)<(b))?(a):(b))
 
-# define MIN_I 0.01
+# define MIN_I 0.004
 
 # define MALLOC_ERROR -1
 # define INV_AM_OF_ARG -2
@@ -53,7 +53,7 @@
 
 # define COLOR_COEFF 0.003921568627
 # define MAX_COLOR 255
-# define SHININESS 120.0
+# define SHININESS 100.0
 
 # define KEY_TAB 48
 # define KEY_ESC 53
@@ -88,11 +88,6 @@ void		free_scene(s_scene *scene);
 
 s_color		find_color(s_scene *scene, s_ray *ray, float min, s_vector *normal, s_color *f_color);
 s_color		intersec(s_scene *scene, s_ray *ray);
-
-float		sphere_intersect(s_ray *ray, s_sphere *sp);
-float		plane_intersect(s_ray *ray, s_plane *plane);
-float		triangle_intersec(s_ray *ray, s_triangle *triangle);
-float		square_intersec(s_ray *ray, s_square *sq, float min_t);
 
 int			shadow_intersec(s_vec_fig *figures, s_vector *intersec_point, s_vector *dir_to_light);
 

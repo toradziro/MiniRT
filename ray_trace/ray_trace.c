@@ -43,9 +43,9 @@ s_color			intersec(s_scene *scene, s_ray *ray)
 		if (tmp[i + 1].specif == S_SQ)
 			sq_start(scene, tmp[i + 1].content, &min, ray, &c_tmp);
 		if (tmp[i].specif == S_CL)
-		{
-		// 	//?????
-		}
+			cy_start(scene, tmp[i].content, &min, ray, &c_tmp);
+		if (tmp[i + 1].specif == S_CL)
+			cy_start(scene, tmp[i + 1].content, &min, ray, &c_tmp);
 		i += 2;
 	}
 	return (c_tmp);
@@ -133,6 +133,7 @@ s_color		shad_color(s_color *figur, s_color *ab_light)
 int			shadow_intersec(s_vec_fig *figures, s_vector *intersec_point,
 					  s_vector *dir_to_light)
 {
+	//добавить аккум
 	int				len = figures->length;
 	s_figures		*node;
 	s_ray			ray;
@@ -163,6 +164,18 @@ int			shadow_intersec(s_vec_fig *figures, s_vector *intersec_point,
 		else if (node[i].specif == S_SQ)
 		{
 			res = square_intersec(&ray, (s_square*)node[i].content, x_one);
+			if (res < x_one && res > MIN_I)
+				return (1);
+		}
+		else if (node[i].specif == S_PL)
+		{
+			res = plane_intersect(&ray, node[i].content);
+			if (res < x_one && res > MIN_I)
+				return (1);
+		}
+		else if (node[i].specif == S_CL)
+		{
+			res = cy_intersect(&ray, node[i].content);
 			if (res < x_one && res > MIN_I)
 				return (1);
 		}
@@ -256,21 +269,72 @@ float			square_intersec(s_ray *ray, s_square *sq, float min_t)
 
 float			cy_intersect(s_ray *ray, s_cylinder *cy)
 {
-	/*
-	 Бесконечный цилиндр:
-Переменные a, b, c, det, co,
-axis - направляющая цилиндра r_d - ray->dir
-(__) - скалярное умножение,
-[__] - простые скобки перед множителем,
-^ - возвести резульат в кварадрат
-——————————————————————————
-	co =  вектор из ray orig в центр цилиндра
-	a = (ray->dir, axis) ^ 2 - 1
-	b = 2 *[ (co, axis) * ( r_d, axis) - (r_d, co)
-	c = (co, axis) ^ 2 - (co, axis) - (coco) ^ 2
-	det = b * b - 4 * a * c
-	x_one, x_two как в сфере, возаращаете минимальный положительный
-	 */
+	s_vector	co;
+//	s_vector	p_one;
+//	s_vector	p_two;
+	s_vector	ap_one;
+	s_vector	ap_two;
+	float		d_one;
+	float		d_two;
+	float		a;
+	float		b;
+	float		c;
+	float		det;
+	float		x_one;
+	float		x_two;
+
+	co = subs_vectors(&ray->orig, &cy->coordinates);
+	a = -(pow(vector_scalar_mult(&ray->dir, &cy->axis), 2) - 1);
+	b = -(2 * (vector_scalar_mult(&co, &cy->axis) * vector_scalar_mult(&ray->dir, &cy->axis) - vector_scalar_mult(&ray->dir, &co)));
+	c = +(vector_scalar_mult(&co, &co) - pow(vector_scalar_mult(&cy->axis, &co), 2) - pow(cy->diameter * 0.5, 2));
+	det = b * b - 4 * a * c;
+	if (det < 0)
+		return (0);
+	x_one = (-b - sqrt(det)) / (2 * a);
+	x_two = (-b + sqrt(det)) / (2 * a);
+
+//	p_one = vector_by_scalar(&ray->dir, x_one);
+//	p_one = add_vectors(&p_one, &ray->orig);
+//	p_two = vector_by_scalar(&ray->dir, x_two);
+//	p_two = add_vectors(&p_two, &ray->orig);
+//
+//	ap_one = subs_vectors(&p_one, &cy->coordinates);
+//	ap_two = subs_vectors(&p_two, &cy->coordinates);
+//
+//	d_one = vector_scalar_mult(&ap_one, &cy->axis);
+//	d_two = vector_scalar_mult(&ap_two, &cy->axis);
+
+	ap_one = vector_by_scalar(&cy->axis, x_one);
+	ap_two = vector_by_scalar(&cy->axis, x_two);
+
+	d_one = vector_scalar_mult(&ray->dir, &ap_one) + vector_scalar_mult(&co, &cy->axis);
+	d_two = vector_scalar_mult(&ray->dir, &ap_two) + vector_scalar_mult(&co, &cy->axis);
+
+	if (ABS(d_one) >= cy->height * 0.5)
+		x_one = -1;
+	if (ABS(d_two) >= cy->height * 0.5)
+		x_two = -1;
+
+	if (x_one > 0 && x_two > 0)
+		return (MIN(x_one, x_two));
+	else if (x_one > 0 || x_two > 0)
+		return (MAX(x_one, x_two));
+	return (0);
+}
+
+s_vector		find_cy_normal(float intersec, s_cylinder *cy, s_ray *ray)
+{
+	s_vector	intersec_point;
+	s_vector	cp;
+	s_vector	t;
+	s_vector	normal;
+
+	intersec_point = vector_by_scalar(&ray->dir, intersec);
+	intersec_point = add_vectors(&ray->orig, &intersec_point);
+	cp = subs_vectors(&intersec_point, &cy->coordinates);
+	t = cross_prod(cp, cy->axis);
+	normal = cross_prod(t, cy->axis);
+	return(normal);
 }
 
 s_color	multip_color(s_color *color, float coeff)
