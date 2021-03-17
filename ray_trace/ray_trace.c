@@ -141,7 +141,6 @@ int			shadow_intersec(s_vec_fig *figures, s_vector *intersec_point,
 	float			x_one;
 	int				i;
 
-	i = 0;
 	node = figures->node;
 	ray.orig = *(intersec_point);
 	ray.dir = vector_normalise(dir_to_light);
@@ -190,9 +189,9 @@ float			sphere_intersect(s_ray *ray, s_sphere *sp)
 	float		c;
 	float		discr;
 	float		x_one;
+	float		x_two;
 	s_vector	res;
 
-	x_one = 0;
 	res = subs_vectors(&ray->orig, &sp->coordinates);
 	b = 2 * vector_scalar_mult(&res, &ray->dir);
 	c = vector_scalar_mult(&res, &res) - (sp->radius * sp->radius);
@@ -200,10 +199,10 @@ float			sphere_intersect(s_ray *ray, s_sphere *sp)
 	if (discr < 0)
 		return (0);
 	x_one = (-b - sqrt(discr)) * 0.5;
-	float x_two = (-b + sqrt(discr)) * 0.5;
-	if (x_one > 0 && x_two > 0)
+	x_two = (-b + sqrt(discr)) * 0.5;
+	if (x_one > MIN_I && x_two > MIN_I)
 		return (MIN(x_one, x_two));
-	if (x_one > 0 || x_two > 0)
+	if (x_one > MIN_I || x_two > MIN_I)
 		return (MAX(x_one, x_two));
 	return (0);
 }
@@ -270,8 +269,6 @@ float			square_intersec(s_ray *ray, s_square *sq, float min_t)
 float			cy_intersect(s_ray *ray, s_cylinder *cy)
 {
 	s_vector	co;
-//	s_vector	p_one;
-//	s_vector	p_two;
 	s_vector	ap_one;
 	s_vector	ap_two;
 	float		d_one;
@@ -293,31 +290,20 @@ float			cy_intersect(s_ray *ray, s_cylinder *cy)
 	x_one = (-b - sqrt(det)) / (2 * a);
 	x_two = (-b + sqrt(det)) / (2 * a);
 
-//	p_one = vector_by_scalar(&ray->dir, x_one);
-//	p_one = add_vectors(&p_one, &ray->orig);
-//	p_two = vector_by_scalar(&ray->dir, x_two);
-//	p_two = add_vectors(&p_two, &ray->orig);
-//
-//	ap_one = subs_vectors(&p_one, &cy->coordinates);
-//	ap_two = subs_vectors(&p_two, &cy->coordinates);
-//
-//	d_one = vector_scalar_mult(&ap_one, &cy->axis);
-//	d_two = vector_scalar_mult(&ap_two, &cy->axis);
-
 	ap_one = vector_by_scalar(&cy->axis, x_one);
 	ap_two = vector_by_scalar(&cy->axis, x_two);
 
 	d_one = vector_scalar_mult(&ray->dir, &ap_one) + vector_scalar_mult(&co, &cy->axis);
 	d_two = vector_scalar_mult(&ray->dir, &ap_two) + vector_scalar_mult(&co, &cy->axis);
 
-	if (ABS(d_one) >= cy->height * 0.5)
+	if (ABS(d_one) >= cy->height / 2)
 		x_one = -1;
-	if (ABS(d_two) >= cy->height * 0.5)
+	if (ABS(d_two) >= cy->height / 2)
 		x_two = -1;
 
-	if (x_one > 0 && x_two > 0)
+	if (x_one > MIN_I && x_two > MIN_I)
 		return (MIN(x_one, x_two));
-	else if (x_one > 0 || x_two > 0)
+	if (x_one > MIN_I || x_two > MIN_I)
 		return (MAX(x_one, x_two));
 	return (0);
 }

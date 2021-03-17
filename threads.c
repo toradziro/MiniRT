@@ -56,7 +56,6 @@ void			*ray_trace_thread(void* thread)
 		x_pixel = 0;
 		while (x_pixel < scene->width)
 		{
-			//printf("coors %d, %d ", x_pixel, y_pixel);
 			coefs[1] = -y_pixel + (scene->height * 0.5);
 			coefs[0] = x_pixel - (scene->width * 0.5);
 			coefs[2] = scene->width / (2 * tan(scene->cams->field_of_v * 0.5 * M_PI * 0.00555555555));

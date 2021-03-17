@@ -116,12 +116,12 @@ int		press_key(int key, s_scene *scene)
 		scene->cams->coordinates.v_x -= 4;
 	else if (key == KEY_Q)
 	{
-		scene->cams->direction.v_x += 0.2;
+		scene->cams->direction.v_x += 0.05;
 		scene->cams->direction = vector_normalise(&scene->cams->direction);
 	}
 	else if (key == KEY_E)
 	{
-		scene->cams->direction.v_x -= 0.2;
+		scene->cams->direction.v_x -= 0.05;
 		scene->cams->direction = vector_normalise(&scene->cams->direction);
 	}
 	else if (key == KEY_ESC)

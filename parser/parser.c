@@ -155,7 +155,7 @@ void 	parse_cam(char *str, s_scene *scene)
 void	 		parse_light(char *str, s_scene *scene)
 {
 	s_lights	*new;
-	s_vector		coor;
+	s_vector	coor;
 	float		intens;
 	s_color		color;
 
