@@ -84,10 +84,10 @@ int			mouse_press(int b, int x, int y, s_scene *scene)
 	ray.dir = new_vector(coefs[0], coefs[1], coefs[2]);
 	ray.dir = matrix_mult(ray.dir, scene->mtrx);
 	ray.dir = vector_normalise(&ray.dir);
-	while (++i < scene->figures->length)
-		if (scene->figures->node[i].specif == S_SP)
-			if (sphere_intersect(&ray, scene->figures->node[i].content) > 0)
-				sp = (s_sphere*) scene->figures->node[i].content;
+	while (++i < scene->figures.length)
+		if (scene->figures.node[i].specif == S_SP)
+			if (sphere_intersect(&ray, scene->figures.node[i].content) > 0)
+				sp = (s_sphere*)scene->figures.node[i].content;
 	if (b == 1 && sp)
 		++sp->radius;
 	if (b == 2 && sp)
@@ -142,7 +142,7 @@ s_scene		*ft_init_scene(void)
 	scene->height = 0;
 	scene->width = 0;
 	scene->cams = 0;
-	scene->figures = 0;
+	scene->figures.node = 0;
 	scene->lights = 0;
 	scene->ab_light = 0;
 	scene->is_amb_l = 0;
@@ -169,29 +169,28 @@ void		free_scene(s_scene *scene)
 	free(scene);
 }
 
-void			free_fig_test(s_vec_fig *v)
+void			free_fig_test(s_vec_fig v)
 {
 	int			i;
 	int			len;
 
 	i = 0;
-	len = v->length;
+	len = v.length;
 	while (i < len)
 	{
-		if (v->node[i].specif == S_SP)
-			free((s_sphere*)v->node[i].content);
-		else if (v->node[i].specif == S_PL)
-			free((s_plane*)v->node[i].content);
-		else if (v->node[i].specif == S_SQ)
-			free((s_square*)v->node[i].content);
-		else if (v->node[i].specif == S_TR)
-			free((s_triangle*)v->node[i].content);
-		else if (v->node[i].specif == S_CL)
-			free((s_cylinder*)v->node[i].content);
+		if (v.node[i].specif == S_SP)
+			free((s_sphere*)v.node[i].content);
+		else if (v.node[i].specif == S_PL)
+			free((s_plane*)v.node[i].content);
+		else if (v.node[i].specif == S_SQ)
+			free((s_square*)v.node[i].content);
+		else if (v.node[i].specif == S_TR)
+			free((s_triangle*)v.node[i].content);
+		else if (v.node[i].specif == S_CL)
+			free((s_cylinder*)v.node[i].content);
 		++i;
 	}
-	free(v->node);
-	free(v);
+	free(v.node);
 }
 
 void		free_cams(s_cameras *cam)

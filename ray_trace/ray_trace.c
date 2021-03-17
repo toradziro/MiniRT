@@ -21,8 +21,8 @@ s_color			intersec(s_scene *scene, s_ray *ray)
 	int				finish;
 
 	i = 0;
-	tmp = scene->figures->node;
-	finish = scene->figures->length;
+	tmp = scene->figures.node;
+	finish = scene->figures.length;
 	min = MAX_INTERSEC;
 	while (i < finish)
 	{
@@ -79,7 +79,7 @@ s_color		find_color_sec(s_scene *scene,
 	while (tmp_light)
 	{
 		dir_to_light = subs_vectors(&tmp_light->coordinates, &intersec_point);
-		if (!(shadow_intersec(scene->figures, &intersec_point, &dir_to_light)))
+		if (!(shadow_intersec(&scene->figures, &intersec_point, &dir_to_light)))
 		{
 			dir_to_light = vector_normalise(&dir_to_light);
 			coeff = vector_scalar_mult(normal, &dir_to_light);

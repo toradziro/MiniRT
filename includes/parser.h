@@ -20,7 +20,7 @@
 typedef struct		t_scene {
 	s_cameras		*cams;
 	s_cameras		*first_cam;
-	s_vec_fig		*figures;
+	s_vec_fig		figures;
 	s_lights		*lights;
 	s_ab_light		*ab_light;
 	s_cam_to_w		mtrx;
