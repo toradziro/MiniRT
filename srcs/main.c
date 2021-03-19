@@ -83,7 +83,7 @@ int			mouse_press(int b, int x, int y, s_scene *scene)
 	ray.orig = scene->cams->coordinates;
 	ray.dir = new_vector(coefs[0], coefs[1], coefs[2]);
 	ray.dir = matrix_mult(ray.dir, scene->mtrx);
-	ray.dir = vector_normalise(&ray.dir);
+	ray.dir = vector_normalise(ray.dir);
 	while (++i < scene->figures.length)
 		if (scene->figures.node[i].specif == S_SP)
 			if (sphere_intersect(ray, scene->figures.node[i].content) > 0)
@@ -117,12 +117,12 @@ int		press_key(int key, s_scene *scene)
 	else if (key == KEY_Q)
 	{
 		scene->cams->direction.v_x += 0.05;
-		scene->cams->direction = vector_normalise(&scene->cams->direction);
+		scene->cams->direction = vector_normalise(scene->cams->direction);
 	}
 	else if (key == KEY_E)
 	{
 		scene->cams->direction.v_x -= 0.05;
-		scene->cams->direction = vector_normalise(&scene->cams->direction);
+		scene->cams->direction = vector_normalise(scene->cams->direction);
 	}
 	else if (key == KEY_ESC)
 	{

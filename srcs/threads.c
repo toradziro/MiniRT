@@ -61,7 +61,7 @@ void			*ray_trace_thread(void* thread)
 			coefs[2] = scene->width / (2 * tan(scene->cams->field_of_v * 0.5 * M_PI * 0.00555555555));
 			ray.dir = new_vector(coefs[0], coefs[1], coefs[2]);
 			ray.dir = matrix_mult(ray.dir, scene->mtrx);
-			ray.dir = vector_normalise(&ray.dir);
+			ray.dir = vector_normalise(ray.dir);
 			color = intersec(scene, ray);
 			res_color = (int)color.r << 16 | (int)color.g << 8 | (int)color.b;
 			my_mlx_pixel_put(&scene->img, x_pixel, y_pixel, res_color);

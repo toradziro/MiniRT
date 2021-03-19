@@ -63,7 +63,7 @@ s_color			find_color(s_scene *scene, s_ray ray, float min,
 
 	dir_to_light = new_vector(0, 0, 0);
 	tmp_light = scene->lights;
-	intersec_point = vector_by_scalar(&ray.dir, min);
+	intersec_point = vector_by_scalar(ray.dir, min);
 	intersec_point = add_vectors(intersec_point, ray.orig);
 
 	res_color = shad_color(f_color, &scene->ab_light->color);
@@ -72,7 +72,7 @@ s_color			find_color(s_scene *scene, s_ray ray, float min,
 		dir_to_light = subs_vectors(tmp_light->coordinates, intersec_point);
 		if (!(shadow_intersec(&scene->figures, &intersec_point, &dir_to_light)))
 		{
-			dir_to_light = vector_normalise(&dir_to_light);
+			dir_to_light = vector_normalise(dir_to_light);
 			coeff = vector_scalar_mult(*(normal), dir_to_light);
 			if (coeff < 0)
 				coeff = 0;
@@ -94,11 +94,11 @@ s_phong		calc_phong(s_vector intersec_point, s_scene *scene, s_vector normal)
 
 	phong.intersec_point = intersec_point;
 	phong.light_dir = subs_vectors(scene->lights->coordinates, intersec_point);
-	phong.light_dir = vector_normalise(&phong.light_dir);
+	phong.light_dir = vector_normalise(phong.light_dir);
 	phong.view_dir = subs_vectors(scene->cams->coordinates, intersec_point);
-	phong.view_dir = vector_normalise(&phong.view_dir);
+	phong.view_dir = vector_normalise(phong.view_dir);
 	phong.halfway_dir = add_vectors(phong.light_dir, phong.view_dir);
-	phong.halfway_dir = vector_normalise(&phong.halfway_dir);
+	phong.halfway_dir = vector_normalise(phong.halfway_dir);
 	phong.spec = pow(MAX(vector_scalar_mult(normal, phong.halfway_dir), 0.0), SHININESS);
 	phong.specular = multip_color(&scene->lights->color, scene->lights->intensity);
 	phong.specular = multip_color(&phong.specular, phong.spec);
@@ -133,7 +133,7 @@ int			shadow_intersec(s_vec_fig *figures, s_vector *intersec_point,
 
 	node = figures->node;
 	ray.orig = *(intersec_point);
-	ray.dir = vector_normalise(dir_to_light);
+	ray.dir = vector_normalise(*dir_to_light);
 	i = 0;
 	x_one = vector_length(*dir_to_light);
 	while (i < len)
@@ -202,8 +202,10 @@ float			sphere_intersect(s_ray ray, s_sphere *sp)
 
 float			plane_intersect(s_ray ray, s_plane *plane)
 {
-	float denom = vector_scalar_mult(plane->normal, ray.dir);
+	float denom;
 	s_vector tmp;
+
+	denom = vector_scalar_mult(plane->normal, ray.dir);
 	if (ABS(denom) > MIN_I)
 	{
 		tmp = subs_vectors(plane->coordinates, ray.orig);
@@ -256,7 +258,7 @@ float			square_intersec(s_ray ray, s_square *sq, float min_t)
 	res = 0;
 	if ((res = plane_intersect(ray, (s_plane*)sq)) > 0)
 	{
-		intersec_point = vector_by_scalar(&ray.dir, res);
+		intersec_point = vector_by_scalar(ray.dir, res);
 		intersec_point = add_vectors(intersec_point, ray.orig);
 		a_p = subs_vectors(intersec_point, sq->center);
 		b = matrix_place(sq->center, sq->normal);
@@ -282,46 +284,55 @@ float			cy_intersect(s_ray ray, s_cylinder *cy)
 	float		x_one;
 	float		x_two;
 
-	co = subs_vectors(ray.orig, cy->coordinates);
-	a = -(pow(vector_scalar_mult(ray.dir, cy->axis), 2) - 1);
-	b = -(2 * (vector_scalar_mult(co, cy->axis) * vector_scalar_mult(ray.dir, cy->axis) - vector_scalar_mult(ray.dir, co)));
-	c = +(vector_scalar_mult(co, co) - pow(vector_scalar_mult(cy->axis, co), 2) - pow(cy->diameter * 0.5, 2));
-	det = b * b - 4 * a * c;
-	if (det < 0)
-		return (0);
-	x_one = (-b - sqrt(det)) / (2 * a);
-	x_two = (-b + sqrt(det)) / (2 * a);
+	if (cy)
+	{
+		co = subs_vectors(ray.orig, cy->coordinates);
+		a = -(pow(vector_scalar_mult(ray.dir, cy->axis), 2) - 1);
+		b = -(2 * (vector_scalar_mult(co, cy->axis) *
+				   vector_scalar_mult(ray.dir, cy->axis) -
+				   vector_scalar_mult(ray.dir, co)));
+		c = +(vector_scalar_mult(co, co) -
+			  pow(vector_scalar_mult(cy->axis, co), 2) -
+			  pow(cy->diameter * 0.5, 2));
+		det = b * b - 4 * a * c;
+		if (det < 0)
+			return (0);
+		x_one = (-b - sqrt(det)) / (2 * a);
+		x_two = (-b + sqrt(det)) / (2 * a);
 
-	ap_one = vector_by_scalar(&cy->axis, x_one);
-	ap_two = vector_by_scalar(&cy->axis, x_two);
+		ap_one = vector_by_scalar(cy->axis, x_one);
+		ap_two = vector_by_scalar(cy->axis, x_two);
 
-	d_one = vector_scalar_mult(ray.dir, ap_one) + vector_scalar_mult(co, cy->axis);
-	d_two = vector_scalar_mult(ray.dir, ap_two) + vector_scalar_mult(co, cy->axis);
+		d_one = vector_scalar_mult(ray.dir, ap_one) +
+				vector_scalar_mult(co, cy->axis);
+		d_two = vector_scalar_mult(ray.dir, ap_two) +
+				vector_scalar_mult(co, cy->axis);
 
-	if (ABS(d_one) >= cy->height / 2)
-		x_one = -1;
-	if (ABS(d_two) >= cy->height / 2)
-		x_two = -1;
+		if (ABS(d_one) >= cy->height / 2)
+			x_one = -1;
+		if (ABS(d_two) >= cy->height / 2)
+			x_two = -1;
 
-	if (x_one > MIN_I && x_two > MIN_I)
-		return (MIN(x_one, x_two));
-	if (x_one > MIN_I || x_two > MIN_I)
-		return (MAX(x_one, x_two));
+		if (x_one > MIN_I && x_two > MIN_I)
+			return (MIN(x_one, x_two));
+		if (x_one > MIN_I || x_two > MIN_I)
+			return (MAX(x_one, x_two));
+	}
 	return (0);
 }
 
-s_vector		find_cy_normal(float intersec, s_cylinder *cy, s_ray ray)
+s_vector		find_cy_normal(float intersec, s_cylinder cy, s_ray ray)
 {
 	s_vector	intersec_point;
 	s_vector	cp;
 	s_vector	t;
 	s_vector	normal;
 
-	intersec_point = vector_by_scalar(&ray.dir, intersec);
+	intersec_point = vector_by_scalar(ray.dir, intersec);
 	intersec_point = add_vectors(ray.orig, intersec_point);
-	cp = subs_vectors(intersec_point, cy->coordinates);
-	t = cross_prod(cp, cy->axis);
-	normal = cross_prod(t, cy->axis);
+	cp = subs_vectors(intersec_point, cy.coordinates);
+	t = cross_prod(cp, cy.axis);
+	normal = cross_prod(t, cy.axis);
 	return(normal);
 }
 

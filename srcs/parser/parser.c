@@ -141,7 +141,7 @@ void 	parse_cam(char *str, s_scene *scene)
 	dir = parse_coordinares(str);
 	str = skip_pattern(str);
 	fov = d_atoi(str);
-	new = new_camera_node(coor, vector_normalise(&dir), fov);
+	new = new_camera_node(coor, vector_normalise(dir), fov);
 	if (!scene->cams)
 	{
 		scene->cams = new;
@@ -214,7 +214,7 @@ void	 		parse_plane(char *str, s_scene *scene)
 	normal = parse_coordinares(str);
 	str = skip_pattern(str);
 	color = col_parse(str);
-	new = new_plane(coor, vector_normalise(&normal), color);
+	new = new_plane(coor, vector_normalise(normal), color);
 	tmp = new_figur_list((void*)new, S_PL);
 	if (!(scene->figures.node))
 	{
@@ -239,12 +239,12 @@ void			parse_square(char *str, s_scene *scene)
 	center = parse_coordinares(str);
 	str = skip_pattern(str);
 	normal = parse_coordinares(str);
-	normal = vector_normalise(&normal);
+	normal = vector_normalise(normal);
 	str = skip_pattern(str);
 	size = d_atoi(str);
 	str = skip_pattern(str);
 	color = col_parse(str);
-	new = new_square(center, vector_normalise(&normal), size, color);
+	new = new_square(center, vector_normalise(normal), size, color);
 	tmp = new_figur_list((void*)new, S_SQ);
 	if (!(scene->figures.node))
 	{
@@ -317,7 +317,7 @@ void			parse_triangle(char *str, s_scene *scene)
 	new->ab = tmp_ab;
 	new->ac = tmp_ac;
 	normal = cross_prod(new->ab, new->ac);
-	new->normal = vector_normalise(&normal);
+	new->normal = vector_normalise(normal);
 	tmp_fig = new_figur_list((void*)new, S_TR);
 	if (!(scene->figures.node))
 	{
