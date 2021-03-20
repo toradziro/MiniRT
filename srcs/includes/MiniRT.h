@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 18:16:10 by ehillman         ###   ########.fr       */
+/*   Created: 2021/03/20 19:22:04 by ehillman          #+#    #+#             */
+/*   Updated: 2021/03/20 19:51:33 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ void		free_cams(t_cameras *cam);
 void		free_light(t_lights *light);
 
 void		save_to_bmp(t_scene *scene);
+void		init_head(char *head, t_scene *scene, int file_size);
 
 int			exit_rt(t_scene *scene);
 

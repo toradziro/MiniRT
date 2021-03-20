@@ -6,11 +6,11 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 18:46:49 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 19:47:32 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/MiniRT.h"
+#include "../includes/minirt.h"
 
 void	parser(char *str, t_scene *scene)
 {

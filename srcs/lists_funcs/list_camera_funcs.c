@@ -1,5 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   list_camera_funcs.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/20 19:27:23 by ehillman          #+#    #+#             */
+/*   Updated: 2021/03/20 19:47:16 by ehillman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "../includes/MiniRT.h"
+#include "../includes/minirt.h"
 
 t_cameras		*new_camera_node(t_vector coordinates, t_vector dir, float fov)
 {

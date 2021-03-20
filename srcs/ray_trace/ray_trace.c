@@ -6,11 +6,11 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:36:02 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 18:38:54 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 19:47:41 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/MiniRT.h"
+#include "../includes/minirt.h"
 
 t_color			intersec(t_scene *scene, t_ray ray)
 {
@@ -129,13 +129,14 @@ t_color		shad_color(t_color *figur, t_color *ab_light)
 int			shadow_intersec(t_vec_fig *figures, t_vector *intersec_point,
 							t_vector *dir_to_light)
 {
-	int				len = figures->length;
+	int				len;
 	t_figures		*node;
 	t_ray			ray;
 	float			res;
 	float			x_one;
 	int				i;
 
+	len = figures->length;
 	node = figures->node;
 	ray.orig = *(intersec_point);
 	ray.dir = vector_normalise(*dir_to_light);
@@ -207,16 +208,17 @@ float			sphere_intersect(t_ray ray, t_sphere *sp)
 
 float			plane_intersect(t_ray ray, t_plane *plane)
 {
-	float denom;
-	t_vector tmp;
+	float		denom;
+	t_vector	tmp;
+	float		t;
 
 	denom = vector_scalar_mult(plane->normal, ray.dir);
 	if (ABS(denom) > MIN_I)
 	{
 		tmp = subs_vectors(plane->coordinates, ray.orig);
-		float t = vector_scalar_mult(tmp, plane->normal) / denom;
+		t = vector_scalar_mult(tmp, plane->normal) / denom;
 		if (t > 0)
-			return t;
+			return (t);
 	}
 	return (0);
 }

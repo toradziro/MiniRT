@@ -1,6 +1,19 @@
-#include "../includes/MiniRT.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   interset.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/20 19:24:35 by ehillman          #+#    #+#             */
+/*   Updated: 2021/03/20 19:24:44 by ehillman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void			sphere_start(t_scene *scene, t_sphere *sp, float *min, t_ray ray, t_color *c_tmp)
+#include "../includes/minirt.h"
+
+void			sphere_start(t_scene *scene, t_sphere *sp,
+				float *min, t_ray ray, t_color *c_tmp)
 {
 	t_sphere	*sphere_tmp;
 	t_vector	intersec_point;
@@ -20,7 +33,8 @@ void			sphere_start(t_scene *scene, t_sphere *sp, float *min, t_ray ray, t_color
 	}
 }
 
-void 			plane_start(t_scene *scene, t_plane *pl, float *min, t_ray ray, t_color *c_tmp)
+void			plane_start(t_scene *scene, t_plane *pl,
+				float *min, t_ray ray, t_color *c_tmp)
 {
 	t_plane		*plane_tmp;
 	float		intersec;
@@ -32,11 +46,13 @@ void 			plane_start(t_scene *scene, t_plane *pl, float *min, t_ray ray, t_color 
 		if (vector_scalar_mult(ray.dir, plane_tmp->normal) > 0)
 			plane_tmp->normal = vector_by_scalar(plane_tmp->normal, -1);
 		*(min) = intersec;
-		*(c_tmp) = find_color(scene, ray, *(min), &plane_tmp->normal, &plane_tmp->color);
+		*(c_tmp) = find_color(scene, ray, *(min),
+					&plane_tmp->normal, &plane_tmp->color);
 	}
 }
 
-void 			triangle_start(t_scene *scene, t_triangle *tr, float *min, t_ray ray, t_color *c_tmp)
+void			triangle_start(t_scene *scene, t_triangle *tr,
+				float *min, t_ray ray, t_color *c_tmp)
 {
 	float		intersec;
 	t_triangle *triangle_tmp;
@@ -50,14 +66,16 @@ void 			triangle_start(t_scene *scene, t_triangle *tr, float *min, t_ray ray, t_
 		if (vector_scalar_mult(ray.dir, normal) > 0)
 			normal = vector_by_scalar(normal, -1);
 		*(min) = intersec;
-		*(c_tmp) = find_color(scene, ray, *(min), &normal, &triangle_tmp->color);
+		*(c_tmp) = find_color(scene, ray,
+					*(min), &normal, &triangle_tmp->color);
 	}
 }
 
-void 		sq_start(t_scene *scene, t_square *sq, float *min, t_ray ray, t_color *c_tmp)
+void			sq_start(t_scene *scene, t_square *sq,
+				float *min, t_ray ray, t_color *c_tmp)
 {
-	float	intersec;
-	t_square *square_tmp;
+	float		intersec;
+	t_square	*square_tmp;
 
 	square_tmp = sq;
 	intersec = square_intersec(ray, square_tmp, *(min));
@@ -71,8 +89,8 @@ void 		sq_start(t_scene *scene, t_square *sq, float *min, t_ray ray, t_color *c_
 	}
 }
 
-void 		cy_start(t_scene *scene, t_cylinder *cy,
-			float *min, t_ray ray, t_color *c_tmp)
+void			cy_start(t_scene *scene, t_cylinder *cy,
+				float *min, t_ray ray, t_color *c_tmp)
 {
 	float		intersec;
 	t_vector	normal;

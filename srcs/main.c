@@ -6,11 +6,11 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 18:45:03 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 19:48:02 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/MiniRT.h"
+#include "includes/minirt.h"
 
 int			main(int argc, char **argv)
 {
@@ -154,50 +154,3 @@ void		free_scene(t_scene *scene)
 	free(scene);
 }
 
-void			free_fig_test(t_vec_fig *v)
-{
-	int			i;
-	int			len;
-
-	i = 0;
-	len = v->length;
-	while (i < len)
-	{
-		if (v->node[i].specif == S_SP)
-			free((t_sphere*)v->node[i].content);
-		else if (v->node[i].specif == S_PL)
-			free((t_plane*)v->node[i].content);
-		else if (v->node[i].specif == S_SQ)
-			free((t_square*)v->node[i].content);
-		else if (v->node[i].specif == S_TR)
-			free((t_triangle*)v->node[i].content);
-		else if (v->node[i].specif == S_CL)
-			free((t_cylinder*)v->node[i].content);
-		++i;
-	}
-	free(v->node);
-}
-
-void		free_cams(t_cameras *cam)
-{
-	t_cameras	*tmp;
-
-	while (cam)
-	{
-		tmp = cam->next;
-		free(cam);
-		cam = tmp;
-	}
-}
-
-void		free_light(t_lights *light)
-{
-	t_lights	*tmp;
-
-	while (light)
-	{
-		tmp = light->next;
-		free(light);
-		light = tmp;
-	}
-}

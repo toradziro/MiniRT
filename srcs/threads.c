@@ -1,15 +1,28 @@
-#include "includes/MiniRT.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   threads.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/20 19:46:41 by ehillman          #+#    #+#             */
+/*   Updated: 2021/03/20 19:48:09 by ehillman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	threads(t_scene *scene)
+#include "includes/minirt.h"
+
+void			threads(t_scene *scene)
 {
-	int				i;
-	t_thread		thread_id[THREADS_MAX];
-	pthread_t		thread[THREADS_MAX];
+	int			i;
+	t_thread	thread_id[THREADS_MAX];
+	pthread_t	thread[THREADS_MAX];
 
 	i = 0;
 	scene->img.img = mlx_new_image(scene->mlx, scene->width, scene->height);
-	scene->img.addr = mlx_get_data_addr(scene->img.img, &scene->img.bits_per_pixel,
-					&scene->img.line_length, &scene->img.endian);
+	scene->img.addr = mlx_get_data_addr(scene->img.img,
+					&scene->img.bits_per_pixel, &scene->img.line_length,
+					&scene->img.endian);
 	scene->mtrx = matrix_place(scene->cams->coordinates,
 					scene->cams->direction);
 	while (i < THREADS_MAX)

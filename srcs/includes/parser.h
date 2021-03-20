@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/05 23:10:13 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 18:47:21 by ehillman         ###   ########.fr       */
+/*   Created: 2021/03/20 19:10:38 by ehillman          #+#    #+#             */
+/*   Updated: 2021/03/20 19:21:55 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,19 @@ typedef struct		s_scene {
 	int				mouse_y;
 }					t_scene;
 
-void			parser(char *str, t_scene *scene);
-char			*skip_spaces(char *str);
-char			*skip_pattern(char *str);
-char			*skip_nums(char *str);
-t_vector		parse_coordinares(char *str);
-void			parse_size(char *str, t_scene *scene);
-void			parse_ambl(char *str, t_scene *scene);
-void			parse_cam(char *str, t_scene *scene);
-void			parse_light(char *str, t_scene *scene);
-void			parse_sphere(char *str, t_scene *scene);
-void			parse_plane(char *str, t_scene *scene);
-void			parse_square(char *str, t_scene *scene);
-void			parse_cylinder(char *str, t_scene *scene);
-void			parse_triangle(char *str, t_scene *scene);
+void				parser(char *str, t_scene *scene);
+char				*skip_spaces(char *str);
+char				*skip_pattern(char *str);
+char				*skip_nums(char *str);
+t_vector			parse_coordinares(char *str);
+void				parse_size(char *str, t_scene *scene);
+void				parse_ambl(char *str, t_scene *scene);
+void				parse_cam(char *str, t_scene *scene);
+void				parse_light(char *str, t_scene *scene);
+void				parse_sphere(char *str, t_scene *scene);
+void				parse_plane(char *str, t_scene *scene);
+void				parse_square(char *str, t_scene *scene);
+void				parse_cylinder(char *str, t_scene *scene);
+void				parse_triangle(char *str, t_scene *scene);
 
 #endif

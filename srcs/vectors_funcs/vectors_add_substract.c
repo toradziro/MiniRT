@@ -1,4 +1,16 @@
-#include "../includes/MiniRT.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   vectors_add_substract.c                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/20 19:38:06 by ehillman          #+#    #+#             */
+/*   Updated: 2021/03/20 19:38:37 by ehillman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/minirt.h"
 
 t_vector		add_vectors(t_vector a, t_vector b)
 {

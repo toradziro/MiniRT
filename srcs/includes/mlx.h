@@ -1,9 +1,9 @@
 /*
-** mlx.h for MinilibX in 
-** 
+** mlx.h for MinilibX in
+**
 ** Made by Charlie Root
 ** Login   <ol@42.fr>
-** 
+**
 ** Started on  Mon Jul 31 16:37:50 2000 Charlie Root
 ** Last update Tue Oct 14 16:23:28 2019 Olivier Crouzet
 */

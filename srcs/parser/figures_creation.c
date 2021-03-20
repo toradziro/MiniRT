@@ -1,4 +1,16 @@
-#include "../includes/MiniRT.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   figures_creation.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/20 19:31:18 by ehillman          #+#    #+#             */
+/*   Updated: 2021/03/20 19:47:29 by ehillman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/minirt.h"
 
 t_sphere		*new_sphere(float radius, t_vector coordinates, t_color color)
 {
@@ -24,7 +36,8 @@ t_plane			*new_plane(t_vector coordinates, t_vector normal, t_color color)
 	return (new);
 }
 
-t_square		*new_square(t_vector center, t_vector normal, float side, t_color color)
+t_square		*new_square(t_vector center, t_vector normal,
+				float side, t_color color)
 {
 	t_square	*new;
 
@@ -37,7 +50,8 @@ t_square		*new_square(t_vector center, t_vector normal, float side, t_color colo
 	return (new);
 }
 
-t_cylinder		*new_cylinder(t_vector coordinates, t_vector normal, float diameter, float height, t_color color)
+t_cylinder		*new_cylinder(t_vector coordinates, t_vector normal,
+				float diameter, float height, t_color color)
 {
 	t_cylinder	*new;
 
@@ -52,7 +66,8 @@ t_cylinder		*new_cylinder(t_vector coordinates, t_vector normal, float diameter,
 	return (new);
 }
 
-t_triangle		*new_triangle(t_vector frt_vector, t_vector sec_point, t_vector thd_point, t_color color)
+t_triangle		*new_triangle(t_vector frt_vector, t_vector sec_point,
+				t_vector thd_point, t_color color)
 {
 	t_triangle	*new;
 	t_vector	tmp;
