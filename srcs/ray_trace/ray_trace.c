@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:36:02 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:47:41 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 23:12:26 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,14 @@ t_color			intersec(t_scene *scene, t_ray ray)
 	int				finish;
 
 	i = 0;
+	c_tmp = new_color(0, 0, 0);
 	tmp = scene->figures->node;
 	finish = scene->figures->length;
 	min = MAX_INTERSEC;
 	while (i < finish)
 	{
-		if (&tmp[i])
-			ray_switch(&tmp[i], scene, &min, ray, &c_tmp);
-		if (&tmp[i + 1])
-			ray_switch(&tmp[i + 1], scene, &min, ray, &c_tmp);
-		if (&tmp[i + 2])
-			ray_switch(&tmp[i + 2], scene, &min, ray, &c_tmp);
-		if (&tmp[i + 3])
-			ray_switch(&tmp[i + 3], scene, &min, ray, &c_tmp);
-		i += 4;
+		ray_switch(&tmp[i], scene, &min, ray, &c_tmp);
+		++i;
 	}
 	return (c_tmp);
 }

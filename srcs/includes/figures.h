@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/20 19:09:56 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:17:20 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 23:25:03 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ typedef struct		s_triangle{
 t_triangle			*new_triangle(t_vector frs_vector, t_vector sec_point,
 					t_vector thd_point, t_color color);
 t_cylinder			*new_cylinder(t_vector coordinates, t_vector normal,
-					float diameter, float height, t_color color);
+					float diameter, t_color color);
 t_square			*new_square(t_vector center, t_vector normal,
 					float side, t_color color);
 t_plane				*new_plane(t_vector coordinates,

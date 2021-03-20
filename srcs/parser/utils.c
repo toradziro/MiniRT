@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/20 19:32:04 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:47:36 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 23:24:22 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,10 @@ float		parse_d_part(char *str)
 	return (res);
 }
 
-t_color			col_parse(char *str)
+t_color		col_parse(char *str)
 {
-	t_color		res;
-	int			i;
+	t_color	res;
+	int		i;
 
 	i = 0;
 	if (str[i] < '0' || str[i] > '9')
@@ -91,17 +91,16 @@ t_color			col_parse(char *str)
 	res.g = (int)parse_int_part(&str[i]);
 	while (str[i] >= '0' && str[i] <= '9' && str[i])
 		++i;
-	if (str[i] == ',')
-		++i;
-	else
+	if (str[i] != ',')
 		killed_by_error(INV_COLOR);
+	++i;
 	if (str[i] < '0' || str[i] > '9')
 		killed_by_error(INV_COLOR);
 	res.b = (int)parse_int_part(&str[i]);
 	return (check_valid_color(&res));
 }
 
-t_color			check_valid_color(t_color *c)
+t_color		check_valid_color(t_color *c)
 {
 	if (c->r > 255)
 		c->r = 255;
@@ -116,12 +115,4 @@ t_color			check_valid_color(t_color *c)
 	if (c->b < 0)
 		c->b = 0;
 	return (*c);
-}
-
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
-{
-	char	*dst;
-
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
 }

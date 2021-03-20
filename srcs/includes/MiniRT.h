@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MiniRT.h                                           :+:      :+:    :+:   */
+/*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/20 19:22:04 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:51:33 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 23:50:01 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_H
 # define MINIRT_H
-# include "mlx.h"
+# include "../mlx/mlx.h"
 # include "vectors.h"
 # include "figures.h"
 # include "lists.h"

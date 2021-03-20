@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/20 19:31:18 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:47:29 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 23:24:45 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ t_square		*new_square(t_vector center, t_vector normal,
 }
 
 t_cylinder		*new_cylinder(t_vector coordinates, t_vector normal,
-				float diameter, float height, t_color color)
+				float diameter, t_color color)
 {
 	t_cylinder	*new;
 
@@ -60,7 +60,7 @@ t_cylinder		*new_cylinder(t_vector coordinates, t_vector normal,
 	new->coordinates = coordinates;
 	new->axis = normal;
 	new->diameter = diameter;
-	new->height = height;
+	new->height = 0;
 	new->color = color;
 	new->normal = new_vector(0, 0, 0);
 	return (new);

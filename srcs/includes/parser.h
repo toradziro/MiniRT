@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/20 19:10:38 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:21:55 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/21 00:06:42 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct		s_scene {
 }					t_scene;
 
 void				parser(char *str, t_scene *scene);
+void				start_parse(t_scene *scene, int fd);
 char				*skip_spaces(char *str);
 char				*skip_pattern(char *str);
 char				*skip_nums(char *str);
@@ -53,5 +54,6 @@ void				parse_plane(char *str, t_scene *scene);
 void				parse_square(char *str, t_scene *scene);
 void				parse_cylinder(char *str, t_scene *scene);
 void				parse_triangle(char *str, t_scene *scene);
+t_color				new_color(int r, int g, int b);
 
 #endif

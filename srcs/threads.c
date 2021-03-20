@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/20 19:46:41 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:48:09 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/21 00:32:06 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,22 @@ void			threads(t_scene *scene)
 					&scene->img.endian);
 	scene->mtrx = matrix_place(scene->cams->coordinates,
 					scene->cams->direction);
+	threads_start(thread_id, thread, scene);
+	if (scene->is_save)
+	{
+		save_to_bmp(scene);
+		mlx_destroy_image(scene->mlx, scene->img.img);
+		exit_rt(scene);
+	}
+	mlx_put_image_to_window(scene->mlx, scene->window, scene->img.img, 0, 0);
+}
+
+void			threads_start(t_thread *thread_id,
+				pthread_t *thread, t_scene *scene)
+{
+	int			i;
+
+	i = 0;
 	while (i < THREADS_MAX)
 	{
 		thread_id[i].id = i;
@@ -39,50 +55,43 @@ void			threads(t_scene *scene)
 		pthread_join(thread[i], NULL);
 		++i;
 	}
-	if (scene->is_save)
-	{
-		save_to_bmp(scene);
-		mlx_destroy_image(scene->mlx, scene->img.img);
-		exit_rt(scene);
-	}
-	mlx_put_image_to_window(scene->mlx, scene->window, scene->img.img, 0, 0);
 }
 
 void			*ray_trace_thread(void *thread)
 {
-	t_thread	*curr_thr;
-	t_scene		*scene;
-	t_ray		ray;
-	t_color		color;
-	float		coefs[3];
-	int			x_pixel;
-	int			y_pixel;
-	int			y_end;
-	int			ret_color;
+	t_ray_trace	trace;
 
-	curr_thr = (t_thread*)thread;
-	scene = &(curr_thr->scene);
-	y_pixel = curr_thr->id * (scene->height / THREADS_MAX);
-	y_end = y_pixel + (scene->height / THREADS_MAX);
-	ray.orig = scene->cams->coordinates;
-	while (y_pixel < y_end)
-	{
-		x_pixel = 0;
-		while (x_pixel < scene->width)
-		{
-			coefs[1] = -y_pixel + (scene->height * 0.5);
-			coefs[0] = x_pixel - (scene->width * 0.5);
-			coefs[2] = scene->width / (2 * tan(scene->cams->field_of_v
-						* 0.5 * M_PI * 0.00555555555));
-			ray.dir = new_vector(coefs[0], coefs[1], coefs[2]);
-			ray.dir = matrix_mult(ray.dir, scene->mtrx);
-			ray.dir = vector_normalise(ray.dir);
-			color = intersec(scene, ray);
-			ret_color = (int)color.r << 16 | (int)color.g << 8 | (int)color.b;
-			my_mlx_pixel_put(&scene->img, x_pixel, y_pixel, ret_color);
-			x_pixel++;
-		}
-		y_pixel++;
-	}
+	trace.curr_thr = (t_thread*)thread;
+	trace.scene = &(trace.curr_thr->scene);
+	trace.y_pixel = trace.curr_thr->id * (trace.scene->height / THREADS_MAX);
+	trace.y_end = trace.y_pixel + (trace.scene->height / THREADS_MAX);
+	trace.ray.orig = trace.scene->cams->coordinates;
+	main_rt_loop(trace);
 	pthread_exit(NULL);
+}
+
+void			main_rt_loop(t_ray_trace trace)
+{
+	while (trace.y_pixel < trace.y_end)
+	{
+		trace.x_pixel = 0;
+		while (trace.x_pixel < trace.scene->width)
+		{
+			trace.coefs[1] = -trace.y_pixel + (trace.scene->height * 0.5);
+			trace.coefs[0] = trace.x_pixel - (trace.scene->width * 0.5);
+			trace.coefs[2] = trace.scene->width / (2 *
+			tan(trace.scene->cams->field_of_v * 0.5 * M_PI * 0.00555555555));
+			trace.ray.dir = new_vector(trace.coefs[0],
+							trace.coefs[1], trace.coefs[2]);
+			trace.ray.dir = matrix_mult(trace.ray.dir, trace.scene->mtrx);
+			trace.ray.dir = vector_normalise(trace.ray.dir);
+			trace.color = intersec(trace.scene, trace.ray);
+			trace.ret_color = (int)trace.color.r << 16 |
+							(int)trace.color.g << 8 | (int)trace.color.b;
+			my_mlx_pixel_put(&trace.scene->img,
+							trace.x_pixel, trace.y_pixel, trace.ret_color);
+			trace.x_pixel++;
+		}
+		trace.y_pixel++;
+	}
 }

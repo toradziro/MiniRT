@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/20 19:37:15 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:38:22 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 23:23:50 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,4 +20,12 @@ t_vector		new_vector(float x, float y, float z)
 	new.v_y = y;
 	new.v_z = z;
 	return (new);
+}
+
+void			my_mlx_pixel_put(t_data *data, int x, int y, int color)
+{
+	char		*dst;
+
+	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	*(unsigned int*)dst = color;
 }

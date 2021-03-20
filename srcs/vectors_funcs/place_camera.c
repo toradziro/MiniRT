@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/20 19:37:26 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:40:08 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 23:59:52 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ t_vector			matrix_mult(t_vector vec, t_cam_to_w m)
 			vec.v_z * m.matrix[2][1] + m.matrix[3][1];
 	v.v_z = vec.v_x * m.matrix[0][2] + vec.v_y * m.matrix[1][2] +
 			vec.v_z * m.matrix[2][2] + m.matrix[3][2];
-	return (v);
+	return (vector_normalise(v));
 }
 
 float				vec_matrix_mult_first_row(t_vector vec, t_cam_to_w c)
