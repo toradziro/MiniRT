@@ -1,9 +1,9 @@
 #include "../includes/MiniRT.h"
 
-s_cam_to_w		matrix_place(s_vector coor, s_vector dir)
+t_cam_to_w		matrix_place(t_vector coor, t_vector dir)
 {
-	s_cam_to_w	res;
-	s_vector	tmp;
+	t_cam_to_w	res;
+	t_vector	tmp;
 
 	tmp = new_vector(0, 1, 0);
 	tmp = cross_prod(tmp, dir);
@@ -25,9 +25,9 @@ s_cam_to_w		matrix_place(s_vector coor, s_vector dir)
 	return (res);
 }
 
-s_vector		matrix_mult(s_vector vec, s_cam_to_w m)
+t_vector		matrix_mult(t_vector vec, t_cam_to_w m)
 {
-	s_vector	v;
+	t_vector	v;
 
 	v = new_vector(0, 0, 0);
 	v.v_x = vec.v_x * m.matrix[0][0] + vec.v_y * m.matrix[1][0] +
@@ -39,18 +39,18 @@ s_vector		matrix_mult(s_vector vec, s_cam_to_w m)
 	return (v);
 }
 
-float		vec_matrix_mult_first_row(s_vector vec, s_cam_to_w c)
+float		vec_matrix_mult_first_row(t_vector vec, t_cam_to_w c)
 {
-	s_vector 	tmp;
+	t_vector	tmp;
 
 	tmp = new_vector(0, 0, 0);
 	tmp = new_vector(c.matrix[0][0], c.matrix[0][1], c.matrix[0][2]);
 	return (vector_scalar_mult(vec, tmp));
 }
 
-float		vec_matrix_mult_second_row(s_vector vec, s_cam_to_w c)
+float		vec_matrix_mult_second_row(t_vector vec, t_cam_to_w c)
 {
-	s_vector 	tmp;
+	t_vector	tmp;
 
 	tmp = new_vector(0, 0, 0);
 	tmp = new_vector(c.matrix[1][0], c.matrix[1][1], c.matrix[1][2]);

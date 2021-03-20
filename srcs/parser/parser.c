@@ -6,14 +6,13 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/11 21:13:29 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 18:46:49 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../includes/MiniRT.h"
 
-void 	parser(char *str, s_scene *scene)
+void	parser(char *str, t_scene *scene)
 {
 	if (str[0] == 'c' && str[1] == 'y')
 		parse_cylinder(str + 2, scene);
@@ -78,9 +77,9 @@ char		*skip_nums(char *str)
 	return (str);
 }
 
-s_vector		parse_coordinares(char *str)
+t_vector		parse_coordinares(char *str)
 {
-	s_vector	new;
+	t_vector	new;
 
 	new.v_x = d_atoi(str);
 	str = skip_nums(str);
@@ -94,7 +93,7 @@ s_vector		parse_coordinares(char *str)
 	return (new);
 }
 
-void 			parse_size(char *str, s_scene *scene)
+void			parse_size(char *str, t_scene *scene)
 {
 	int			x;
 	int			y;
@@ -112,11 +111,11 @@ void 			parse_size(char *str, s_scene *scene)
 	scene->is_size++;
 }
 
-void 			parse_ambl(char *str, s_scene *scene)
+void			parse_ambl(char *str, t_scene *scene)
 {
-	s_ab_light	*new;
+	t_ab_light	*new;
 
-	if (!(new = (s_ab_light*)malloc(sizeof(s_ab_light))))
+	if (!(new = (t_ab_light*)malloc(sizeof(t_ab_light))))
 		killed_by_error(MALLOC_ERROR);
 	str = skip_spaces(str);
 	new->intensity = d_atoi(str);
@@ -128,12 +127,12 @@ void 			parse_ambl(char *str, s_scene *scene)
 	scene->is_amb_l++;
 }
 
-void 	parse_cam(char *str, s_scene *scene)
+void		parse_cam(char *str, t_scene *scene)
 {
-	s_cameras	*new;
-	s_vector	dir;
-	s_vector	coor;
-	float 		fov;
+	t_cameras	*new;
+	t_vector	dir;
+	t_vector	coor;
+	float		fov;
 
 	str = skip_spaces(str);
 	coor = parse_coordinares(str);
@@ -148,16 +147,16 @@ void 	parse_cam(char *str, s_scene *scene)
 		scene->first_cam = scene->cams;
 	}
 	else
-		push_back_cam(scene->cams, coor, dir, fov);
+		push_back_cam(scene->cams, new);
 	scene->is_cam++;
 }
 
-void	 		parse_light(char *str, s_scene *scene)
+void			parse_light(char *str, t_scene *scene)
 {
-	s_lights	*new;
-	s_vector	coor;
+	t_lights	*new;
+	t_vector	coor;
 	float		intens;
-	s_color		color;
+	t_color		color;
 
 	str = skip_spaces(str);
 	coor = parse_coordinares(str);
@@ -174,13 +173,13 @@ void	 		parse_light(char *str, s_scene *scene)
 	scene->is_light++;
 }
 
-void 			parse_sphere(char *str, s_scene *scene)
+void			parse_sphere(char *str, t_scene *scene)
 {
 	float		radius;
-	s_vector	coordinates;
-	s_color 	color;
-	s_sphere	*new;
-	s_figures	*tmp;
+	t_vector	coordinates;
+	t_color		color;
+	t_sphere	*new;
+	t_figures	*tmp;
 
 	str = skip_spaces(str);
 	coordinates = parse_coordinares(str);
@@ -191,22 +190,19 @@ void 			parse_sphere(char *str, s_scene *scene)
 	new = new_sphere(radius, coordinates, color);
 	tmp = new_figur_list((void*)new, S_SP);
 	if (!(scene->figures))
-	{
 		scene->figures = new_vec_fig();
-		scene->figures = add_elem_vec(scene->figures, tmp);
-	}
-	else
-		scene->figures = add_elem_vec(scene->figures, tmp);
+	scene->figures = add_elem_vec(scene->figures, *tmp);
 	scene->is_figur++;
+	free(tmp);
 }
 
-void	 		parse_plane(char *str, s_scene *scene)
+void	 		parse_plane(char *str, t_scene *scene)
 {
-	s_plane		*new;
-	s_vector	coor;
-	s_vector	normal;
-	s_color		color;
-	s_figures	*tmp;
+	t_plane		*new;
+	t_vector	coor;
+	t_vector	normal;
+	t_color		color;
+	t_figures	*tmp;
 
 	str = skip_spaces(str);
 	coor = parse_coordinares(str);
@@ -217,23 +213,20 @@ void	 		parse_plane(char *str, s_scene *scene)
 	new = new_plane(coor, vector_normalise(normal), color);
 	tmp = new_figur_list((void*)new, S_PL);
 	if (!(scene->figures))
-	{
 		scene->figures = new_vec_fig();
-		scene->figures = add_elem_vec(scene->figures, tmp);
-	}
-	else
-		scene->figures = add_elem_vec(scene->figures, tmp);
+	scene->figures = add_elem_vec(scene->figures, *tmp);
 	scene->is_figur++;
+	free(tmp);
 }
 
-void			parse_square(char *str, s_scene *scene)
+void			parse_square(char *str, t_scene *scene)
 {
-	s_square	*new;
-	s_vector	center;
-	s_vector	normal;
+	t_square	*new;
+	t_vector	center;
+	t_vector	normal;
 	float		size;
-	s_color		color;
-	s_figures	*tmp;
+	t_color		color;
+	t_figures	*tmp;
 
 	str = skip_spaces(str);
 	center = parse_coordinares(str);
@@ -247,22 +240,19 @@ void			parse_square(char *str, s_scene *scene)
 	new = new_square(center, vector_normalise(normal), size, color);
 	tmp = new_figur_list((void*)new, S_SQ);
 	if (!(scene->figures))
-	{
 		scene->figures = new_vec_fig();
-		scene->figures = add_elem_vec(scene->figures, tmp);
-	}
-	else
-		scene->figures = add_elem_vec(scene->figures, tmp);
+	scene->figures = add_elem_vec(scene->figures, *tmp);
 	scene->is_figur++;
+	free(tmp);
 }
 
-void			parse_cylinder(char *str, s_scene *scene)
+void			parse_cylinder(char *str, t_scene *scene)
 {
-	s_cylinder	*new;
-	s_color		color;
-	s_vector	tmp;
-	s_vector	tmp_n;
-	s_figures	*tmp_fig;
+	t_cylinder	*new;
+	t_color		color;
+	t_vector	tmp;
+	t_vector	tmp_n;
+	t_figures	*tmp_fig;
 	float		diameter;
 	float		height;
 
@@ -279,26 +269,23 @@ void			parse_cylinder(char *str, s_scene *scene)
 	new = new_cylinder(tmp, tmp_n, diameter, height, color);
 	tmp_fig = new_figur_list((void*)new, S_CL);
 	if (!(scene->figures))
-	{
 		scene->figures = new_vec_fig();
-		scene->figures = add_elem_vec(scene->figures, tmp_fig);
-	}
-	else
-		scene->figures = add_elem_vec(scene->figures, tmp_fig);
+	scene->figures = add_elem_vec(scene->figures, *tmp_fig);
 	scene->is_figur++;
+	free(tmp_fig);
 }
 
-void			parse_triangle(char *str, s_scene *scene)
+void			parse_triangle(char *str, t_scene *scene)
 {
-	s_triangle	*new;
-	s_color		color = {0, 0, 0};
-	s_vector	tmp_a;
-	s_vector	tmp_b;
-	s_vector	tmp_c;
-	s_vector	tmp_ab;
-	s_vector	tmp_ac;
-	s_vector	normal;
-	s_figures	*tmp_fig;
+	t_triangle	*new;
+	t_color		color;
+	t_vector	tmp_a;
+	t_vector	tmp_b;
+	t_vector	tmp_c;
+	t_vector	tmp_ab;
+	t_vector	tmp_ac;
+	t_vector	normal;
+	t_figures	*tmp_fig;
 
 	str = skip_spaces(str);
 	tmp_a = parse_coordinares(str);
@@ -308,10 +295,8 @@ void			parse_triangle(char *str, s_scene *scene)
 	tmp_c = parse_coordinares(str);
 	str = skip_pattern(str);
 	color = col_parse(str);
-
 	tmp_ab = subs_vectors(tmp_b, tmp_a);
 	tmp_ac = subs_vectors(tmp_c, tmp_a);
-
 	new = new_triangle(tmp_a, tmp_b, tmp_c, color);
 	new->normal = new_vector(0, 0, 0);
 	new->ab = tmp_ab;
@@ -320,11 +305,8 @@ void			parse_triangle(char *str, s_scene *scene)
 	new->normal = vector_normalise(normal);
 	tmp_fig = new_figur_list((void*)new, S_TR);
 	if (!(scene->figures))
-	{
 		scene->figures = new_vec_fig();
-		scene->figures = add_elem_vec(scene->figures, tmp_fig);
-	}
-	else
-		scene->figures = add_elem_vec(scene->figures, tmp_fig);
+	scene->figures = add_elem_vec(scene->figures, *tmp_fig);
 	scene->is_figur++;
+	free(tmp_fig);
 }

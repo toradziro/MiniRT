@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 21:31:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/11 21:08:20 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 18:16:10 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # include "mlx.h"
 # include "vectors.h"
 # include "figures.h"
-# include "vplane.h"
 # include "lists.h"
 # include "colors.h"
 # include "parser.h"
@@ -32,11 +31,11 @@
 # include <fcntl.h>
 # include <string.h>
 # include <pthread.h>
-#include <sys/time.h>
+# include <sys/time.h>
 
-#ifndef THREADS_MAX
-# define THREADS_MAX 4
-#endif
+# ifndef THREADS_MAX
+#  define THREADS_MAX 4
+# endif
 
 # define MAX(a,b)(((a)>(b))?(a):(b))
 # define MIN(a,b)(((a)<(b))?(a):(b))
@@ -67,7 +66,7 @@
 
 # define MAX_INTERSEC 100000
 
-enum e_spec
+enum	e_spec
 {
 	S_NUL = 0b00000000,
 	S_SP = 0b00000001,
@@ -78,39 +77,42 @@ enum e_spec
 };
 
 void		killed_by_error(int num);
-void 		check_valid_name(char *str);
+void		check_valid_name(char *str);
 float		d_atoi(char *str);
-float 		parse_int_part(char *str);
-float 		parse_d_part(char *str);
-s_color		col_parse(char *str);
-s_color		check_valid_color(s_color *c);
-s_scene		*ft_init_scene(void);
-void		free_scene(s_scene *scene);
+float		parse_int_part(char *str);
+float		parse_d_part(char *str);
+t_color		col_parse(char *str);
+t_color		check_valid_color(t_color *c);
+t_scene		*ft_init_scene(void);
+void		free_scene(t_scene *scene);
 
-s_color		find_color(s_scene *scene, s_ray ray, float min, s_vector *normal, s_color *f_color);
-s_color		intersec(s_scene *scene, s_ray ray);
-void			ray_switch(s_figures *tmp, s_scene *scene, float *min, s_ray ray, s_color *c_tmp);
+t_color		find_color(t_scene *scene, t_ray ray,
+			float min, t_vector *normal, t_color *f_color);
+t_color		intersec(t_scene *scene, t_ray ray);
+void		ray_switch(t_figures *tmp, t_scene
+			*scene, float *min, t_ray ray, t_color *c_tmp);
 
-int			shadow_intersec(s_vec_fig *figures, s_vector *intersec_point, s_vector *dir_to_light);
+int			shadow_intersec(t_vec_fig *figures, t_vector
+			*intersec_point, t_vector *dir_to_light);
 
-s_color		multip_color(s_color *color, float coeff);
-s_color		add_color(s_color *color, s_color *color_s);
-s_color		shad_color(s_color *figur, s_color *ab_light);
+t_color		multip_color(t_color *color, float coeff);
+t_color		add_color(t_color *color, t_color *color_s);
+t_color		shad_color(t_color *figur, t_color *ab_light);
 
-s_phong		calc_phong(s_vector intersec_point, s_scene *scene, s_vector normal);
+t_phong		calc_phong(t_vector intersec_point,
+			t_scene *scene, t_vector normal);
 
-int			press_key(int key, s_scene *scene);
-int			mouse_press(int b, int x, int y, s_scene *scene);
+int			press_key(int key, t_scene *scene);
+int			mouse_press(int b, int x, int y, t_scene *scene);
 
-void		check_scene(s_scene *scene);
+void		check_scene(t_scene *scene);
 
-void		free_cams(s_cameras *cam);
-void		free_light(s_lights *light);
+void		free_cams(t_cameras *cam);
+void		free_light(t_lights *light);
 
-void 		save_to_bmp(s_scene *scene);
+void		save_to_bmp(t_scene *scene);
 
-int			exit_rt(s_scene *scene);
+int			exit_rt(t_scene *scene);
 
-
-void 		save_to_bmp(s_scene *scene);
+void		save_to_bmp(t_scene *scene);
 #endif

@@ -1,10 +1,10 @@
 #include "../includes/MiniRT.h"
 
-s_sphere		*new_sphere(float radius, s_vector coordinates, s_color color)
+t_sphere		*new_sphere(float radius, t_vector coordinates, t_color color)
 {
-	s_sphere	*new;
+	t_sphere	*new;
 
-	if (!(new = (s_sphere*)malloc(sizeof(s_sphere))))
+	if (!(new = (t_sphere*)malloc(sizeof(t_sphere))))
 		killed_by_error(MALLOC_ERROR);
 	new->radius = radius;
 	new->coordinates = coordinates;
@@ -12,11 +12,11 @@ s_sphere		*new_sphere(float radius, s_vector coordinates, s_color color)
 	return (new);
 }
 
-s_plane			*new_plane(s_vector coordinates, s_vector normal, s_color color)
+t_plane			*new_plane(t_vector coordinates, t_vector normal, t_color color)
 {
-	s_plane		*new;
+	t_plane		*new;
 
-	if (!(new = (s_plane *)malloc(sizeof(s_plane))))
+	if (!(new = (t_plane *)malloc(sizeof(t_plane))))
 		killed_by_error(MALLOC_ERROR);
 	new->normal = normal;
 	new->coordinates = coordinates;
@@ -24,11 +24,11 @@ s_plane			*new_plane(s_vector coordinates, s_vector normal, s_color color)
 	return (new);
 }
 
-s_square		*new_square(s_vector center, s_vector normal, float side, s_color color)
+t_square		*new_square(t_vector center, t_vector normal, float side, t_color color)
 {
-	s_square	*new;
+	t_square	*new;
 
-	if (!(new = (s_square*)malloc(sizeof(s_square))))
+	if (!(new = (t_square*)malloc(sizeof(t_square))))
 		killed_by_error(MALLOC_ERROR);
 	new->center = center;
 	new->normal = normal;
@@ -37,11 +37,11 @@ s_square		*new_square(s_vector center, s_vector normal, float side, s_color colo
 	return (new);
 }
 
-s_cylinder		*new_cylinder(s_vector coordinates, s_vector normal, float diameter, float height, s_color color)
+t_cylinder		*new_cylinder(t_vector coordinates, t_vector normal, float diameter, float height, t_color color)
 {
-	s_cylinder	*new;
+	t_cylinder	*new;
 
-	if (!(new = (s_cylinder*)malloc(sizeof(s_cylinder))))
+	if (!(new = (t_cylinder*)malloc(sizeof(t_cylinder))))
 		killed_by_error(MALLOC_ERROR);
 	new->coordinates = coordinates;
 	new->axis = normal;
@@ -52,15 +52,15 @@ s_cylinder		*new_cylinder(s_vector coordinates, s_vector normal, float diameter,
 	return (new);
 }
 
-s_triangle		*new_triangle(s_vector frs_vector, s_vector sec_point, s_vector thd_point, s_color color)
+t_triangle		*new_triangle(t_vector frt_vector, t_vector sec_point, t_vector thd_point, t_color color)
 {
-	s_triangle	*new;
-	s_vector	tmp;
+	t_triangle	*new;
+	t_vector	tmp;
 
 	tmp = new_vector(0, 0, 0);
-	if (!(new = (s_triangle*)malloc(sizeof(s_triangle))))
+	if (!(new = (t_triangle*)malloc(sizeof(t_triangle))))
 		killed_by_error(MALLOC_ERROR);
-	new->a = frs_vector;
+	new->a = frt_vector;
 	new->b = sec_point;
 	new->c = thd_point;
 	new->ab = tmp;

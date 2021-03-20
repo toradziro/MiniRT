@@ -1,10 +1,10 @@
 #include "../includes/MiniRT.h"
 
-void			sphere_start(s_scene *scene, s_sphere *sp, float *min, s_ray ray, s_color *c_tmp)
+void			sphere_start(t_scene *scene, t_sphere *sp, float *min, t_ray ray, t_color *c_tmp)
 {
-	s_sphere	*sphere_tmp;
-	s_vector	intersec_point;
-	s_vector	normal;
+	t_sphere	*sphere_tmp;
+	t_vector	intersec_point;
+	t_vector	normal;
 	float		intersec;
 
 	intersec = sphere_intersect(ray, sp);
@@ -20,9 +20,9 @@ void			sphere_start(s_scene *scene, s_sphere *sp, float *min, s_ray ray, s_color
 	}
 }
 
-void 			plane_start(s_scene *scene, s_plane *pl, float *min, s_ray ray, s_color *c_tmp)
+void 			plane_start(t_scene *scene, t_plane *pl, float *min, t_ray ray, t_color *c_tmp)
 {
-	s_plane		*plane_tmp;
+	t_plane		*plane_tmp;
 	float		intersec;
 
 	plane_tmp = pl;
@@ -36,12 +36,11 @@ void 			plane_start(s_scene *scene, s_plane *pl, float *min, s_ray ray, s_color 
 	}
 }
 
-void 			triangle_start(s_scene *scene, s_triangle *tr, float *min, s_ray ray, s_color *c_tmp)
+void 			triangle_start(t_scene *scene, t_triangle *tr, float *min, t_ray ray, t_color *c_tmp)
 {
-	scene->is_amb_l = 0;
 	float		intersec;
-	s_triangle *triangle_tmp;
-	s_vector	normal;
+	t_triangle *triangle_tmp;
+	t_vector	normal;
 
 	triangle_tmp = tr;
 	normal = triangle_tmp->normal;
@@ -55,10 +54,10 @@ void 			triangle_start(s_scene *scene, s_triangle *tr, float *min, s_ray ray, s_
 	}
 }
 
-void 		sq_start(s_scene *scene, s_square *sq, float *min, s_ray ray, s_color *c_tmp)
+void 		sq_start(t_scene *scene, t_square *sq, float *min, t_ray ray, t_color *c_tmp)
 {
 	float	intersec;
-	s_square *square_tmp;
+	t_square *square_tmp;
 
 	square_tmp = sq;
 	intersec = square_intersec(ray, square_tmp, *(min));
@@ -67,14 +66,16 @@ void 		sq_start(s_scene *scene, s_square *sq, float *min, s_ray ray, s_color *c_
 		if (vector_scalar_mult(ray.dir, square_tmp->normal) > 0)
 			square_tmp->normal = vector_by_scalar(square_tmp->normal, -1);
 		*(min) = intersec;
-		*(c_tmp) = find_color(scene, ray, *(min), &square_tmp->normal, &square_tmp->color);
+		*(c_tmp) = find_color(scene, ray, *(min),
+					&square_tmp->normal, &square_tmp->color);
 	}
 }
 
-void 		cy_start(s_scene *scene, s_cylinder *cy, float *min, s_ray ray, s_color *c_tmp)
+void 		cy_start(t_scene *scene, t_cylinder *cy,
+			float *min, t_ray ray, t_color *c_tmp)
 {
 	float		intersec;
-	s_vector	normal;
+	t_vector	normal;
 
 	intersec = cy_intersect(ray, cy);
 	if (intersec < *(min) && intersec > MIN_I)

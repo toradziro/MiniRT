@@ -2,12 +2,12 @@
 # define THREADS_H
 # include "MiniRT.h"
 
-typedef struct t_thread {
-		int			id;
-		s_scene		scene;
-}				s_thread;
+typedef struct		s_thread{
+	int				id;
+	t_scene			scene;
+}					t_thread;
 
-void			*ray_trace_thread(void* thread);
-void			threads(s_scene *scene);
+void			*ray_trace_thread(void *thread);
+void			threads(t_scene *scene);
 
 #endif

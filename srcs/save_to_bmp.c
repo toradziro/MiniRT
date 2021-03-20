@@ -1,6 +1,6 @@
 #include "includes/MiniRT.h"
 
-void 		save_to_bmp(s_scene *scene)
+void 		save_to_bmp(t_scene *scene)
 {
 	int 					fd;
 	char					filler_head[54];
@@ -27,7 +27,7 @@ void 		save_to_bmp(s_scene *scene)
 	filler_head[24] = (unsigned char)(scene->height >> 16);
 	filler_head[25] = (unsigned char)(scene->height >> 24);
 	filler_head[26] = 1; //planes
-	filler_head[28] = 32; //bits_per_pixel
+	filler_head[28] = 32; //bitt_per_pixel
 	fd = open("screen.bmp", O_RDWR | O_CREAT | O_TRUNC, 0666);
 
 	write(fd, filler_head, 54);

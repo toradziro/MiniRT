@@ -1,6 +1,6 @@
 #include "../includes/MiniRT.h"
 
-float			vector_scalar_mult(s_vector a, s_vector b)
+float			vector_scalar_mult(t_vector a, t_vector b)
 {
 	float		res;
 
@@ -9,9 +9,9 @@ float			vector_scalar_mult(s_vector a, s_vector b)
 	return (res);
 }
 
-s_vector		vector_by_scalar(s_vector a, float num)
+t_vector		vector_by_scalar(t_vector a, float num)
 {
-	s_vector	res;
+	t_vector	res;
 
 	res = new_vector(0, 0, 0);
 	res.v_x = a.v_x * num;

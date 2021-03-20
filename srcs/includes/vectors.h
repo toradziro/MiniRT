@@ -2,34 +2,34 @@
 # define VECTORS_H
 # include "math.h"
 
-typedef struct		t_vector {
-		float		v_x;
-		float		v_y;
-		float		v_z;
-}					s_vector;
+typedef struct		s_vector {
+	float			v_x;
+	float			v_y;
+	float			v_z;
+}					t_vector;
 
-typedef struct		t_ray {
-		s_vector	dir;
-		s_vector	orig;
-}					s_ray;
+typedef struct		s_ray {
+	t_vector		dir;
+	t_vector		orig;
+}					t_ray;
 
-typedef struct		t_cam_to_w {
-		float		matrix[4][4];
-}					s_cam_to_w;
+typedef struct		s_cam_to_w {
+	float			matrix[4][4];
+}					t_cam_to_w;
 
-float			vector_scalar_mult(s_vector a, s_vector b);
-float			vector_length(s_vector v);
-s_vector		vector_normalise(s_vector v);
-s_vector		cross_prod(s_vector a, s_vector b);
-s_vector		add_vectors(s_vector a, s_vector b);
-s_vector		subs_vectors(s_vector a, s_vector b);
-s_vector		vector_by_scalar(s_vector a, float num);
-s_vector		new_vector(float x, float y, float z);
+float			vector_scalar_mult(t_vector a, t_vector b);
+float			vector_length(t_vector v);
+t_vector		vector_normalise(t_vector v);
+t_vector		cross_prod(t_vector a, t_vector b);
+t_vector		add_vectors(t_vector a, t_vector b);
+t_vector		subs_vectors(t_vector a, t_vector b);
+t_vector		vector_by_scalar(t_vector a, float num);
+t_vector		new_vector(float x, float y, float z);
 
-s_cam_to_w		matrix_place(s_vector coor, s_vector dir);
-s_vector		matrix_mult(s_vector vec, s_cam_to_w m);
+t_cam_to_w		matrix_place(t_vector coor, t_vector dir);
+t_vector		matrix_mult(t_vector vec, t_cam_to_w m);
 
-float			vec_matrix_mult_first_row(s_vector vec, s_cam_to_w c);
-float			vec_matrix_mult_second_row(s_vector vec, s_cam_to_w c);
+float			vec_matrix_mult_first_row(t_vector vec, t_cam_to_w c);
+float			vec_matrix_mult_second_row(t_vector vec, t_cam_to_w c);
 
 #endif

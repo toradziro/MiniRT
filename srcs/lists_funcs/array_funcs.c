@@ -1,44 +1,45 @@
 #include "../includes/MiniRT.h"
 
-s_vec_fig		*new_vec_fig(void)
+t_vec_fig		*new_vec_fig(void)
 {
-	s_vec_fig	*new;
+	t_vec_fig	*new;
 
-	if (!(new = (s_vec_fig*)malloc(sizeof(s_vec_fig))))
+	if (!(new = (t_vec_fig*)malloc(sizeof(t_vec_fig))))
 		killed_by_error(MALLOC_ERROR);
-	if (!(new->node = (s_figures*)malloc(sizeof(s_figures) * 2)))
+	if (!(new->node = (t_figures*)malloc(sizeof(t_figures) * 2)))
 		killed_by_error(MALLOC_ERROR);
 	new->capacity = 2;
 	new->length = 0;
 	return (new);
 }
 
-s_vec_fig		*add_elem_vec(s_vec_fig *vec, s_figures *next)
+t_vec_fig		*add_elem_vec(t_vec_fig *vec, t_figures next)
 {
-	s_vec_fig	*new;
+	t_vec_fig	*new;
 
-	if (vec->length + 1 == vec->capacity)
+	if (vec->length == vec->capacity)
 	{
 		new = realloc_vec(vec);
-		new->node[vec->length] = *next;
+		new->node[new->length] = next;
 		++new->length;
 		return (new);
 	}
-	vec->node[vec->length] = *next;
+	vec->node[vec->length] = next;
 	++vec->length;
 	return (vec);
 }
 
-s_vec_fig		*realloc_vec(s_vec_fig *old)
+t_vec_fig		*realloc_vec(t_vec_fig *old)
 {
-	s_vec_fig	*new;
+	t_vec_fig	*new;
 
-	if (!(new = (s_vec_fig*)malloc(sizeof(s_vec_fig))))
+	if (!(new = (t_vec_fig*)malloc(sizeof(t_vec_fig))))
 		killed_by_error(MALLOC_ERROR);
-	if (!(new->node = (s_figures*)malloc(sizeof(s_figures) * (old->capacity * 2))))
+	if (!(new->node =
+	(t_figures*)malloc(sizeof(t_figures) * (old->capacity * 2))))
 		killed_by_error(MALLOC_ERROR);
 	new->capacity = (int)old->capacity * 2;
-	memset(new->node, 0, sizeof(s_figures) * new->capacity);
+	memset(new->node, 0, sizeof(t_figures) * new->capacity);
 	new->length = 0;
 	while (new->length < old->length)
 	{

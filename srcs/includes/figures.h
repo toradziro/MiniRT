@@ -1,50 +1,54 @@
 #ifndef SPHERE_H
 # define SPHERE_H
 # include "vectors.h"
-#include "colors.h"
+# include "colors.h"
 
-typedef struct		t_sphere {
-		s_vector	coordinates;
-		s_color 	color;
-		float		radius;
-}					s_sphere;
+typedef struct		s_sphere{
+	t_vector		coordinates;
+	t_color			color;
+	float			radius;
+}					t_sphere;
 
-typedef struct		t_plane {
-		s_vector	coordinates;
-		s_vector	normal;
-		s_color		color;
-}					s_plane;
+typedef struct		s_plane{
+	t_vector		coordinates;
+	t_vector		normal;
+	t_color			color;
+}					t_plane;
 
-typedef struct		t_square {
-		s_vector	center;
-		s_vector	normal;
-		float		side;
-		s_color		color;
-}					s_square;
+typedef struct		s_square{
+	t_vector		center;
+	t_vector		normal;
+	float			side;
+	t_color			color;
+}					t_square;
 
-typedef struct		t_cylinder {
-		s_vector	coordinates;
-		s_vector	normal;
-		float		diameter;
-		float		height;
-		s_vector	axis;
-		s_color		color;
-}					s_cylinder;
+typedef struct		s_cylinder{
+	t_vector		coordinates;
+	t_vector		normal;
+	float			diameter;
+	float			height;
+	t_vector		axis;
+	t_color			color;
+}					t_cylinder;
 
-typedef struct		t_triangle {
-		s_vector	a;
-		s_vector	b;
-		s_vector	c;
-		s_vector	normal;
-		s_vector	ab;
-		s_vector	ac;
-		s_color		color;
-}					s_triangle;
+typedef struct		s_triangle{
+	t_vector		a;
+	t_vector		b;
+	t_vector		c;
+	t_vector		normal;
+	t_vector		ab;
+	t_vector		ac;
+	t_color			color;
+}					t_triangle;
 
-s_triangle		*new_triangle(s_vector frs_vector, s_vector sec_point, s_vector thd_point, s_color color);
-s_cylinder		*new_cylinder(s_vector coordinates, s_vector normal, float diameter, float height, s_color color);
-s_square		*new_square(s_vector center, s_vector normal, float side, s_color color);
-s_plane			*new_plane(s_vector coordinates, s_vector normal, s_color color);
-s_sphere		*new_sphere(float radius, s_vector coordinates, s_color color);
+t_triangle		*new_triangle(t_vector frs_vector, t_vector sec_point,
+				t_vector thd_point, t_color color);
+t_cylinder		*new_cylinder(t_vector coordinates, t_vector normal,
+				float diameter, float height, t_color color);
+t_square		*new_square(t_vector center, t_vector normal,
+				float side, t_color color);
+t_plane			*new_plane(t_vector coordinates,
+				t_vector normal, t_color color);
+t_sphere		*new_sphere(float radius, t_vector coordinates, t_color color);
 
 #endif

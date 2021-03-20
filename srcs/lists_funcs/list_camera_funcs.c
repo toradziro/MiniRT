@@ -1,11 +1,11 @@
 
 #include "../includes/MiniRT.h"
 
-s_cameras		*new_camera_node(s_vector coordinates, s_vector dir, float fov)
+t_cameras		*new_camera_node(t_vector coordinates, t_vector dir, float fov)
 {
-	s_cameras	*new;
+	t_cameras	*new;
 
-	if (!(new = (s_cameras*)malloc(sizeof(s_cameras))))
+	if (!(new = (t_cameras*)malloc(sizeof(t_cameras))))
 		killed_by_error(MALLOC_ERROR);
 	new->coordinates = coordinates;
 	new->direction = dir;
@@ -14,12 +14,9 @@ s_cameras		*new_camera_node(s_vector coordinates, s_vector dir, float fov)
 	return (new);
 }
 
-void 			push_back_cam(s_cameras *list, s_vector coordinates, s_vector dir, float fov)
+void			push_back_cam(t_cameras *list, t_cameras *new)
 {
-	s_cameras	*tmp;
-
-	tmp = new_camera_node(coordinates, dir, fov);
 	while (list->next)
 		list = list->next;
-	list->next = tmp;
+	list->next = new;
 }

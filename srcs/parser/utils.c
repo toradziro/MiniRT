@@ -2,8 +2,8 @@
 
 float		d_atoi(char *str)
 {
-	int 	i;
-	int 	sign;
+	int		i;
+	int		sign;
 	float	res;
 
 	i = 0;
@@ -28,7 +28,7 @@ float		d_atoi(char *str)
 	return (res * (float)sign);
 }
 
-float 		parse_int_part(char *str)
+float		parse_int_part(char *str)
 {
 	int		i;
 	float	res;
@@ -43,7 +43,7 @@ float 		parse_int_part(char *str)
 	return (res);
 }
 
-float 		parse_d_part(char *str)
+float		parse_d_part(char *str)
 {
 	int		i;
 	float	res;
@@ -59,13 +59,13 @@ float 		parse_d_part(char *str)
 	return (res);
 }
 
-s_color			col_parse(char *str)
+t_color			col_parse(char *str)
 {
-	s_color		res;
+	t_color		res;
 	int			i;
 
 	i = 0;
-	if (str[i] < '0' || str[i] > '9') //add new error
+	if (str[i] < '0' || str[i] > '9')
 		killed_by_error(INV_COLOR);
 	res.r = (int)parse_int_part(&str[i]);
 	while (str[i] >= '0' && str[i] <= '9' && str[i])
@@ -73,8 +73,8 @@ s_color			col_parse(char *str)
 	if (str[i] == ',')
 		++i;
 	else
-		killed_by_error (INV_COLOR);
-	if (str[i] < '0' || str[i] > '9') //add new error
+		killed_by_error(INV_COLOR);
+	if (str[i] < '0' || str[i] > '9')
 		killed_by_error(INV_COLOR);
 	res.g = (int)parse_int_part(&str[i]);
 	while (str[i] >= '0' && str[i] <= '9' && str[i])
@@ -82,14 +82,14 @@ s_color			col_parse(char *str)
 	if (str[i] == ',')
 		++i;
 	else
-		killed_by_error (INV_COLOR);
-	if (str[i] < '0' || str[i] > '9') //add new error
+		killed_by_error(INV_COLOR);
+	if (str[i] < '0' || str[i] > '9')
 		killed_by_error(INV_COLOR);
 	res.b = (int)parse_int_part(&str[i]);
 	return (check_valid_color(&res));
 }
 
-s_color			check_valid_color(s_color *c)
+t_color			check_valid_color(t_color *c)
 {
 	if (c->r > 255)
 		c->r = 255;
@@ -106,10 +106,10 @@ s_color			check_valid_color(s_color *c)
 	return (*c);
 }
 
-void	my_mlx_pixel_put(s_data *data, int x, int y, int color)
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
 	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-    *(unsigned int*)dst = color;
+	*(unsigned int*)dst = color;
 }

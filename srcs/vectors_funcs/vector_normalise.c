@@ -1,10 +1,10 @@
 #include "../includes/MiniRT.h"
 
-s_vector		vector_normalise(s_vector v)
+t_vector		vector_normalise(t_vector v)
 {
 	float		len;
 	float		len_coeff;
-	s_vector	n;
+	t_vector	n;
 
 	n = new_vector(0, 0, 0);
 	len = sqrt(v.v_x * v.v_x + v.v_y * v.v_y + v.v_z * v.v_z);

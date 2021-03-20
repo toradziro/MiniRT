@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/08 10:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2020/11/13 20:34:36 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 16:56:13 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ int		get_next_line(int fd, char **line)
 		if ((rd = read(fd, buff, BUFFER_SIZE)) == -1)
 			return (ft_free(buff));
 		buff[rd] = '\0';
-		if (!*buff && !*rem)
-			break ;
 		if (!(rem = ft_strjoin(rem, buff)))
 		{
 			free(rem);

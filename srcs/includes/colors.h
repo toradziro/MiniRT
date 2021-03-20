@@ -1,21 +1,19 @@
 #ifndef COLORS_H
 # define COLORS_H
 
-typedef struct	t_color {
-	float 	r;
-	float 	g;
-	float 	b;
-}				s_color;
+typedef struct	s_color {
+	float		r;
+	float		g;
+	float		b;
+}				t_color;
 
-typedef struct	t_phong
+typedef struct	s_phong
 {
-	s_vector	intersec_point;
-	s_vector	light_dir;
-	s_vector	view_dir;
-	s_vector	halfway_dir;
-	s_color		specular;
+	t_vector	intersec_point;
+	t_vector	light_dir;
+	t_vector	view_dir;
+	t_vector	halfway_dir;
+	t_color		specular;
 	float		spec;
-}				s_phong;
-
-
+}				t_phong;
 #endif

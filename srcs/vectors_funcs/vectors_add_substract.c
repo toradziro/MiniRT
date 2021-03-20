@@ -1,8 +1,8 @@
 #include "../includes/MiniRT.h"
 
-s_vector		add_vectors(s_vector a, s_vector b)
+t_vector		add_vectors(t_vector a, t_vector b)
 {
-	s_vector	res;
+	t_vector	res;
 
 	res = new_vector(0, 0, 0);
 	res.v_x = a.v_x + b.v_x;
@@ -11,9 +11,9 @@ s_vector		add_vectors(s_vector a, s_vector b)
 	return (res);
 }
 
-s_vector		subs_vectors(s_vector a, s_vector b)
+t_vector		subs_vectors(t_vector a, t_vector b)
 {
-	s_vector	res;
+	t_vector	res;
 
 	res = new_vector(0, 0, 0);
 	res.v_x = a.v_x - b.v_x;

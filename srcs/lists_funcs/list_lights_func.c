@@ -1,11 +1,11 @@
 #include "../includes/MiniRT.h"
 
-s_lights		*new_light_node(s_vector coordinates, float intensity, s_color color)
+t_lights		*new_light_node(t_vector coordinates, float intensity, t_color color)
 {
-	s_lights	*new;
-	s_vector	tmp = new_vector(0, 0, 0);
+	t_lights	*new;
+	t_vector	tmp = new_vector(0, 0, 0);
 
-	if (!(new = (s_lights*)malloc(sizeof(s_lights))))
+	if (!(new = (t_lights*)malloc(sizeof(t_lights))))
 		killed_by_error(MALLOC_ERROR);
 	new->coordinates = coordinates;
 	new->intensity = intensity;
@@ -15,9 +15,9 @@ s_lights		*new_light_node(s_vector coordinates, float intensity, s_color color)
 	return (new);
 }
 
-void 			push_back_light(s_lights *list, s_vector coordinates, float intensity, s_color color)
+void 			push_back_light(t_lights *list, t_vector coordinates, float intensity, t_color color)
 {
-	s_lights	*tmp;
+	t_lights	*tmp;
 
 	tmp = new_light_node(coordinates, intensity, color);
 	while (list->next)

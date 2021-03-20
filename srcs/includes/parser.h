@@ -6,7 +6,7 @@
 /*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 23:10:13 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/11 19:42:12 by ehillman         ###   ########.fr       */
+/*   Updated: 2021/03/20 18:47:21 by ehillman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,41 +17,41 @@
 # include "mlx_image.h"
 # include "array.h"
 
-typedef struct		t_scene {
-	s_cameras		*cams;
-	s_cameras		*first_cam;
-	s_vec_fig		*figures;
-	s_lights		*lights;
-	s_ab_light		*ab_light;
-	s_cam_to_w		mtrx;
-	s_data			img;
+typedef struct		s_scene {
+	t_cameras		*cams;
+	t_cameras		*first_cam;
+	t_vec_fig		*figures;
+	t_lights		*lights;
+	t_ab_light		*ab_light;
+	t_cam_to_w		mtrx;
+	t_data			img;
 	void			*mlx;
 	void			*window;
-	int 			is_save;
-	int 			is_cam;
-	int 			is_light;
-	int 			is_size;
-	int 			is_amb_l;
-	int 			is_figur;
+	int				is_save;
+	int				is_cam;
+	int				is_light;
+	int				is_size;
+	int				is_amb_l;
+	int				is_figur;
 	int				width;
 	int				height;
-	int 			mouse_x;
-	int 			mouse_y;
-}					s_scene;
+	int				mouse_x;
+	int				mouse_y;
+}					t_scene;
 
-void 			parser(char *str, s_scene *scene);
+void			parser(char *str, t_scene *scene);
 char			*skip_spaces(char *str);
 char			*skip_pattern(char *str);
 char			*skip_nums(char *str);
-s_vector		parse_coordinares(char *str);
-void	 		parse_size(char *str, s_scene *scene);
-void 			parse_ambl(char *str, s_scene *scene);
-void 			parse_cam(char *str, s_scene *scene);
-void	 		parse_light(char *str, s_scene *scene);
-void 			parse_sphere(char *str, s_scene *scene);
-void	 		parse_plane(char *str, s_scene *scene);
-void			parse_square(char *str, s_scene *scene);
-void			parse_cylinder(char *str, s_scene *scene);
-void			parse_triangle(char *str, s_scene *scene);
+t_vector		parse_coordinares(char *str);
+void			parse_size(char *str, t_scene *scene);
+void			parse_ambl(char *str, t_scene *scene);
+void			parse_cam(char *str, t_scene *scene);
+void			parse_light(char *str, t_scene *scene);
+void			parse_sphere(char *str, t_scene *scene);
+void			parse_plane(char *str, t_scene *scene);
+void			parse_square(char *str, t_scene *scene);
+void			parse_cylinder(char *str, t_scene *scene);
+void			parse_triangle(char *str, t_scene *scene);
 
 #endif
