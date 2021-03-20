@@ -44,11 +44,11 @@ void 			triangle_start(s_scene *scene, s_triangle *tr, float *min, s_ray ray, s_
 	s_vector	normal;
 
 	triangle_tmp = tr;
-	normal = tr->normal;
+	normal = triangle_tmp->normal;
 	intersec = triangle_intersec(ray, tr);
 	if (intersec < *(min) && intersec > MIN_I)
 	{
-		if (vector_scalar_mult(ray.dir, triangle_tmp->normal) > 0)
+		if (vector_scalar_mult(ray.dir, normal) > 0)
 			normal = vector_by_scalar(normal, -1);
 		*(min) = intersec;
 		*(c_tmp) = find_color(scene, ray, *(min), &normal, &triangle_tmp->color);

@@ -190,7 +190,7 @@ void 			parse_sphere(char *str, s_scene *scene)
 	color = col_parse(str);
 	new = new_sphere(radius, coordinates, color);
 	tmp = new_figur_list((void*)new, S_SP);
-	if (!(scene->figures.node))
+	if (!(scene->figures))
 	{
 		scene->figures = new_vec_fig();
 		scene->figures = add_elem_vec(scene->figures, tmp);
@@ -216,7 +216,7 @@ void	 		parse_plane(char *str, s_scene *scene)
 	color = col_parse(str);
 	new = new_plane(coor, vector_normalise(normal), color);
 	tmp = new_figur_list((void*)new, S_PL);
-	if (!(scene->figures.node))
+	if (!(scene->figures))
 	{
 		scene->figures = new_vec_fig();
 		scene->figures = add_elem_vec(scene->figures, tmp);
@@ -246,7 +246,7 @@ void			parse_square(char *str, s_scene *scene)
 	color = col_parse(str);
 	new = new_square(center, vector_normalise(normal), size, color);
 	tmp = new_figur_list((void*)new, S_SQ);
-	if (!(scene->figures.node))
+	if (!(scene->figures))
 	{
 		scene->figures = new_vec_fig();
 		scene->figures = add_elem_vec(scene->figures, tmp);
@@ -278,7 +278,7 @@ void			parse_cylinder(char *str, s_scene *scene)
 	color = col_parse(str);
 	new = new_cylinder(tmp, tmp_n, diameter, height, color);
 	tmp_fig = new_figur_list((void*)new, S_CL);
-	if (!(scene->figures.node))
+	if (!(scene->figures))
 	{
 		scene->figures = new_vec_fig();
 		scene->figures = add_elem_vec(scene->figures, tmp_fig);
@@ -319,7 +319,7 @@ void			parse_triangle(char *str, s_scene *scene)
 	normal = cross_prod(new->ab, new->ac);
 	new->normal = vector_normalise(normal);
 	tmp_fig = new_figur_list((void*)new, S_TR);
-	if (!(scene->figures.node))
+	if (!(scene->figures))
 	{
 		scene->figures = new_vec_fig();
 		scene->figures = add_elem_vec(scene->figures, tmp_fig);

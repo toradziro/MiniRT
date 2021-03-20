@@ -21,34 +21,36 @@ s_color			intersec(s_scene *scene, s_ray ray)
 	int				finish;
 
 	i = 0;
-	tmp = scene->figures.node;
-	finish = scene->figures.length;
+	tmp = scene->figures->node;
+	finish = scene->figures->length;
 	min = MAX_INTERSEC;
 	while (i < finish)
 	{
-		if (tmp[i].specif == S_SP)
-			sphere_start(scene, tmp[i].content, &min, ray, &c_tmp);
-		if (tmp[i + 1].specif == S_SP)
-			sphere_start(scene, tmp[i + 1].content, &min, ray, &c_tmp);
-		if (tmp[i].specif == S_PL)
-			plane_start(scene, tmp[i].content, &min, ray, &c_tmp);
-		if (tmp[i + 1].specif == S_PL)
-			plane_start(scene, tmp[i + 1].content, &min, ray, &c_tmp);
-		if (tmp[i].specif == S_TR)
-			triangle_start(scene, tmp[i].content, &min, ray, &c_tmp);
-		if (tmp[i + 1].specif == S_TR)
-			triangle_start(scene, tmp[i + 1].content, &min, ray, &c_tmp);
-		if (tmp[i].specif == S_SQ)
-			sq_start(scene, tmp[i].content, &min, ray, &c_tmp);
-		if (tmp[i + 1].specif == S_SQ)
-			sq_start(scene, tmp[i + 1].content, &min, ray, &c_tmp);
-		if (tmp[i].specif == S_CL)
-			cy_start(scene, tmp[i].content, &min, ray, &c_tmp);
-		if (tmp[i + 1].specif == S_CL)
-			cy_start(scene, tmp[i + 1].content, &min, ray, &c_tmp);
-		++i;
+		if (&tmp[i])
+			ray_switch(&tmp[i], scene, &min, ray, &c_tmp);
+		if (&tmp[i + 1])
+			ray_switch(&tmp[i + 1], scene, &min, ray, &c_tmp);
+		if (&tmp[i + 2])
+			ray_switch(&tmp[i + 2], scene, &min, ray, &c_tmp);
+		if (&tmp[i + 3])
+			ray_switch(&tmp[i + 3], scene, &min, ray, &c_tmp);
+		i += 4;
 	}
 	return (c_tmp);
+}
+
+void			ray_switch(s_figures *tmp, s_scene *scene, float *min, s_ray ray, s_color *c_tmp)
+{
+	if (tmp->specif == S_TR)
+		triangle_start(scene, tmp->content, min, ray, c_tmp);
+	else if (tmp->specif == S_SP)
+		sphere_start(scene, tmp->content, min, ray, c_tmp);
+	else if (tmp->specif == S_PL)
+		plane_start(scene, tmp->content, min, ray, c_tmp);
+	else if (tmp->specif == S_SQ)
+		sq_start(scene, tmp->content, min, ray, c_tmp);
+	else if (tmp->specif == S_CL)
+		cy_start(scene, tmp->content, min, ray, c_tmp);
 }
 
 s_color			find_color(s_scene *scene, s_ray ray, float min,
@@ -70,7 +72,7 @@ s_color			find_color(s_scene *scene, s_ray ray, float min,
 	while (tmp_light)
 	{
 		dir_to_light = subs_vectors(tmp_light->coordinates, intersec_point);
-		if (!(shadow_intersec(&scene->figures, &intersec_point, &dir_to_light)))
+		if (!(shadow_intersec(scene->figures, &intersec_point, &dir_to_light)))
 		{
 			dir_to_light = vector_normalise(dir_to_light);
 			coeff = vector_scalar_mult(*(normal), dir_to_light);
@@ -228,7 +230,7 @@ float			triangle_intersec(s_ray ray, s_triangle *triangle)
 
 	pvec = cross_prod(triangle->ac, ray.dir);
 	det = vector_scalar_mult(triangle->ab, pvec);
-	if (det < MIN_I && det > MIN_I)
+	if (det == 0)
 		return (0);
 	inv_det = 1.0 / det;
 	tvec = subs_vectors(ray.orig, triangle->a);

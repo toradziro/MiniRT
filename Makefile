@@ -27,7 +27,7 @@ SRC =		srcs/gnl/get_next_line.c \
 
 OBJS =		${SRC:.c=.o}
 
-CFLAGS	= -g -fsanitize=undefined -Werror -Wall -Wextra -msse3 -O3 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
+CFLAGS	= -g -Werror -Wall -Wextra -msse3 -O3 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
 
 FLAGS = -msse3 -O3 -Lmlx -lmlx -framework OpenGL -framework AppKit
 

@@ -84,10 +84,10 @@ int			mouse_press(int b, int x, int y, s_scene *scene)
 	ray.dir = new_vector(coefs[0], coefs[1], coefs[2]);
 	ray.dir = matrix_mult(ray.dir, scene->mtrx);
 	ray.dir = vector_normalise(ray.dir);
-	while (++i < scene->figures.length)
-		if (scene->figures.node[i].specif == S_SP)
-			if (sphere_intersect(ray, scene->figures.node[i].content) > 0)
-				sp = (s_sphere*)scene->figures.node[i].content;
+	while (++i < scene->figures->length)
+		if (scene->figures->node[i].specif == S_SP)
+			if (sphere_intersect(ray, scene->figures->node[i].content) > 0)
+				sp = (s_sphere*)scene->figures->node[i].content;
 	if (b == 1 && sp)
 		++sp->radius;
 	if (b == 2 && sp)
@@ -139,23 +139,25 @@ s_scene		*ft_init_scene(void)
 
 	if (!(scene = (s_scene*)malloc(sizeof(s_scene))))
 		killed_by_error(MALLOC_ERROR);
-	scene->height = 0;
-	scene->width = 0;
-	scene->cams = 0;
-	scene->figures.node = 0;
-	scene->lights = 0;
-	scene->ab_light = 0;
-	scene->is_amb_l = 0;
-	scene->is_cam = 0;
-	scene->is_figur = 0;
-	scene->is_light = 0;
-	scene->is_size = 0;
-	scene->is_save = 0;
-	scene->window = NULL;
-	scene->mlx = NULL;
-	scene->img.addr = 0;
-	scene->mouse_x = 0;
-	scene->mouse_y = 0;
+//	scene->height = 0;
+//	scene->width = 0;
+//	scene->cams = 0;
+//	scene->figures = 0;
+//	//scene->figures->node = 0;
+//	scene->lights = 0;
+//	scene->ab_light = 0;
+//	scene->is_amb_l = 0;
+//	scene->is_cam = 0;
+//	scene->is_figur = 0;
+//	scene->is_light = 0;
+//	scene->is_size = 0;
+//	scene->is_save = 0;
+//	scene->window = NULL;
+//	scene->mlx = NULL;
+//	scene->img.addr = 0;
+//	scene->mouse_x = 0;
+//	scene->mouse_y = 0;
+	memset(scene, 0, sizeof(s_scene));
 	return (scene);
 }
 
@@ -163,7 +165,7 @@ void		free_scene(s_scene *scene)
 {
 	free_cams(scene->cams);
 	free_light(scene->lights);
-	free_fig_test(scene->figures);
+	//free_fig_test(scene->figures);
 	free(scene->mlx);
 	free(scene->window);
 	free(scene);
