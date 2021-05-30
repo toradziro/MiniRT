@@ -1,19 +1,7 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   list_lights_func.c                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/20 19:29:45 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:30:38 by ehillman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../includes/minirt.h"
+#include "../includes/MiniRT.h"
 
 t_lights		*new_light_node(t_vector coordinates,
-				float intensity, t_color color)
+				double intensity, t_color color)
 {
 	t_lights	*new;
 	t_vector	tmp;
@@ -30,7 +18,7 @@ t_lights		*new_light_node(t_vector coordinates,
 }
 
 void			push_back_light(t_lights *list,
-				t_vector coordinates, float intensity, t_color color)
+				t_vector coordinates, double intensity, t_color color)
 {
 	t_lights	*tmp;
 

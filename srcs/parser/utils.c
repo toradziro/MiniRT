@@ -1,22 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/20 19:32:04 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 23:24:22 by ehillman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "../includes/MiniRT.h"
 
-#include "../includes/minirt.h"
-
-float		d_atoi(char *str)
+double		d_atoi(char *str)
 {
 	int		i;
 	int		sign;
-	float	res;
+	double	res;
 
 	i = 0;
 	sign = 1;
@@ -31,19 +19,19 @@ float		d_atoi(char *str)
 	while (str[i] >= '0' && str[i] <= '9' && str[i])
 		++i;
 	if (!str[i])
-		return (res * (float)sign);
+		return (res * (double)sign);
 	if (str[i] == '.')
 	{
 		++i;
 		res += parse_d_part(&str[i]);
 	}
-	return (res * (float)sign);
+	return (res * (double)sign);
 }
 
-float		parse_int_part(char *str)
+double		parse_int_part(char *str)
 {
 	int		i;
-	float	res;
+	double	res;
 
 	i = 0;
 	res = 0;
@@ -55,10 +43,10 @@ float		parse_int_part(char *str)
 	return (res);
 }
 
-float		parse_d_part(char *str)
+double		parse_d_part(char *str)
 {
 	int		i;
-	float	res;
+	double	res;
 
 	i = 0;
 	res = 0;
@@ -71,10 +59,10 @@ float		parse_d_part(char *str)
 	return (res);
 }
 
-t_color		col_parse(char *str)
+t_color			col_parse(char *str)
 {
-	t_color	res;
-	int		i;
+	t_color		res;
+	int			i;
 
 	i = 0;
 	if (str[i] < '0' || str[i] > '9')
@@ -91,16 +79,17 @@ t_color		col_parse(char *str)
 	res.g = (int)parse_int_part(&str[i]);
 	while (str[i] >= '0' && str[i] <= '9' && str[i])
 		++i;
-	if (str[i] != ',')
+	if (str[i] == ',')
+		++i;
+	else
 		killed_by_error(INV_COLOR);
-	++i;
 	if (str[i] < '0' || str[i] > '9')
 		killed_by_error(INV_COLOR);
 	res.b = (int)parse_int_part(&str[i]);
 	return (check_valid_color(&res));
 }
 
-t_color		check_valid_color(t_color *c)
+t_color			check_valid_color(t_color *c)
 {
 	if (c->r > 255)
 		c->r = 255;
@@ -115,4 +104,12 @@ t_color		check_valid_color(t_color *c)
 	if (c->b < 0)
 		c->b = 0;
 	return (*c);
+}
+
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
+{
+	char	*dst;
+
+	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	*(unsigned int*)dst = color;
 }
