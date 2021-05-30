@@ -1,18 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   figures_creation.c                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/20 19:31:18 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:47:29 by ehillman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "../includes/MiniRT.h"
 
-#include "../includes/minirt.h"
-
-t_sphere		*new_sphere(float radius, t_vector coordinates, t_color color)
+t_sphere		*new_sphere(double radius, t_vector coordinates, t_color color)
 {
 	t_sphere	*new;
 
@@ -37,7 +25,7 @@ t_plane			*new_plane(t_vector coordinates, t_vector normal, t_color color)
 }
 
 t_square		*new_square(t_vector center, t_vector normal,
-				float side, t_color color)
+				double side, t_color color)
 {
 	t_square	*new;
 
@@ -51,7 +39,7 @@ t_square		*new_square(t_vector center, t_vector normal,
 }
 
 t_cylinder		*new_cylinder(t_vector coordinates, t_vector normal,
-				float diameter, float height, t_color color)
+				double diameter, double height, t_color color)
 {
 	t_cylinder	*new;
 

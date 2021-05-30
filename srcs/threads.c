@@ -1,16 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   threads.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/20 19:46:41 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:48:09 by ehillman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "includes/minirt.h"
+#include "includes/MiniRT.h"
 
 void			threads(t_scene *scene)
 {
@@ -54,7 +42,7 @@ void			*ray_trace_thread(void *thread)
 	t_scene		*scene;
 	t_ray		ray;
 	t_color		color;
-	float		coefs[3];
+	double		coefs[3];
 	int			x_pixel;
 	int			y_pixel;
 	int			y_end;

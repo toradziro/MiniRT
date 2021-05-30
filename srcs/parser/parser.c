@@ -1,16 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/05 23:11:42 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:47:32 by ehillman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../includes/minirt.h"
+#include "../includes/MiniRT.h"
 
 void	parser(char *str, t_scene *scene)
 {
@@ -132,7 +120,7 @@ void		parse_cam(char *str, t_scene *scene)
 	t_cameras	*new;
 	t_vector	dir;
 	t_vector	coor;
-	float		fov;
+	double		fov;
 
 	str = skip_spaces(str);
 	coor = parse_coordinares(str);
@@ -155,7 +143,7 @@ void			parse_light(char *str, t_scene *scene)
 {
 	t_lights	*new;
 	t_vector	coor;
-	float		intens;
+	double		intens;
 	t_color		color;
 
 	str = skip_spaces(str);
@@ -175,7 +163,7 @@ void			parse_light(char *str, t_scene *scene)
 
 void			parse_sphere(char *str, t_scene *scene)
 {
-	float		radius;
+	double		radius;
 	t_vector	coordinates;
 	t_color		color;
 	t_sphere	*new;
@@ -224,7 +212,7 @@ void			parse_square(char *str, t_scene *scene)
 	t_square	*new;
 	t_vector	center;
 	t_vector	normal;
-	float		size;
+	double		size;
 	t_color		color;
 	t_figures	*tmp;
 
@@ -253,8 +241,8 @@ void			parse_cylinder(char *str, t_scene *scene)
 	t_vector	tmp;
 	t_vector	tmp_n;
 	t_figures	*tmp_fig;
-	float		diameter;
-	float		height;
+	double		diameter;
+	double		height;
 
 	str = skip_spaces(str);
 	tmp = parse_coordinares(str);

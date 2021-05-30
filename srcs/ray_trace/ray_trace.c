@@ -1,22 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ray_trace.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/27 21:36:02 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:47:41 by ehillman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../includes/minirt.h"
+#include "../includes/MiniRT.h"
 
 t_color			intersec(t_scene *scene, t_ray ray)
 {
 	t_color			c_tmp;
 	t_figures		*tmp;
-	float			min;
+	double			min;
 	int				i;
 	int				finish;
 
@@ -40,7 +28,7 @@ t_color			intersec(t_scene *scene, t_ray ray)
 }
 
 void			ray_switch(t_figures *tmp, t_scene *scene,
-				float *min, t_ray ray, t_color *c_tmp)
+				double *min, t_ray ray, t_color *c_tmp)
 {
 	if (tmp->specif == S_TR)
 		triangle_start(scene, tmp->content, min, ray, c_tmp);
@@ -54,13 +42,13 @@ void			ray_switch(t_figures *tmp, t_scene *scene,
 		cy_start(scene, tmp->content, min, ray, c_tmp);
 }
 
-t_color			find_color(t_scene *scene, t_ray ray, float min,
+t_color			find_color(t_scene *scene, t_ray ray, double min,
 				t_vector *normal, t_color *f_color)
 {
 	t_vector	intersec_point;
 	t_vector	dir_to_light;
 	t_lights	*tmp_light;
-	float		coeff;
+	double		coeff;
 	t_phong		phong;
 	t_color		ret_color;
 	t_color		tmp_color;
@@ -132,8 +120,8 @@ int			shadow_intersec(t_vec_fig *figures, t_vector *intersec_point,
 	int				len;
 	t_figures		*node;
 	t_ray			ray;
-	float			res;
-	float			x_one;
+	double			res;
+	double			x_one;
 	int				i;
 
 	len = figures->length;
@@ -179,13 +167,13 @@ int			shadow_intersec(t_vec_fig *figures, t_vector *intersec_point,
 	return (0);
 }
 
-float			sphere_intersect(t_ray ray, t_sphere *sp)
+double			sphere_intersect(t_ray ray, t_sphere *sp)
 {
-	float		b;
-	float		c;
-	float		discr;
-	float		x_one;
-	float		x_two;
+	double		b;
+	double		c;
+	double		discr;
+	double		x_one;
+	double		x_two;
 	t_vector	res;
 
 	if (sp)
@@ -206,11 +194,11 @@ float			sphere_intersect(t_ray ray, t_sphere *sp)
 	return (0);
 }
 
-float			plane_intersect(t_ray ray, t_plane *plane)
+double			plane_intersect(t_ray ray, t_plane *plane)
 {
-	float		denom;
+	double		denom;
 	t_vector	tmp;
-	float		t;
+	double		t;
 
 	denom = vector_scalar_mult(plane->normal, ray.dir);
 	if (ABS(denom) > MIN_I)
@@ -223,15 +211,15 @@ float			plane_intersect(t_ray ray, t_plane *plane)
 	return (0);
 }
 
-float			triangle_intersec(t_ray ray, t_triangle *triangle)
+double			triangle_intersec(t_ray ray, t_triangle *triangle)
 {
 	t_vector	pvec;
 	t_vector	tvec;
-	float		u;
-	float		det;
-	float		inv_det;
+	double		u;
+	double		det;
+	double		inv_det;
 	t_vector	qvec;
-	float		v;
+	double		v;
 
 	pvec = cross_prod(triangle->ac, ray.dir);
 	det = vector_scalar_mult(triangle->ab, pvec);
@@ -252,14 +240,14 @@ float			triangle_intersec(t_ray ray, t_triangle *triangle)
 	return (0);
 }
 
-float			square_intersec(t_ray ray, t_square *sq, float min_t)
+double			square_intersec(t_ray ray, t_square *sq, double min_t)
 {
 	t_cam_to_w	b;
 	t_vector	intersec_point;
 	t_vector	a_p;
-	float		res;
-	float		tmp_1;
-	float		tmp_2;
+	double		res;
+	double		tmp_1;
+	double		tmp_2;
 
 	min_t = 0;
 	res = 0;
@@ -277,19 +265,19 @@ float			square_intersec(t_ray ray, t_square *sq, float min_t)
 	return (res);
 }
 
-float			cy_intersect(t_ray ray, t_cylinder *cy)
+double			cy_intersect(t_ray ray, t_cylinder *cy)
 {
 	t_vector	co;
 	t_vector	ap_one;
 	t_vector	ap_two;
-	float		d_one;
-	float		d_two;
-	float		a;
-	float		b;
-	float		c;
-	float		det;
-	float		x_one;
-	float		x_two;
+	double		d_one;
+	double		d_two;
+	double		a;
+	double		b;
+	double		c;
+	double		det;
+	double		x_one;
+	double		x_two;
 
 	if (cy)
 	{
@@ -324,7 +312,7 @@ float			cy_intersect(t_ray ray, t_cylinder *cy)
 	return (0);
 }
 
-t_vector		find_cy_normal(float intersec, t_cylinder cy, t_ray ray)
+t_vector		find_cy_normal(double intersec, t_cylinder cy, t_ray ray)
 {
 	t_vector	intersec_point;
 	t_vector	cp;
@@ -339,7 +327,7 @@ t_vector		find_cy_normal(float intersec, t_cylinder cy, t_ray ray)
 	return (normal);
 }
 
-t_color	multip_color(t_color *color, float coeff)
+t_color	multip_color(t_color *color, double coeff)
 {
 	t_color		res;
 

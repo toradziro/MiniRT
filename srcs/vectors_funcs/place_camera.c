@@ -1,16 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   place_camera.c                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/20 19:37:26 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:40:08 by ehillman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../includes/minirt.h"
+#include "../includes/MiniRT.h"
 
 t_cam_to_w			matrix_place(t_vector coor, t_vector dir)
 {
@@ -51,7 +39,7 @@ t_vector			matrix_mult(t_vector vec, t_cam_to_w m)
 	return (v);
 }
 
-float				vec_matrix_mult_first_row(t_vector vec, t_cam_to_w c)
+double				vec_matrix_mult_first_row(t_vector vec, t_cam_to_w c)
 {
 	t_vector		tmp;
 
@@ -60,7 +48,7 @@ float				vec_matrix_mult_first_row(t_vector vec, t_cam_to_w c)
 	return (vector_scalar_mult(vec, tmp));
 }
 
-float				vec_matrix_mult_second_row(t_vector vec, t_cam_to_w c)
+double				vec_matrix_mult_second_row(t_vector vec, t_cam_to_w c)
 {
 	t_vector		tmp;
 

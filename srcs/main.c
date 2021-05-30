@@ -1,16 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/27 21:37:17 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:48:02 by ehillman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "includes/minirt.h"
+#include "includes/MiniRT.h"
 
 int			main(int argc, char **argv)
 {
@@ -70,7 +58,7 @@ void	check_scene(t_scene *scene)
 int			mouse_press(int b, int x, int y, t_scene *scene)
 {
 	t_ray		ray;
-	float		coefs[3];
+	double		coefs[3];
 	int			i;
 	t_sphere	*sp;
 

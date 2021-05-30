@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   MiniRT.h                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/20 19:22:04 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:51:33 by ehillman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MINIRT_H
 # define MINIRT_H
 # include "mlx.h"
@@ -78,24 +66,24 @@ enum	e_spec
 
 void		killed_by_error(int num);
 void		check_valid_name(char *str);
-float		d_atoi(char *str);
-float		parse_int_part(char *str);
-float		parse_d_part(char *str);
+double		d_atoi(char *str);
+double		parse_int_part(char *str);
+double		parse_d_part(char *str);
 t_color		col_parse(char *str);
 t_color		check_valid_color(t_color *c);
 t_scene		*ft_init_scene(void);
 void		free_scene(t_scene *scene);
 
 t_color		find_color(t_scene *scene, t_ray ray,
-			float min, t_vector *normal, t_color *f_color);
+			double min, t_vector *normal, t_color *f_color);
 t_color		intersec(t_scene *scene, t_ray ray);
 void		ray_switch(t_figures *tmp, t_scene
-			*scene, float *min, t_ray ray, t_color *c_tmp);
+			*scene, double *min, t_ray ray, t_color *c_tmp);
 
 int			shadow_intersec(t_vec_fig *figures, t_vector
 			*intersec_point, t_vector *dir_to_light);
 
-t_color		multip_color(t_color *color, float coeff);
+t_color		multip_color(t_color *color, double coeff);
 t_color		add_color(t_color *color, t_color *color_s);
 t_color		shad_color(t_color *figur, t_color *ab_light);
 

@@ -1,22 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/20 19:32:04 by ehillman          #+#    #+#             */
-/*   Updated: 2021/03/20 19:47:36 by ehillman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "../includes/MiniRT.h"
 
-#include "../includes/minirt.h"
-
-float		d_atoi(char *str)
+double		d_atoi(char *str)
 {
 	int		i;
 	int		sign;
-	float	res;
+	double	res;
 
 	i = 0;
 	sign = 1;
@@ -31,19 +19,19 @@ float		d_atoi(char *str)
 	while (str[i] >= '0' && str[i] <= '9' && str[i])
 		++i;
 	if (!str[i])
-		return (res * (float)sign);
+		return (res * (double)sign);
 	if (str[i] == '.')
 	{
 		++i;
 		res += parse_d_part(&str[i]);
 	}
-	return (res * (float)sign);
+	return (res * (double)sign);
 }
 
-float		parse_int_part(char *str)
+double		parse_int_part(char *str)
 {
 	int		i;
-	float	res;
+	double	res;
 
 	i = 0;
 	res = 0;
@@ -55,10 +43,10 @@ float		parse_int_part(char *str)
 	return (res);
 }
 
-float		parse_d_part(char *str)
+double		parse_d_part(char *str)
 {
 	int		i;
-	float	res;
+	double	res;
 
 	i = 0;
 	res = 0;
