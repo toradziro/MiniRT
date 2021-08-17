@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   save_to_bmp.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/20 19:45:18 by ehillman          #+#    #+#             */
+/*   Updated: 2021/03/20 19:56:28 by ehillman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "includes/MiniRT.h"
 
 void		save_to_bmp(t_scene *scene)
@@ -26,20 +38,20 @@ void		init_head(char *head, t_scene *scene, int file_size)
 {
 	head[0] = 'B';
 	head[1] = 'M';
-	head[2] = (char)(file_size);
-	head[3] = (char)(file_size >> 8);
-	head[4] = (char)(file_size >> 16);
-	head[5] = (char)(file_size >> 24);
+	head[2] = (unsigned char)(file_size);
+	head[3] = (unsigned char)(file_size >> 8);
+	head[4] = (unsigned char)(file_size >> 16);
+	head[5] = (unsigned char)(file_size >> 24);
 	head[10] = 54;
 	head[14] = 40;
-	head[18] = (char)(scene->width);
-	head[19] = (char)(scene->width >> 8);
-	head[20] = (char)(scene->width >> 16);
-	head[21] = (char)(scene->width >> 24);
-	head[22] = (char)(scene->height);
-	head[23] = (char)(scene->height >> 8);
-	head[24] = (char)(scene->height >> 16);
-	head[25] = (char)(scene->height >> 24);
+	head[18] = (unsigned char)(scene->width);
+	head[19] = (unsigned char)(scene->width >> 8);
+	head[20] = (unsigned char)(scene->width >> 16);
+	head[21] = (unsigned char)(scene->width >> 24);
+	head[22] = (unsigned char)(scene->height);
+	head[23] = (unsigned char)(scene->height >> 8);
+	head[24] = (unsigned char)(scene->height >> 16);
+	head[25] = (unsigned char)(scene->height >> 24);
 	head[26] = 1;
 	head[28] = 32;
 }

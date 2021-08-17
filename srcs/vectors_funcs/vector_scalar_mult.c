@@ -1,15 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   vector_scalar_mult.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/20 19:37:56 by ehillman          #+#    #+#             */
+/*   Updated: 2021/03/20 19:38:35 by ehillman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/MiniRT.h"
 
-double			vector_scalar_mult(t_vector a, t_vector b)
+float			vector_scalar_mult(t_vector a, t_vector b)
 {
-	double		res;
+	float		res;
 
 	res = 0;
 	res = a.v_x * b.v_x + a.v_y * b.v_y + a.v_z * b.v_z;
 	return (res);
 }
 
-t_vector		vector_by_scalar(t_vector a, double num)
+t_vector		vector_by_scalar(t_vector a, float num)
 {
 	t_vector	res;
 

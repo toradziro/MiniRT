@@ -1,12 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   interset.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ehillman <ehillman@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/20 19:24:35 by ehillman          #+#    #+#             */
+/*   Updated: 2021/03/20 19:24:44 by ehillman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/MiniRT.h"
 
 void			sphere_start(t_scene *scene, t_sphere *sp,
-				double *min, t_ray ray, t_color *c_tmp)
+				float *min, t_ray ray, t_color *c_tmp)
 {
 	t_sphere	*sphere_tmp;
 	t_vector	intersec_point;
 	t_vector	normal;
-	double		intersec;
+	float		intersec;
 
 	intersec = sphere_intersect(ray, sp);
 	sphere_tmp = sp;
@@ -22,10 +34,10 @@ void			sphere_start(t_scene *scene, t_sphere *sp,
 }
 
 void			plane_start(t_scene *scene, t_plane *pl,
-				double *min, t_ray ray, t_color *c_tmp)
+				float *min, t_ray ray, t_color *c_tmp)
 {
 	t_plane		*plane_tmp;
-	double		intersec;
+	float		intersec;
 
 	plane_tmp = pl;
 	intersec = plane_intersect(ray, plane_tmp);
@@ -40,9 +52,9 @@ void			plane_start(t_scene *scene, t_plane *pl,
 }
 
 void			triangle_start(t_scene *scene, t_triangle *tr,
-				double *min, t_ray ray, t_color *c_tmp)
+				float *min, t_ray ray, t_color *c_tmp)
 {
-	double		intersec;
+	float		intersec;
 	t_triangle *triangle_tmp;
 	t_vector	normal;
 
@@ -60,9 +72,9 @@ void			triangle_start(t_scene *scene, t_triangle *tr,
 }
 
 void			sq_start(t_scene *scene, t_square *sq,
-				double *min, t_ray ray, t_color *c_tmp)
+				float *min, t_ray ray, t_color *c_tmp)
 {
-	double		intersec;
+	float		intersec;
 	t_square	*square_tmp;
 
 	square_tmp = sq;
@@ -78,9 +90,9 @@ void			sq_start(t_scene *scene, t_square *sq,
 }
 
 void			cy_start(t_scene *scene, t_cylinder *cy,
-				double *min, t_ray ray, t_color *c_tmp)
+				float *min, t_ray ray, t_color *c_tmp)
 {
-	double		intersec;
+	float		intersec;
 	t_vector	normal;
 
 	intersec = cy_intersect(ray, cy);
