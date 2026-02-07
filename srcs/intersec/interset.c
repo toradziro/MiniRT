@@ -78,7 +78,7 @@ void			sq_start(t_scene *scene, t_square *sq,
 	t_square	*square_tmp;
 
 	square_tmp = sq;
-	intersec = square_intersec(ray, square_tmp, *(min));
+	intersec = square_intersec(ray, square_tmp);
 	if (intersec < *(min) && intersec > MIN_I)
 	{
 		if (vector_scalar_mult(ray.dir, square_tmp->normal) > 0)

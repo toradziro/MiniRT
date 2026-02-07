@@ -33,16 +33,16 @@ OBJS =		${SRC:.c=.o}
 
 CFLAGS	= -Werror -Wall -Wextra -O2 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
 
-FLAGS = -O2 -Lmlx -lmlx -framework OpenGL -framework AppKit
+FLAGS = -O2 -lX11 -lXext -L. -lmlx -lm
 
 RM =		rm -rf
 
 CC =		gcc
 
-NUM_THREADS = $(shell sysctl -n hw.ncpu)
+NUM_THREADS = 4
 
 $(NAME):	$(OBJS)
-			#cd mlx && $(MAKE) && mv libmlx.dylib ..
+			cd mlx/X11 && $(MAKE) && mv libmlx.a ../..
 			$(CC) $(CFLAGS) $(OBJS) $(FLAGS) libmlx.a -o $(NAME)
 
 all:		$(NAME)

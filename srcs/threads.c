@@ -14,11 +14,9 @@
 
 void			threads(t_scene *scene)
 {
-	int			i;
 	t_thread	thread_id[THREADS_MAX];
 	pthread_t	thread[THREADS_MAX];
 
-	i = 0;
 	scene->img.img = mlx_new_image(scene->mlx, scene->width, scene->height);
 	scene->img.addr = mlx_get_data_addr(scene->img.img,
 					&scene->img.bits_per_pixel, &scene->img.line_length,

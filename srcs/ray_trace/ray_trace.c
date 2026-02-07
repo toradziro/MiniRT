@@ -152,7 +152,7 @@ int			shadow_intersec(t_vec_fig *figures, t_vector *intersec_point,
 		}
 		else if (node[i].specif == S_SQ)
 		{
-			res = square_intersec(ray, (t_square*)node[i].content, x_one);
+			res = square_intersec(ray, (t_square*)node[i].content);
 			if (res < x_one && res > MIN_I)
 				return (1);
 		}
@@ -246,7 +246,7 @@ float			triangle_intersec(t_ray ray, t_triangle *triangle)
 	return (0);
 }
 
-float			square_intersec(t_ray ray, t_square *sq, float min_t)
+float			square_intersec(t_ray ray, t_square *sq)
 {
 	t_cam_to_w	b;
 	t_vector	intersec_point;
@@ -255,7 +255,6 @@ float			square_intersec(t_ray ray, t_square *sq, float min_t)
 	float		tmp_1;
 	float		tmp_2;
 
-	min_t = 0;
 	res = 0;
 	if ((res = plane_intersect(ray, (t_plane*)sq)) > 0)
 	{

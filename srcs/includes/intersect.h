@@ -27,7 +27,7 @@ t_vector		find_cy_normal(float intersec, t_cylinder cy, t_ray ray);
 float			sphere_intersect(t_ray ray, t_sphere *sp);
 float			plane_intersect(t_ray ray, t_plane *plane);
 float			triangle_intersec(t_ray ray, t_triangle *triangle);
-float			square_intersec(t_ray ray, t_square *sq, float min_t);
+float			square_intersec(t_ray ray, t_square *sq);
 float			cy_intersect(t_ray ray, t_cylinder *cy);
 
 #endif
