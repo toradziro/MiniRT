@@ -25,6 +25,8 @@ SRC =		srcs/lists_funcs/list_camera_funcs.c \
 			srcs/save_to_bmp.c \
 			srcs/hooks_utils.c \
 			srcs/arena/arena.c \
+			srcs/string/rt_string.c \
+			srcs/file/rt_file.c \
 			srcs/main.c
 
 OBJS =		${SRC:.c=.o}

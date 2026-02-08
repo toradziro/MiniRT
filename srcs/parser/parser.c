@@ -11,8 +11,88 @@
 /* ************************************************************************** */
 
 #include "../includes/MiniRT.h"
+#include "../string/rt_string.h"
+#include "../file/rt_file.h"
 
-void			parser(char *str, t_scene *scene)
+typedef struct s_primitives_amount
+{
+    i32 lights_count;
+    i32 figures_count;
+    i32 cams_count;
+} primitives_amount;
+
+primitives_amount calculate_primitives(str8 file, t_memory_arena* arena)
+{
+    primitives_amount amount;
+
+    u32 curr = 0;
+   	while (curr < file.size)
+	{
+	    str8 line = get_next_line(file, &curr, arena);
+		if (!line.mem[0] || line.mem[0] == '#')
+		{
+			continue;
+		}
+        if (line.mem[0] == 'c' && line.mem[1] == 'y')
+        {
+            ++amount.figures_count;
+        }
+        else if (line.mem[0] == 'c')
+        {
+            ++amount.cams_count;
+        }
+        else if (line.mem[0] == 'l')
+        {
+            ++amount.lights_count;
+        }
+        else if (line.mem[0] == 's' && line.mem[1] == 'p')
+        {
+            ++amount.figures_count;
+        }
+        else if (line.mem[0] == 'p' && line.mem[1] == 'l')
+        {
+            ++amount.figures_count;
+        }
+        else if (line.mem[0] == 's' && line.mem[1] == 'q')
+        {
+            ++amount.figures_count;
+        }
+        else if (line.mem[0] == 't' && line.mem[1] == 'r')
+        {
+            ++amount.figures_count;
+        }
+        arena_pop(arena, line.size);
+	}
+    return amount;
+}
+
+void			start_parse(t_scene *scene, const char* path, t_memory_arena* arena)
+{
+	str8    file;
+	arena = arena;
+
+	//-- Read full file
+	file = read_full_file(path);
+	primitives_amount amount = calculate_primitives(file, arena);
+	amount = amount;
+
+	// preallocate_memory();
+	u32 curr = 0;
+	while (curr < file.size)
+	{
+	    str8 line = get_next_line(file, &curr, arena);
+		if (!line.mem[0] || line.mem[0] == '#')
+		{
+			continue ;
+		}
+		parse_primitives((char*)line.mem, scene);
+		arena_pop(arena, line.size);
+	}
+
+	clean_file(&file);
+}
+
+void			parse_primitives(char *str, t_scene *scene)
 {
 	if (str[0] == 'c' && str[1] == 'y')
 		parse_cylinder(str + 2, scene);

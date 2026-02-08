@@ -42,7 +42,7 @@ typedef struct		s_scene {
 	bool            is_running;
 }					t_scene;
 
-void				parser(char *str, t_scene *scene);
+void				parse_primitives(char *str, t_scene *scene);
 void				start_parse(t_scene *scene, const char* path, t_memory_arena* arena);
 char				*skip_spaces(char *str);
 char				*skip_pattern(char *str);

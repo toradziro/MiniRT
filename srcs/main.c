@@ -15,22 +15,13 @@
 #include "includes/my_types.h"
 #include "includes/parser.h"
 #include "includes/threads.h"
-# include "arena/arena.h"
+#include "arena/arena.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
 #include <x86intrin.h>
 #include <stdio.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-
-typedef struct s_primitives_amount
-{
-    i32 lights_count;
-    i32 figures_count;
-    i32 cams_count;
-} t_primitives_amount;
 
 void handle_event(SDL_Event* event, t_scene* scene)
 {
@@ -152,170 +143,6 @@ int				main(int argc, char **argv)
 	SDL_DestroyWindow(scene.window);
 	destroy_arena(&global_arena);
 	return (0);
-}
-
-typedef struct s_str8
-{
-    u32     size;
-    u8*     mem;
-} str8;
-
-str8 read_full_file(const char *path)
-{
-    int fd = open(path, O_RDONLY);
-
-    str8 ret;
-    ret.mem = NULL;
-    ret.size = 0;
-
-    if (fd < 0)
-    {
-        printf("Error opening a file read_full_file %s", path);
-        return ret;
-    }
-
-    struct stat st;
-    fstat(fd, &st);
-
-    ret.mem = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-    ret.size = st.st_size;
-    close(fd);
-
-    if (ret.mem == MAP_FAILED)
-    {
-        printf("Error opening a file read_full_file %s", path);
-        return ret;
-    }
-
-    return ret;
-}
-
-void clean_file(str8* file)
-{
-    munmap(file->mem, file->size);
-    file->mem = NULL;
-    file->size = 0;
-}
-
-str8 get_next_line(str8 file, u32* curr, t_memory_arena* arena)
-{
-    str8 out = {0, NULL};
-
-    if (!curr || !arena || *curr >= file.size)
-        return out; // EOF / invalid
-
-    u32 start = *curr;
-    u32 i = start;
-
-    //-- find end of line
-    while (i < file.size && file.mem[i] != '\n')
-    {
-        i++;
-    }
-
-    //-- len without '\n'
-    u32 len = i - start;
-
-    //-- win capable
-    if (len > 0 && file.mem[start + len - 1] == '\r')
-        len--;
-
-    //-- we want \0 so we need allocation
-    //-- TODO: Switch api on size in str8
-    u8* dst = (u8*)arena_push(arena, len + 1);
-    if (!dst)
-    {
-        return out;
-    }
-
-    // copy
-    if (len > 0)
-    {
-        memcpy(dst, file.mem + start, len);
-    }
-
-    dst[len] = 0;
-
-    out.mem = dst;
-    out.size = len;
-
-    // move cursor after \n
-    if (i < file.size && file.mem[i] == '\n')
-    {
-        i++;
-    }
-
-    *curr = i;
-    return out;
-}
-
-void			start_parse(t_scene *scene, const char* path, t_memory_arena* arena)
-{
-	str8        file;
-	arena = arena;
-
-	t_primitives_amount amount;
-	amount.cams_count = 0;
-	amount.lights_count = 0;
-	amount.figures_count = 0;
-
-	//-- Read full file
-	file = read_full_file(path);
-	u32 curr = 0;
-	while (curr < file.size)
-	{
-	    str8 line = get_next_line(file, &curr, arena);
-		if (!line.mem[0] || line.mem[0] == '#')
-		{
-			continue;
-		}
-
-        if (line.mem[0] == 'c' && line.mem[1] == 'y')
-        {
-            ++amount.figures_count;
-        }
-        else if (line.mem[0] == 'c')
-        {
-            ++amount.cams_count;
-        }
-        else if (line.mem[0] == 'l')
-        {
-            ++amount.lights_count;
-        }
-        else if (line.mem[0] == 's' && line.mem[1] == 'p')
-        {
-            ++amount.figures_count;
-        }
-        else if (line.mem[0] == 'p' && line.mem[1] == 'l')
-        {
-            ++amount.figures_count;
-        }
-        else if (line.mem[0] == 's' && line.mem[1] == 'q')
-        {
-            ++amount.figures_count;
-        }
-        else if (line.mem[0] == 't' && line.mem[1] == 'r')
-        {
-            ++amount.figures_count;
-        }
-        arena_pop(arena, line.size);
-	}
-
-	// preallocate_memory();
-
-	curr = 0;
-	while (curr < file.size)
-	{
-	    str8 line = get_next_line(file, &curr, arena);
-		if (!line.mem[0] || line.mem[0] == '#')
-		{
-			continue ;
-		}
-		parser((char*)line.mem, scene);
-		arena_pop(arena, line.size);
-	}
-
-	clean_file(&file);
 }
 
 int				exit_rt(t_scene *scene)

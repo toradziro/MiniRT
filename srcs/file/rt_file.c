@@ -1,0 +1,43 @@
+#include "rt_file.h"
+#include <unistd.h>
+#include <stdio.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+str8 read_full_file(const char *path)
+{
+    int fd = open(path, O_RDONLY);
+
+    str8 ret;
+    ret.mem = NULL;
+    ret.size = 0;
+
+    if (fd < 0)
+    {
+        printf("Error opening a file read_full_file %s", path);
+        return ret;
+    }
+
+    struct stat st;
+    fstat(fd, &st);
+
+    ret.mem = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+    ret.size = st.st_size;
+    close(fd);
+
+    if (ret.mem == MAP_FAILED)
+    {
+        printf("Error opening a file read_full_file %s", path);
+        return ret;
+    }
+
+    return ret;
+}
+
+void clean_file(str8* file)
+{
+    munmap(file->mem, file->size);
+    file->mem = NULL;
+    file->size = 0;
+}
