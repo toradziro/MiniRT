@@ -11,14 +11,26 @@
 /* ************************************************************************** */
 
 #include "includes/MiniRT.h"
+#include "arena/arena.h"
+#include "includes/my_types.h"
 #include "includes/parser.h"
 #include "includes/threads.h"
+# include "arena/arena.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
 #include <x86intrin.h>
 #include <stdio.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+
+typedef struct s_primitives_amount
+{
+    i32 lights_count;
+    i32 figures_count;
+    i32 cams_count;
+} t_primitives_amount;
 
 void handle_event(SDL_Event* event, t_scene* scene)
 {
@@ -43,7 +55,6 @@ void handle_event(SDL_Event* event, t_scene* scene)
            	press_key(event->key.keysym, scene);
         } break;
     }
-   	// mlx_hook(scene->window, 4, 0, mouse_press, scene);
 }
 
 u64 time_ms(void)
@@ -56,32 +67,34 @@ u64 time_ms(void)
 
 int				main(int argc, char **argv)
 {
-	t_scene		*scene;
-	int			fd;
+    t_memory_arena  global_arena = create_arena(GB(1));
+	t_scene		    scene;
+
+	memset(&scene, 0, sizeof(scene));
 
 	if (argc != 2 && argc != 3)
+	{
 		killed_by_error(INV_AM_OF_ARG);
+	}
 	check_valid_name(argv[1]);
-	scene = ft_init_scene();
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 	    //-- TODO: Add new error
 		killed_by_error(MALLOC_ERROR);
 	}
-	fd = open(argv[1], O_RDONLY);
-	start_parse(scene, fd);
-	check_scene(scene);
+	start_parse(&scene, argv[1], &global_arena);
+	check_scene(&scene);
 	SDL_Window *sdl_window = SDL_CreateWindow("MiniRT",
                               SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED,
-                              scene->width,
-                              scene->height,
+                              scene.width,
+                              scene.height,
                               /*SDL_WINDOW_RESIZABLE*/ 0);
-	scene->window = sdl_window;
+	scene.window = sdl_window;
 
 	if (argc == 3 && !strcmp(argv[2], "--save"))
 	{
-		scene->is_save = 1;
+		scene.is_save = 1;
 	}
 	else if (argc == 3 && strcmp(argv[2], "--save"))
 	{
@@ -89,17 +102,17 @@ int				main(int argc, char **argv)
 	}
 
 	//-- TODO: change to mmap
-	scene->pixels = malloc(scene->width * scene->height * sizeof(int));
+	scene.pixels = malloc(scene.width * scene.height * sizeof(int));
 	SDL_Renderer *sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
 	//-- TODO: recreate on window resize
 	SDL_Texture* backbuffer_texture = SDL_CreateTexture(sdl_renderer,
                                          SDL_PIXELFORMAT_ARGB8888,
                                          SDL_TEXTUREACCESS_STREAMING,
-                                         scene->width,
-                                         scene->height);
+                                         scene.width,
+                                         scene.height);
 
-	scene->is_running = true;
-	while (scene->is_running)
+	scene.is_running = true;
+	while (scene.is_running)
 	{
 	    const u64 clocks_start = __rdtsc();
 		const u64 time_frame_start = time_ms();
@@ -108,14 +121,15 @@ int				main(int argc, char **argv)
         SDL_Event event;
         while(SDL_PollEvent(&event))
         {
-            handle_event(&event, scene);
+            handle_event(&event, &scene);
         }
-    	threads(scene);
+        //-- TODO: Rename to render
+    	threads(&scene);
 
         if (SDL_UpdateTexture(backbuffer_texture,
                             0,
-                            scene->pixels,
-                            scene->width * sizeof(int)))
+                            scene.pixels,
+                            scene.width * sizeof(int)))
         {
             //-- TODO: Do something about this error!
             printf("!SDL_UpdateTexture() error!");
@@ -133,29 +147,175 @@ int				main(int argc, char **argv)
         const u64 clocks_end = __rdtsc();
         printf("MCl: %lu -- MS: %lu -- FPS: %lu\n", (clocks_end - clocks_start) / 1000, time_elapsed, 1000 / time_elapsed);
 	}
-	free_scene(scene);
 	SDL_DestroyTexture(backbuffer_texture);
 	SDL_DestroyRenderer(sdl_renderer);
-	SDL_DestroyWindow(scene->window);
+	SDL_DestroyWindow(scene.window);
+	destroy_arena(&global_arena);
 	return (0);
 }
 
-void			start_parse(t_scene *scene, int fd)
+typedef struct s_str8
 {
-	char		*line;
-	char		*tmp;
+    u32     size;
+    u8*     mem;
+} str8;
 
-	while (get_next_line(fd, &line))
+str8 read_full_file(const char *path)
+{
+    int fd = open(path, O_RDONLY);
+
+    str8 ret;
+    ret.mem = NULL;
+    ret.size = 0;
+
+    if (fd < 0)
+    {
+        printf("Error opening a file read_full_file %s", path);
+        return ret;
+    }
+
+    struct stat st;
+    fstat(fd, &st);
+
+    ret.mem = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+    ret.size = st.st_size;
+    close(fd);
+
+    if (ret.mem == MAP_FAILED)
+    {
+        printf("Error opening a file read_full_file %s", path);
+        return ret;
+    }
+
+    return ret;
+}
+
+void clean_file(str8* file)
+{
+    munmap(file->mem, file->size);
+    file->mem = NULL;
+    file->size = 0;
+}
+
+str8 get_next_line(str8 file, u32* curr, t_memory_arena* arena)
+{
+    str8 out = {0, NULL};
+
+    if (!curr || !arena || *curr >= file.size)
+        return out; // EOF / invalid
+
+    u32 start = *curr;
+    u32 i = start;
+
+    //-- find end of line
+    while (i < file.size && file.mem[i] != '\n')
+    {
+        i++;
+    }
+
+    //-- len without '\n'
+    u32 len = i - start;
+
+    //-- win capable
+    if (len > 0 && file.mem[start + len - 1] == '\r')
+        len--;
+
+    //-- we want \0 so we need allocation
+    //-- TODO: Switch api on size in str8
+    u8* dst = (u8*)arena_push(arena, len + 1);
+    if (!dst)
+    {
+        return out;
+    }
+
+    // copy
+    if (len > 0)
+    {
+        memcpy(dst, file.mem + start, len);
+    }
+
+    dst[len] = 0;
+
+    out.mem = dst;
+    out.size = len;
+
+    // move cursor after \n
+    if (i < file.size && file.mem[i] == '\n')
+    {
+        i++;
+    }
+
+    *curr = i;
+    return out;
+}
+
+void			start_parse(t_scene *scene, const char* path, t_memory_arena* arena)
+{
+	str8        file;
+	arena = arena;
+
+	t_primitives_amount amount;
+	amount.cams_count = 0;
+	amount.lights_count = 0;
+	amount.figures_count = 0;
+
+	//-- Read full file
+	file = read_full_file(path);
+	u32 curr = 0;
+	while (curr < file.size)
 	{
-		if (!line[0] || line[0] == '#')
+	    str8 line = get_next_line(file, &curr, arena);
+		if (!line.mem[0] || line.mem[0] == '#')
 		{
-			free(line);
+			continue;
+		}
+
+        if (line.mem[0] == 'c' && line.mem[1] == 'y')
+        {
+            ++amount.figures_count;
+        }
+        else if (line.mem[0] == 'c')
+        {
+            ++amount.cams_count;
+        }
+        else if (line.mem[0] == 'l')
+        {
+            ++amount.lights_count;
+        }
+        else if (line.mem[0] == 's' && line.mem[1] == 'p')
+        {
+            ++amount.figures_count;
+        }
+        else if (line.mem[0] == 'p' && line.mem[1] == 'l')
+        {
+            ++amount.figures_count;
+        }
+        else if (line.mem[0] == 's' && line.mem[1] == 'q')
+        {
+            ++amount.figures_count;
+        }
+        else if (line.mem[0] == 't' && line.mem[1] == 'r')
+        {
+            ++amount.figures_count;
+        }
+        arena_pop(arena, line.size);
+	}
+
+	// preallocate_memory();
+
+	curr = 0;
+	while (curr < file.size)
+	{
+	    str8 line = get_next_line(file, &curr, arena);
+		if (!line.mem[0] || line.mem[0] == '#')
+		{
 			continue ;
 		}
-		tmp = line;
-		parser(tmp, scene);
-		free(line);
+		parser((char*)line.mem, scene);
+		arena_pop(arena, line.size);
 	}
+
+	clean_file(&file);
 }
 
 int				exit_rt(t_scene *scene)

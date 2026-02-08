@@ -2,9 +2,7 @@ NAME =		MiniRT
 
 HEAD =		./srcs/includes/
 
-SRC =		srcs/gnl/get_next_line.c \
-			srcs/gnl/get_next_line_utils.c \
-			srcs/lists_funcs/list_camera_funcs.c \
+SRC =		srcs/lists_funcs/list_camera_funcs.c \
 			srcs/lists_funcs/list_figures_funcs.c \
 			srcs/lists_funcs/list_lights_func.c \
 			srcs/parser/parser.c \
@@ -26,14 +24,14 @@ SRC =		srcs/gnl/get_next_line.c \
 			srcs/intersec/interset.c \
 			srcs/save_to_bmp.c \
 			srcs/hooks_utils.c \
-			srcs/scene_utils.c \
+			srcs/arena/arena.c \
 			srcs/main.c
 
 OBJS =		${SRC:.c=.o}
 
-CFLAGS	= -Werror -Wall -Wextra -O2 -I $(HEAD) `sdl2-config --cflags --libs` -D THREADS_MAX=$(NUM_THREADS)
+CFLAGS	= -Werror -Wall -Wextra -fsanitize=address -g -I $(HEAD) `sdl2-config --cflags --libs` -D THREADS_MAX=$(NUM_THREADS)
 
-FLAGS = -O2 -lm
+FLAGS = -lm
 
 RM =		rm -rf
 

@@ -15,6 +15,7 @@
 # include "figures.h"
 # include "lists.h"
 # include "array.h"
+# include "../arena/arena.h"
 # include <SDL2/SDL.h>
 # include <stdint.h>
 # include <stdbool.h>
@@ -42,7 +43,7 @@ typedef struct		s_scene {
 }					t_scene;
 
 void				parser(char *str, t_scene *scene);
-void				start_parse(t_scene *scene, int fd);
+void				start_parse(t_scene *scene, const char* path, t_memory_arena* arena);
 char				*skip_spaces(char *str);
 char				*skip_pattern(char *str);
 char				*skip_nums(char *str);

@@ -17,7 +17,6 @@
 # include "lists.h"
 # include "colors.h"
 # include "parser.h"
-# include "../gnl/get_next_line.h"
 # include "array.h"
 # include "intersect.h"
 # include "my_types.h"
@@ -72,7 +71,6 @@ float		parse_int_part(char *str);
 float		parse_d_part(char *str);
 t_color		col_parse(char *str);
 t_color		check_valid_color(t_color *c);
-t_scene		*ft_init_scene(void);
 void		free_scene(t_scene *scene);
 
 t_color		find_color(t_scene *scene, t_ray ray,
