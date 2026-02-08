@@ -11,9 +11,15 @@
 /* ************************************************************************** */
 
 #include "includes/MiniRT.h"
+#include <x86intrin.h>
+#include <stdint.h>
+#include <stdio.h>
+
+typedef uint64_t u64;
 
 void			threads(t_scene *scene)
 {
+    const u64 clocks_start = __rdtsc();
 	t_thread	thread_id[THREADS_MAX];
 	pthread_t	thread[THREADS_MAX];
 
@@ -31,6 +37,8 @@ void			threads(t_scene *scene)
 		exit_rt(scene);
 	}
 	mlx_put_image_to_window(scene->mlx, scene->window, scene->img.img, 0, 0);
+	const u64 clocks_end = __rdtsc();
+	printf("MCl per frame: %lu\n", (clocks_end - clocks_start) / 1000);
 }
 
 void			threads_start(t_thread *thread_id,
