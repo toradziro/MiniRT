@@ -41,13 +41,12 @@ t_vector			matrix_mult(t_vector vec, t_cam_to_w m)
 {
 	t_vector		v;
 
-	v = new_vector(0, 0, 0);
-	v.v_x = vec.v_x * m.matrix[0][0] + vec.v_y * m.matrix[1][0] +
-			vec.v_z * m.matrix[2][0] + m.matrix[3][0];
-	v.v_y = vec.v_x * m.matrix[0][1] + vec.v_y * m.matrix[1][1] +
-			vec.v_z * m.matrix[2][1] + m.matrix[3][1];
-	v.v_z = vec.v_x * m.matrix[0][2] + vec.v_y * m.matrix[1][2] +
-			vec.v_z * m.matrix[2][2] + m.matrix[3][2];
+	t_vector col0 = new_vector(m.matrix[0][0], m.matrix[1][0], m.matrix[2][0]);
+	t_vector col1 = new_vector(m.matrix[0][1], m.matrix[1][1], m.matrix[2][1]);
+	t_vector col2 = new_vector(m.matrix[0][2], m.matrix[1][2], m.matrix[2][2]);
+	v.v_x = vector_scalar_mult(vec, col0) + m.matrix[3][0];
+	v.v_y = vector_scalar_mult(vec, col1) + m.matrix[3][1];
+	v.v_z = vector_scalar_mult(vec, col2) + m.matrix[3][2];
 	return (vector_normalise(v));
 }
 
@@ -55,7 +54,6 @@ float				vec_matrix_mult_first_row(t_vector vec, t_cam_to_w c)
 {
 	t_vector		tmp;
 
-	tmp = new_vector(0, 0, 0);
 	tmp = new_vector(c.matrix[0][0], c.matrix[0][1], c.matrix[0][2]);
 	return (vector_scalar_mult(vec, tmp));
 }
@@ -64,7 +62,6 @@ float				vec_matrix_mult_second_row(t_vector vec, t_cam_to_w c)
 {
 	t_vector		tmp;
 
-	tmp = new_vector(0, 0, 0);
 	tmp = new_vector(c.matrix[1][0], c.matrix[1][1], c.matrix[1][2]);
 	return (vector_scalar_mult(vec, tmp));
 }
