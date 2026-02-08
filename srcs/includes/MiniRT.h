@@ -55,7 +55,7 @@
 # define MAX_COLOR 255
 # define SHININESS 100.0
 
-# define KEY_TAB 48
+# define KEY_TAB 23
 # define KEY_ESC 53
 # define KEY_W 13
 # define KEY_S 1
