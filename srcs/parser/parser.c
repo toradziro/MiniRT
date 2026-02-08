@@ -13,6 +13,7 @@
 #include "../includes/MiniRT.h"
 #include "../string/rt_string.h"
 #include "../file/rt_file.h"
+#include <time.h>
 
 typedef struct s_primitives_amount
 {
@@ -69,12 +70,11 @@ primitives_amount calculate_primitives(str8 file, t_memory_arena* arena)
 void			start_parse(t_scene *scene, const char* path, t_memory_arena* arena)
 {
 	str8    file;
-	arena = arena;
 
 	//-- Read full file
 	file = read_full_file(path);
 	primitives_amount amount = calculate_primitives(file, arena);
-	amount = amount;
+	scene->figures = new_vec_fig(amount.figures_count, arena);
 
 	// preallocate_memory();
 	u32 curr = 0;
@@ -118,11 +118,11 @@ void			parse_primitives(char *str, t_scene *scene)
 
 void			parse_plane(char *str, t_scene *scene)
 {
-	t_plane		*new;
+	t_plane		new;
 	t_vector	coor;
 	t_vector	normal;
 	t_color		color;
-	t_figures	*tmp;
+	t_figure_holder	tmp;
 
 	str = skip_spaces(str);
 	coor = parse_coordinares(str);
@@ -131,21 +131,19 @@ void			parse_plane(char *str, t_scene *scene)
 	str = skip_pattern(str);
 	color = col_parse(str);
 	new = new_plane(coor, vector_normalise(normal), color);
-	tmp = new_figur_list((void*)new, S_PL);
-	if (!(scene->figures))
-		scene->figures = new_vec_fig();
-	scene->figures = add_elem_vec(scene->figures, *tmp);
+	tmp.type = Plane;
+	tmp._figure.plane = new;
+	scene->figures = add_elem_vec(scene->figures, tmp);
 	scene->is_figur++;
-	free(tmp);
 }
 
 void			parse_square(char *str, t_scene *scene)
 {
-	t_square	*new;
+	t_square	new;
 	t_vector	center;
 	t_vector	normal;
 	float		size;
-	t_figures	*tmp;
+	t_figure_holder	tmp;
 
 	str = skip_spaces(str);
 	center = parse_coordinares(str);
@@ -156,20 +154,18 @@ void			parse_square(char *str, t_scene *scene)
 	size = d_atoi(str);
 	str = skip_pattern(str);
 	new = new_square(center, vector_normalise(normal), size, col_parse(str));
-	tmp = new_figur_list((void*)new, S_SQ);
-	if (!(scene->figures))
-		scene->figures = new_vec_fig();
-	scene->figures = add_elem_vec(scene->figures, *tmp);
+	tmp.type = Square;
+	tmp._figure.square = new;
+	scene->figures = add_elem_vec(scene->figures, tmp);
 	scene->is_figur++;
-	free(tmp);
 }
 
 void			parse_cylinder(char *str, t_scene *scene)
 {
-	t_cylinder	*new;
+	t_cylinder	new;
 	t_vector	tmp;
 	t_vector	tmp_n;
-	t_figures	*tmp_fig;
+	t_figure_holder	tmp_fig;
 
 	str = skip_spaces(str);
 	tmp = parse_coordinares(str);
@@ -177,26 +173,24 @@ void			parse_cylinder(char *str, t_scene *scene)
 	tmp_n = parse_coordinares(str);
 	str = skip_pattern(str);
 	new = new_cylinder(tmp, tmp_n, 0, new_color(0, 0, 0));
-	new->diameter = d_atoi(str);
+	new.diameter = d_atoi(str);
 	str = skip_pattern(str);
-	new->height = d_atoi(str);
+	new.height = d_atoi(str);
 	str = skip_pattern(str);
-	new->color = col_parse(str);
-	tmp_fig = new_figur_list((void*)new, S_CL);
-	if (!(scene->figures))
-		scene->figures = new_vec_fig();
-	scene->figures = add_elem_vec(scene->figures, *tmp_fig);
+	new.color = col_parse(str);
+	tmp_fig.type = Cylender;
+	tmp_fig._figure.cylender = new;
+	scene->figures = add_elem_vec(scene->figures, tmp_fig);
 	scene->is_figur++;
-	free(tmp_fig);
 }
 
 void			parse_triangle(char *str, t_scene *scene)
 {
-	t_triangle	*new;
+	t_triangle	new;
 	t_vector	tmp_a;
 	t_vector	tmp_b;
 	t_vector	tmp_c;
-	t_figures	*tmp_fig;
+	t_figure_holder	tmp_fig;
 
 	str = skip_spaces(str);
 	tmp_a = parse_coordinares(str);
@@ -206,15 +200,117 @@ void			parse_triangle(char *str, t_scene *scene)
 	tmp_c = parse_coordinares(str);
 	str = skip_pattern(str);
 	new = new_triangle(tmp_a, tmp_b, tmp_c, col_parse(str));
-	new->normal = new_vector(0, 0, 0);
-	new->ab = subs_vectors(tmp_b, tmp_a);
-	new->ac = subs_vectors(tmp_c, tmp_a);
-	new->normal = cross_prod(new->ab, new->ac);
-	new->normal = vector_normalise(new->normal);
-	tmp_fig = new_figur_list((void*)new, S_TR);
-	if (!(scene->figures))
-		scene->figures = new_vec_fig();
-	scene->figures = add_elem_vec(scene->figures, *tmp_fig);
+	new.normal = new_vector(0, 0, 0);
+	new.ab = subs_vectors(tmp_b, tmp_a);
+	new.ac = subs_vectors(tmp_c, tmp_a);
+	new.normal = cross_prod(new.ab, new.ac);
+	new.normal = vector_normalise(new.normal);
+	tmp_fig.type = Triangle;
+	tmp_fig._figure.triangle = new;
+	scene->figures = add_elem_vec(scene->figures, tmp_fig);
 	scene->is_figur++;
-	free(tmp_fig);
+}
+
+void			parse_sphere(char *str, t_scene *scene)
+{
+	float		radius;
+	t_vector	coordinates;
+	t_color		color;
+	t_sphere	new;
+	t_figure_holder	tmp;
+
+	str = skip_spaces(str);
+	coordinates = parse_coordinares(str);
+	str = skip_pattern(str);
+	radius = d_atoi(str) / 2.0;
+	if (radius <= 0)
+		killed_by_error(UNKNWN_ARG);
+	str = skip_pattern(str);
+	color = col_parse(str);
+	new = new_sphere(radius, coordinates, color);
+	tmp._figure.sphere = new;
+	tmp.type = Sphere;
+	scene->figures = add_elem_vec(scene->figures, tmp);
+	scene->is_figur++;
+}
+
+void			parse_size(char *str, t_scene *scene)
+{
+	int			x;
+	int			y;
+	int			tmp_x;
+	int			tmp_y;
+
+	x = 2560;
+	y = 1800;
+	str = skip_spaces(str);
+	tmp_x = (int)d_atoi(str);
+	scene->width = MIN(tmp_x, x);
+	str = skip_nums(str);
+	str = skip_spaces(str);
+	tmp_y = (int)d_atoi(str);
+	scene->height = MIN(tmp_y, y);
+	scene->is_size++;
+}
+
+void			parse_ambl(char *str, t_scene *scene)
+{
+	t_ab_light	*new;
+
+	if (!(new = (t_ab_light*)malloc(sizeof(t_ab_light))))
+		killed_by_error(MALLOC_ERROR);
+	str = skip_spaces(str);
+	new->intensity = d_atoi(str);
+	str = skip_nums(str);
+	str = skip_spaces(str);
+	new->color = col_parse(str);
+	new->color = multip_color(&new->color, new->intensity);
+	scene->ab_light = new;
+	scene->is_amb_l++;
+}
+
+void			parse_cam(char *str, t_scene *scene)
+{
+	t_cameras	*new;
+	t_vector	dir;
+	t_vector	coor;
+	float		fov;
+
+	str = skip_spaces(str);
+	coor = parse_coordinares(str);
+	str = skip_pattern(str);
+	dir = parse_coordinares(str);
+	str = skip_pattern(str);
+	fov = d_atoi(str);
+	new = new_camera_node(coor, vector_normalise(dir), fov);
+	if (!scene->cams)
+	{
+		scene->cams = new;
+		scene->first_cam = scene->cams;
+	}
+	else
+		push_back_cam(scene->cams, new);
+	scene->is_cam++;
+}
+
+void			parse_light(char *str, t_scene *scene)
+{
+	t_lights	*new;
+	t_vector	coor;
+	float		intens;
+	t_color		color;
+
+	str = skip_spaces(str);
+	coor = parse_coordinares(str);
+	str = skip_pattern(str);
+	intens = d_atoi(str);
+	str = skip_nums(str);
+	str = skip_spaces(str);
+	color = col_parse(str);
+	new = new_light_node(coor, intens, color);
+	if (!(scene->lights))
+		scene->lights = new;
+	else
+		push_back_light(scene->lights, coor, intens, color);
+	scene->is_light++;
 }

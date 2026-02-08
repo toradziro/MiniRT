@@ -50,30 +50,6 @@ void			check_valid_name(char *str)
 		killed_by_error(INV_FILE_NAME);
 }
 
-void			free_fig_test(t_vec_fig *v)
-{
-	int			i;
-	int			len;
-
-	i = 0;
-	len = v->length;
-	while (i < len)
-	{
-		if (v->node[i].specif == S_SP)
-			free((t_sphere*)v->node[i].content);
-		else if (v->node[i].specif == S_PL)
-			free((t_plane*)v->node[i].content);
-		else if (v->node[i].specif == S_SQ)
-			free((t_square*)v->node[i].content);
-		else if (v->node[i].specif == S_TR)
-			free((t_triangle*)v->node[i].content);
-		else if (v->node[i].specif == S_CL)
-			free((t_cylinder*)v->node[i].content);
-		++i;
-	}
-	free(v->node);
-}
-
 void			free_cams(t_cameras *cam)
 {
 	t_cameras	*tmp;

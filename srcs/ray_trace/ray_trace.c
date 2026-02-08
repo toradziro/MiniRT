@@ -15,37 +15,40 @@
 t_color			intersec(t_scene *scene, t_ray ray)
 {
 	t_color			c_tmp;
-	t_figures		*tmp;
+	t_figure_holder	*tmp;
 	float			min;
 	int				i;
-	int				finish;
 
 	i = 0;
 	c_tmp = new_color(0, 0, 0);
-	tmp = scene->figures->node;
-	finish = scene->figures->length;
+	tmp = scene->figures->figure_holder;
 	min = MAX_INTERSEC;
-	while (i < finish)
+	while (i < scene->figures->length)
 	{
-		ray_switch(&tmp[i], scene, &min, ray, &c_tmp);
-		++i;
+    	switch (tmp->type)
+    	{
+            case Triangle:
+          		triangle_start(scene, &tmp->_figure.triangle, &min, ray, &c_tmp);
+                break;
+            case Sphere:
+          		sphere_start(scene, &tmp->_figure.sphere, &min, ray, &c_tmp);
+                break;
+            case Plane:
+          		plane_start(scene, &tmp->_figure.plane, &min, ray, &c_tmp);
+                break;
+            case Square:
+          		sq_start(scene, &tmp->_figure.square, &min, ray, &c_tmp);
+                break;
+            case Cylender:
+          		cy_start(scene, &tmp->_figure.cylender, &min, ray, &c_tmp);
+                break;
+            default:
+                break;
+    	}
+        ++i;
+        ++tmp;
 	}
 	return (c_tmp);
-}
-
-void			ray_switch(t_figures *tmp, t_scene *scene,
-				float *min, t_ray ray, t_color *c_tmp)
-{
-	if (tmp->specif == S_TR)
-		triangle_start(scene, tmp->content, min, ray, c_tmp);
-	else if (tmp->specif == S_SP)
-		sphere_start(scene, tmp->content, min, ray, c_tmp);
-	else if (tmp->specif == S_PL)
-		plane_start(scene, tmp->content, min, ray, c_tmp);
-	else if (tmp->specif == S_SQ)
-		sq_start(scene, tmp->content, min, ray, c_tmp);
-	else if (tmp->specif == S_CL)
-		cy_start(scene, tmp->content, min, ray, c_tmp);
 }
 
 t_color			find_color(t_scene *scene, t_ray ray, float min,
@@ -124,50 +127,58 @@ int			shadow_intersec(t_vec_fig *figures, t_vector *intersec_point,
 							t_vector *dir_to_light)
 {
 	int				len;
-	t_figures		*node;
 	t_ray			ray;
 	float			res;
 	float			x_one;
 	int				i;
 
 	len = figures->length;
-	node = figures->node;
 	ray.orig = *(intersec_point);
 	ray.dir = vector_normalise(*dir_to_light);
 	i = 0;
 	x_one = vector_length(*dir_to_light);
 	while (i < len)
 	{
-		if (node[i].specif == S_SP)
-		{
-			res = sphere_intersect(ray, (t_sphere*)node[i].content);
-			if (res < x_one && res > MIN_I)
-				return (1);
-		}
-		else if (node[i].specif == S_TR)
-		{
-			res = triangle_intersec(ray, (t_triangle*)node[i].content);
-			if (res < x_one && res > MIN_I)
-				return (1);
-		}
-		else if (node[i].specif == S_SQ)
-		{
-			res = square_intersec(ray, (t_square*)node[i].content);
-			if (res < x_one && res > MIN_I)
-				return (1);
-		}
-		else if (node[i].specif == S_PL)
-		{
-			res = plane_intersect(ray, node[i].content);
-			if (res < x_one && res > MIN_I)
-				return (1);
-		}
-		else if (node[i].specif == S_CL)
-		{
-			res = cy_intersect(ray, node[i].content);
-			if (res < x_one && res > MIN_I)
-				return (1);
-		}
+    	switch (figures->figure_holder[i].type)
+    	{
+        	case Triangle:
+      		{
+    			res = triangle_intersec(ray, &figures->figure_holder[i]._figure.triangle);
+    			if (res < x_one && res > MIN_I)
+    				return (1);
+    		}
+            break;
+            case Sphere:
+  			{
+    			res = sphere_intersect(ray, &figures->figure_holder[i]._figure.sphere);
+    			if (res < x_one && res > MIN_I)
+    				return (1);
+    		}
+            break;
+            case Plane:
+           	{
+          		res = plane_intersect(ray, &figures->figure_holder[i]._figure.plane);
+          		if (res < x_one && res > MIN_I)
+         			return (1);
+           	}
+            break;
+            case Square:
+           	{
+          		res = square_intersec(ray, &figures->figure_holder[i]._figure.square);
+          		if (res < x_one && res > MIN_I)
+         			return (1);
+           	}
+            break;
+            case Cylender:
+           	{
+          		res = cy_intersect(ray, &figures->figure_holder[i]._figure.cylender);
+          		if (res < x_one && res > MIN_I)
+         			return (1);
+           	}
+            break;
+            default:
+            break;
+    	}
 		++i;
 	}
 	return (0);

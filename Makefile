@@ -3,11 +3,9 @@ NAME =		MiniRT
 HEAD =		./srcs/includes/
 
 SRC =		srcs/lists_funcs/list_camera_funcs.c \
-			srcs/lists_funcs/list_figures_funcs.c \
 			srcs/lists_funcs/list_lights_func.c \
 			srcs/parser/parser.c \
 			srcs/parser/parse_utils.c \
-			srcs/parser/parser_two.c \
 			srcs/parser/utils.c \
 			srcs/parser/figures_creation.c \
 			srcs/utilits/killed_by_error.c \
@@ -31,9 +29,10 @@ SRC =		srcs/lists_funcs/list_camera_funcs.c \
 
 OBJS =		${SRC:.c=.o}
 
-CFLAGS	= -Werror -Wall -Wextra -fsanitize=address -g -I $(HEAD) `sdl2-config --cflags --libs` -D THREADS_MAX=$(NUM_THREADS)
+# CFLAGS	= -Werror -Wall -Wextra -fsanitize=address -g -I $(HEAD) `sdl2-config --cflags --libs` -D THREADS_MAX=$(NUM_THREADS)
+CFLAGS	= -Werror -Wall -Wextra -O2 -I $(HEAD) `sdl2-config --cflags --libs` -D THREADS_MAX=$(NUM_THREADS)
 
-FLAGS = -lm
+FLAGS = 	-lm
 
 RM =		rm -rf
 

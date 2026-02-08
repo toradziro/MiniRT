@@ -76,8 +76,6 @@ void		free_scene(t_scene *scene);
 t_color		find_color(t_scene *scene, t_ray ray,
 			float min, t_vector *normal, t_color *f_color);
 t_color		intersec(t_scene *scene, t_ray ray);
-void		ray_switch(t_figures *tmp, t_scene
-			*scene, float *min, t_ray ray, t_color *c_tmp);
 
 int			shadow_intersec(t_vec_fig *figures, t_vector
 			*intersec_point, t_vector *dir_to_light);
