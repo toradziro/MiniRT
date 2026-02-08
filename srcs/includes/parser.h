@@ -14,8 +14,10 @@
 # define PARSER_H
 # include "figures.h"
 # include "lists.h"
-# include "mlx_image.h"
 # include "array.h"
+# include <SDL2/SDL.h>
+# include <stdint.h>
+# include <stdbool.h>
 
 typedef struct		s_scene {
 	t_cameras		*cams;
@@ -24,9 +26,8 @@ typedef struct		s_scene {
 	t_lights		*lights;
 	t_ab_light		*ab_light;
 	t_cam_to_w		mtrx;
-	t_data			img;
-	void			*mlx;
-	void			*window;
+	SDL_Window		*window;
+	void            *pixels;
 	int				is_save;
 	int				is_cam;
 	int				is_light;
@@ -37,6 +38,7 @@ typedef struct		s_scene {
 	int				height;
 	int				mouse_x;
 	int				mouse_y;
+	bool            is_running;
 }					t_scene;
 
 void				parser(char *str, t_scene *scene);

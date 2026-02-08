@@ -11,6 +11,48 @@
 /* ************************************************************************** */
 
 #include "includes/MiniRT.h"
+#include "includes/parser.h"
+#include "includes/threads.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_video.h>
+#include <x86intrin.h>
+#include <stdio.h>
+
+void handle_event(SDL_Event* event, t_scene* scene)
+{
+    switch(event->type)
+    {
+        case SDL_QUIT:
+        {
+            exit_rt(scene);
+        } break;
+
+        case SDL_WINDOWEVENT:
+        {
+            switch(event->window.event)
+            {
+                case SDL_WINDOWEVENT_RESIZED:
+                {
+                } break;
+            }
+        } break;
+        case SDL_KEYDOWN:
+        {
+           	press_key(event->key.keysym, scene);
+        } break;
+    }
+   	// mlx_hook(scene->window, 4, 0, mouse_press, scene);
+}
+
+u64 time_ms(void)
+{
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (u64)ts.tv_sec * 1000 +
+           (u64)ts.tv_nsec / 1000000;
+}
 
 int				main(int argc, char **argv)
 {
@@ -21,22 +63,80 @@ int				main(int argc, char **argv)
 		killed_by_error(INV_AM_OF_ARG);
 	check_valid_name(argv[1]);
 	scene = ft_init_scene();
-	if (!(scene->mlx = mlx_init()))
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	{
+	    //-- TODO: Add new error
 		killed_by_error(MALLOC_ERROR);
+	}
 	fd = open(argv[1], O_RDONLY);
 	start_parse(scene, fd);
 	check_scene(scene);
-	scene->window = mlx_new_window(scene->mlx,
-	scene->width, scene->height, "MiniRT");
+	SDL_Window *sdl_window = SDL_CreateWindow("MiniRT",
+                              SDL_WINDOWPOS_UNDEFINED,
+                              SDL_WINDOWPOS_UNDEFINED,
+                              scene->width,
+                              scene->height,
+                              /*SDL_WINDOW_RESIZABLE*/ 0);
+	scene->window = sdl_window;
+
 	if (argc == 3 && !strcmp(argv[2], "--save"))
+	{
 		scene->is_save = 1;
+	}
 	else if (argc == 3 && strcmp(argv[2], "--save"))
+	{
 		killed_by_error(UNKNWN_ARG);
-	mlx_hook(scene->window, 2, 0, press_key, scene);
-	mlx_hook(scene->window, 17, 0, exit_rt, scene);
-	mlx_hook(scene->window, 4, 0, mouse_press, scene);
-	threads(scene);
-	mlx_loop(scene->mlx);
+	}
+
+	//-- TODO: change to mmap
+	scene->pixels = malloc(scene->width * scene->height * sizeof(int));
+	SDL_Renderer *sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
+	//-- TODO: recreate on window resize
+	SDL_Texture* backbuffer_texture = SDL_CreateTexture(sdl_renderer,
+                                         SDL_PIXELFORMAT_ARGB8888,
+                                         SDL_TEXTUREACCESS_STREAMING,
+                                         scene->width,
+                                         scene->height);
+
+	scene->is_running = true;
+	while (scene->is_running)
+	{
+	    const u64 clocks_start = __rdtsc();
+		const u64 time_frame_start = time_ms();
+
+		SDL_RenderClear(sdl_renderer);
+        SDL_Event event;
+        while(SDL_PollEvent(&event))
+        {
+            handle_event(&event, scene);
+        }
+    	threads(scene);
+
+        if (SDL_UpdateTexture(backbuffer_texture,
+                            0,
+                            scene->pixels,
+                            scene->width * sizeof(int)))
+        {
+            //-- TODO: Do something about this error!
+            printf("!SDL_UpdateTexture() error!");
+        }
+
+        SDL_RenderCopy(sdl_renderer,
+                       backbuffer_texture,
+                       0,
+                       0);
+
+        SDL_RenderPresent(sdl_renderer);
+
+        const u64 time_frame_end = time_ms();
+        const u64 time_elapsed = time_frame_end - time_frame_start;
+        const u64 clocks_end = __rdtsc();
+        printf("MCl: %lu -- MS: %lu -- FPS: %lu\n", (clocks_end - clocks_start) / 1000, time_elapsed, 1000 / time_elapsed);
+	}
+	free_scene(scene);
+	SDL_DestroyTexture(backbuffer_texture);
+	SDL_DestroyRenderer(sdl_renderer);
+	SDL_DestroyWindow(scene->window);
 	return (0);
 }
 
@@ -60,8 +160,7 @@ void			start_parse(t_scene *scene, int fd)
 
 int				exit_rt(t_scene *scene)
 {
-	free_scene(scene);
-	exit(0);
+    scene->is_running = false;
 	return (0);
 }
 

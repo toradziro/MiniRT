@@ -11,34 +11,21 @@
 /* ************************************************************************** */
 
 #include "includes/MiniRT.h"
-#include <x86intrin.h>
-#include <stdint.h>
-#include <stdio.h>
-
-typedef uint64_t u64;
+#include "includes/threads.h"
 
 void			threads(t_scene *scene)
 {
-    const u64 clocks_start = __rdtsc();
 	t_thread	thread_id[THREADS_MAX];
 	pthread_t	thread[THREADS_MAX];
 
-	scene->img.img = mlx_new_image(scene->mlx, scene->width, scene->height);
-	scene->img.addr = mlx_get_data_addr(scene->img.img,
-					&scene->img.bits_per_pixel, &scene->img.line_length,
-					&scene->img.endian);
 	scene->mtrx = matrix_place(scene->cams->coordinates,
 					scene->cams->direction);
 	threads_start(thread_id, thread, scene);
 	if (scene->is_save)
 	{
 		save_to_bmp(scene);
-		mlx_destroy_image(scene->mlx, scene->img.img);
 		exit_rt(scene);
 	}
-	mlx_put_image_to_window(scene->mlx, scene->window, scene->img.img, 0, 0);
-	const u64 clocks_end = __rdtsc();
-	printf("MCl per frame: %lu\n", (clocks_end - clocks_start) / 1000);
 }
 
 void			threads_start(t_thread *thread_id,
@@ -94,8 +81,9 @@ void			main_rt_loop(t_ray_trace trace)
 			trace.color = intersec(trace.scene, trace.ray);
 			trace.ret_color = (int)trace.color.r << 16 |
 							(int)trace.color.g << 8 | (int)trace.color.b;
-			my_mlx_pixel_put(&trace.scene->img,
-							trace.x_pixel, trace.y_pixel, trace.ret_color);
+			//-- TODO: Make a function
+			void* color_ptr = (((u32*)trace.scene->pixels) + (trace.scene->width * trace.y_pixel) + trace.x_pixel);
+			(*(u32*)color_ptr) = trace.ret_color;
 			trace.x_pixel++;
 		}
 		trace.y_pixel++;

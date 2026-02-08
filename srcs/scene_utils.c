@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/MiniRT.h"
+#include "includes/MiniRT.h"
 
 t_scene		*ft_init_scene(void)
 {
@@ -27,6 +27,5 @@ void		free_scene(t_scene *scene)
 	free_cams(scene->cams);
 	free_light(scene->lights);
 	free_fig_test(scene->figures);
-	free(scene->mlx);
-	free(scene->window);
+	free(scene->pixels);
 }

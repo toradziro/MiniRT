@@ -12,17 +12,15 @@
 
 #ifndef MINIRT_H
 # define MINIRT_H
-# include "mlx.h"
 # include "vectors.h"
 # include "figures.h"
 # include "lists.h"
 # include "colors.h"
 # include "parser.h"
 # include "../gnl/get_next_line.h"
-# include "mlx_image.h"
-# include "threads.h"
 # include "array.h"
 # include "intersect.h"
+# include "my_types.h"
 
 # include <unistd.h>
 # include <math.h>
@@ -54,15 +52,6 @@
 # define COLOR_COEFF 0.003921568627
 # define MAX_COLOR 255
 # define SHININESS 100.0
-
-# define KEY_TAB 23
-# define KEY_ESC 53
-# define KEY_W 13
-# define KEY_S 1
-# define KEY_A 0
-# define KEY_D 2
-# define KEY_Q 12
-# define KEY_E 14
 
 # define MAX_INTERSEC 100000
 
@@ -102,7 +91,7 @@ t_color		shad_color(t_color *figur, t_color *ab_light);
 t_phong		calc_phong(t_vector intersec_point,
 			t_scene *scene, t_vector normal);
 
-int			press_key(int key, t_scene *scene);
+int			press_key(SDL_Keysym key, t_scene *scene);
 int			mouse_press(int b, int x, int y, t_scene *scene);
 
 void		check_scene(t_scene *scene);

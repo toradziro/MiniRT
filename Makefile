@@ -31,9 +31,9 @@ SRC =		srcs/gnl/get_next_line.c \
 
 OBJS =		${SRC:.c=.o}
 
-CFLAGS	= -Werror -Wall -Wextra -O2 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
+CFLAGS	= -Werror -Wall -Wextra -O2 -I $(HEAD) `sdl2-config --cflags --libs` -D THREADS_MAX=$(NUM_THREADS)
 
-FLAGS = -O2 -lX11 -lXext -L. -lmlx -lm
+FLAGS = -O2 -lm
 
 RM =		rm -rf
 
@@ -42,8 +42,7 @@ CC =		gcc
 NUM_THREADS = 4
 
 $(NAME):	$(OBJS)
-			cd mlx/X11 && $(MAKE) && mv libmlx.a ../..
-			$(CC) $(CFLAGS) $(OBJS) $(FLAGS) libmlx.a -o $(NAME)
+			$(CC) $(CFLAGS) $(OBJS) $(FLAGS) -o $(NAME)
 
 all:		$(NAME)
 

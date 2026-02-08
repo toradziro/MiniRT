@@ -27,8 +27,7 @@ void		save_to_bmp(t_scene *scene)
 	row = scene->height - 1;
 	while (row >= 0)
 	{
-		write(fd, scene->img.addr + row *
-		scene->img.line_length, scene->width * 4);
+		write(fd, scene->pixels + (row * scene->width), scene->width * 4);
 		--row;
 	}
 	close(fd);
