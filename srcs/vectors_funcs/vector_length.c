@@ -12,7 +12,4 @@
 
 #include "../includes/MiniRT.h"
 
-float	vector_length(t_vector v)
-{
-	return sqrt(vector_scalar_mult(v, v));
-}
+float vector_length(t_vector v) { return sqrt(vector_scalar_mult(v, v)); }

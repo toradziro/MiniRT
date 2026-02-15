@@ -29,10 +29,11 @@ SRC =		srcs/lists_funcs/list_camera_funcs.c \
 
 OBJS =		${SRC:.c=.o}
 
-# CFLAGS	= -Werror -Wall -Wextra -fsanitize=address -g -I $(HEAD) `sdl2-config --cflags --libs` -D THREADS_MAX=$(NUM_THREADS)
-CFLAGS	= -Werror -Wall -Wextra -march=native -O3 -DVECTORIZE -I $(HEAD) `sdl2-config --cflags --libs` -D THREADS_MAX=$(NUM_THREADS)
+#-fsanitize=address
+#CFLAGS	= -Werror -Wall -Wextra -DVECTORIZE -std=c11 -g -I $(HEAD) `sdl2-config --cflags` -D THREADS_MAX=$(NUM_THREADS)
+CFLAGS	= -Werror -Wall -Wextra -std=c11 -march=native -O3 -DVECTORIZE -I $(HEAD) `sdl2-config --cflags` -D THREADS_MAX=$(NUM_THREADS)
 
-FLAGS = 	-lm
+FLAGS = 	-lm `sdl2-config --libs`
 
 RM =		rm -rf
 

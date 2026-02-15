@@ -12,10 +12,10 @@
 
 #include "../includes/MiniRT.h"
 
-t_vector		vector_normalise(t_vector v)
+t_vector vector_normalise(t_vector v)
 {
-	float		len_coeff;
+    float len_coeff;
 
-	len_coeff = 1 / vector_length(v);
-	return vector_by_scalar(v, len_coeff);
+    len_coeff = 1 / vector_length(v);
+    return vector_by_scalar(v, len_coeff);
 }

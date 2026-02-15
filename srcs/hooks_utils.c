@@ -32,7 +32,8 @@
 // 	// ray.dir = matrix_mult(ray.dir, scene->mtrx);
 // 	// while (++i < scene->figures->length)
 // 	// 	if (scene->figures->node[i].specif == S_SP)
-// 	// 		if (sphere_intersect(ray, scene->figures->node[i].content) > 0)
+// 	// 		if (sphere_intersect(ray, scene->figures->node[i].content)
+// > 0)
 // 	// 			sp = (t_sphere*)scene->figures->node[i].content;
 // 	// if (b == 1 && sp)
 // 	// 	++sp->radius;
@@ -42,43 +43,52 @@
 // 	return (0);
 // }
 
-int				press_key(SDL_Keysym key, t_scene *scene)
+int press_key(SDL_Keysym key, t_scene* scene)
 {
-    switch(key.scancode)
+    switch (key.scancode)
     {
-        case(SDL_SCANCODE_TAB):
-        {
-            scene->cams = (scene->cams->next == NULL) ? scene->first_cam : scene->cams->next;
-        } break;
-        case(SDL_SCANCODE_W):
-        {
-            scene->cams->coordinates.v_z += 4;
-        } break;
-        case(SDL_SCANCODE_S):
-        {
-            scene->cams->coordinates.v_z -= 4;
-        } break;
-        case(SDL_SCANCODE_A):
-        {
-            scene->cams->coordinates.v_x += 4;
-        } break;
-        case(SDL_SCANCODE_D):
-        {
-            scene->cams->coordinates.v_x -= 4;
-        } break;
-        case(SDL_SCANCODE_Q):
-        {
-            scene->cams->coordinates.v_y += 4;
-        } break;
-        case(SDL_SCANCODE_E):
-        {
-            scene->cams->coordinates.v_y -= 4;
-        } break;
-        case(SDL_SCANCODE_ESCAPE):
-        {
-            exit_rt(scene);
-        } break;
-        default: break;
+    case (SDL_SCANCODE_TAB):
+    {
+        scene->cams = (scene->cams->next == NULL) ? scene->first_cam : scene->cams->next;
     }
-	return (0);
+    break;
+    case (SDL_SCANCODE_W):
+    {
+        scene->cams->coordinates.v_z += 4;
+    }
+    break;
+    case (SDL_SCANCODE_S):
+    {
+        scene->cams->coordinates.v_z -= 4;
+    }
+    break;
+    case (SDL_SCANCODE_A):
+    {
+        scene->cams->coordinates.v_x += 4;
+    }
+    break;
+    case (SDL_SCANCODE_D):
+    {
+        scene->cams->coordinates.v_x -= 4;
+    }
+    break;
+    case (SDL_SCANCODE_Q):
+    {
+        scene->cams->coordinates.v_y += 4;
+    }
+    break;
+    case (SDL_SCANCODE_E):
+    {
+        scene->cams->coordinates.v_y -= 4;
+    }
+    break;
+    case (SDL_SCANCODE_ESCAPE):
+    {
+        exit_rt(scene);
+    }
+    break;
+    default:
+        break;
+    }
+    return (0);
 }

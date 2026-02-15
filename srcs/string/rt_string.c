@@ -11,7 +11,7 @@ str8 get_next_line(str8 file, u32* curr, t_memory_arena* arena)
     }
 
     u32 start = *curr;
-    u32 i = start;
+    u32 i     = start;
 
     //-- find end of line
     while (i < file.size && file.mem[i] != '\n')
@@ -24,7 +24,9 @@ str8 get_next_line(str8 file, u32* curr, t_memory_arena* arena)
 
     //-- win capable
     if (len > 0 && file.mem[start + len - 1] == '\r')
+    {
         len--;
+    }
 
     //-- we want \0 so we need allocation
     //-- TODO: Switch api on size in str8
@@ -42,7 +44,7 @@ str8 get_next_line(str8 file, u32* curr, t_memory_arena* arena)
 
     dst[len] = 0;
 
-    out.mem = dst;
+    out.mem  = dst;
     out.size = len;
 
     // move cursor after \n

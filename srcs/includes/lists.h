@@ -11,37 +11,37 @@
 /* ************************************************************************** */
 
 #ifndef LISTS_H
-# define LISTS_H
+#define LISTS_H
 
-#include "vectors.h"
 #include "colors.h"
+#include "vectors.h"
 
-typedef struct		s_cameras{
-	t_vector		coordinates;
-	t_vector		direction;
-	void			*next;
-	float			field_of_v;
-}					t_cameras;
+typedef struct s_cameras
+{
+    t_vector coordinates;
+    t_vector direction;
+    void*    next;
+    float    field_of_v;
+} t_cameras;
 
-typedef struct		s_lights {
-	t_vector		coordinates;
-	t_vector		light_dir;
-	void			*next;
-	t_color			color;
-	float			intensity;
-}					t_lights;
+typedef struct s_lights
+{
+    t_vector coordinates;
+    t_vector light_dir;
+    void*    next;
+    t_color  color;
+    float    intensity;
+} t_lights;
 
-typedef struct		s_ab_light {
-	t_color			color;
-	float			intensity;
-}					t_ab_light;
+typedef struct s_ab_light
+{
+    t_color color;
+    float   intensity;
+} t_ab_light;
 
-void				push_back_cam(t_cameras *list, t_cameras *cam);
-t_cameras			*new_camera_node(t_vector coordinates,
-					t_vector dir, float fov);
-t_lights			*new_light_node(t_vector coordinates,
-					float intensity, t_color color);
-void				push_back_light(t_lights *list, t_vector coordinates,
-					float intensity, t_color color);
+void       push_back_cam(t_cameras* list, t_cameras* cam);
+t_cameras* new_camera_node(t_vector coordinates, t_vector dir, float fov);
+t_lights*  new_light_node(t_vector coordinates, float intensity, t_color color);
+void       push_back_light(t_lights* list, t_vector coordinates, float intensity, t_color color);
 
 #endif
