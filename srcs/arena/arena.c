@@ -1,4 +1,3 @@
-#include <stdio.h>
 #define _GNU_SOURCE
 #include "../includes/MiniRT.h"
 #include "arena.h"
@@ -46,7 +45,7 @@ void* arena_push_aligned(t_memory_arena* arena, u32 size, u32 aligment)
 t_memory_arena create_arena(u32 size)
 {
     t_memory_arena arena;
-    arena.memory = calloc(1, size);
+    arena.memory = mmap(0, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     arena.size   = size;
     arena.cursor = 0;
 
