@@ -92,13 +92,17 @@ int main(int argc, char** argv)
     }
 
     //-- TODO: change to mmap
-    scene.pixels               = malloc(scene.width * scene.height * sizeof(int));
+    scene.pixels               = arena_push(&global_arena, scene.width * scene.height * sizeof(int));
     SDL_Renderer* sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
     //-- TODO: recreate on window resize
     SDL_Texture* backbuffer_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_ARGB8888,
                                                         SDL_TEXTUREACCESS_STREAMING, scene.width, scene.height);
 
     scene.is_running = true;
+    //-- TODO: Cleanup
+    t_thread_pool thread_pool;
+    start_render_threads(&thread_pool, &scene);
+
     while (scene.is_running)
     {
         const u64 clocks_start     = __rdtsc();
@@ -110,8 +114,9 @@ int main(int argc, char** argv)
         {
             handle_event(&event, &scene);
         }
-        //-- TODO: Rename to render
-        threads(&scene);
+
+        scene.mtrx = matrix_place(scene.cams->coordinates, scene.cams->direction);
+        render(&thread_pool, scene.height);
 
         if (SDL_UpdateTexture(backbuffer_texture, 0, scene.pixels, scene.width * sizeof(int)))
         {
@@ -129,6 +134,9 @@ int main(int argc, char** argv)
         printf("MCl: %lu -- MS: %lu -- FPS: %lu\n", (clocks_end - clocks_start) / 1000, time_elapsed,
                1000 / time_elapsed);
     }
+
+    destroy_render(&thread_pool);
+
     SDL_DestroyTexture(backbuffer_texture);
     SDL_DestroyRenderer(sdl_renderer);
     SDL_DestroyWindow(scene.window);
