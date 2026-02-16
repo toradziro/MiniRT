@@ -12,22 +12,48 @@
 
 #include "../includes/MiniRT.h"
 
-float			vector_scalar_mult(t_vector a, t_vector b)
+float vector_scalar_mult(t_vector a, t_vector b)
 {
-	float		res;
+    float res;
 
-	res = 0;
-	res = a.v_x * b.v_x + a.v_y * b.v_y + a.v_z * b.v_z;
-	return (res);
+#ifdef VECTORIZE
+    t_vector_vectorized va = to_vectorized(a);
+    t_vector_vectorized vb = to_vectorized(b);
+    t_vector_vectorized mres;
+    mres.m_vectorized = _mm_mul_ps(va.m_vectorized, vb.m_vectorized);
+
+    // SSE2-friendly horizontal sum (no _mm_hadd_ps)
+    __m128 shuf = _mm_shuffle_ps(mres.m_vectorized, mres.m_vectorized, _MM_SHUFFLE(2, 3, 0, 1));
+    __m128 sums = _mm_add_ps(mres.m_vectorized, shuf);
+    shuf        = _mm_movehl_ps(shuf, sums);
+    sums        = _mm_add_ss(sums, shuf);
+    res         = _mm_cvtss_f32(sums);
+#else
+    res          = a.v_x * b.v_x + a.v_y * b.v_y + a.v_z * b.v_z;
+#endif
+
+    return (res);
 }
 
-t_vector		vector_by_scalar(t_vector a, float num)
+t_vector vector_by_scalar(t_vector a, float num)
 {
-	t_vector	res;
+#ifdef VECTORIZE
+    t_vector_vectorized va = to_vectorized(a);
+    t_vector_vectorized vb;
+    vb.v_x = num;
+    vb.v_y = num;
+    vb.v_z = num;
+    vb.v_w = num;
+    t_vector_vectorized vres;
+    vres.m_vectorized = _mm_mul_ps(va.m_vectorized, vb.m_vectorized);
 
-	res = new_vector(0, 0, 0);
-	res.v_x = a.v_x * num;
-	res.v_y = a.v_y * num;
-	res.v_z = a.v_z * num;
-	return (res);
+    t_vector res;
+    memcpy(&res, &vres, sizeof(res));
+#else
+    t_vector res = {0, 0, 0};
+    res.v_x      = a.v_x * num;
+    res.v_y      = a.v_y * num;
+    res.v_z      = a.v_z * num;
+#endif
+    return (res);
 }

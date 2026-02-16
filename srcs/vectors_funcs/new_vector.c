@@ -12,20 +12,23 @@
 
 #include "../includes/MiniRT.h"
 
-t_vector		new_vector(float x, float y, float z)
+t_vector new_vector(float x, float y, float z)
 {
-	t_vector	new;
+    t_vector new;
 
-	new.v_x = x;
-	new.v_y = y;
-	new.v_z = z;
-	return (new);
+    new.v_x = x;
+    new.v_y = y;
+    new.v_z = z;
+    return (new);
 }
 
-void			my_mlx_pixel_put(t_data *data, int x, int y, int color)
+t_vector_vectorized to_vectorized(t_vector vec)
 {
-	char		*dst;
+    t_vector_vectorized new;
 
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
+    new.v_x = vec.v_x;
+    new.v_y = vec.v_y;
+    new.v_z = vec.v_z;
+    new.v_w = 0.0f;
+    return (new);
 }

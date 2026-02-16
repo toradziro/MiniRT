@@ -11,32 +11,44 @@
 /* ************************************************************************** */
 
 #ifndef THREADS_H
-# define THREADS_H
-# include "MiniRT.h"
-# include "pthread.h"
-# include "intersect.h"
+#define THREADS_H
+#include "MiniRT.h"
+#include "intersect.h"
+#include "pthread.h"
 
-typedef struct		s_thread{
-	int				id;
-	t_scene			scene;
-}					t_thread;
+typedef struct s_thread_data
+{
+    t_scene*      scene;
+    int           curr_y;
+    volatile bool is_task_assigned;
+    volatile bool is_running;
+} t_thread_data;
 
-typedef struct		s_ray_trace{
-	t_thread		*curr_thr;
-	t_scene			*scene;
-	t_ray			ray;
-	t_color			color;
-	float			coefs[3];
-	int				x_pixel;
-	int				y_pixel;
-	int				y_end;
-	int				ret_color;
-}					t_ray_trace;
+typedef struct s_thread_pool
+{
+    pthread_t     m_thread[THREADS_MAX];
+    t_thread_data m_thread_data[THREADS_MAX];
+} t_thread_pool;
 
-void				*ray_trace_thread(void *thread);
-void				threads_start(t_thread *thread_id,
-					pthread_t *thread, t_scene *scene);
-void				threads(t_scene *scene);
-void				main_rt_loop(t_ray_trace trace);
+typedef struct s_thread
+{
+    int     id;
+    t_scene scene;
+} t_thread;
+
+typedef struct s_ray_trace
+{
+    t_scene* scene;
+    t_ray    ray;
+    t_color  color;
+    float    coefs[3];
+    int      x_pixel;
+    int      y_pixel;
+} t_ray_trace;
+
+void* main_rt_loop(void* thread_data);
+void  destroy_render(t_thread_pool* thread_pool);
+void  render(t_thread_pool* thread_pool, int y);
+void  start_render_threads(t_thread_pool* thread_pool, t_scene* scene);
 
 #endif

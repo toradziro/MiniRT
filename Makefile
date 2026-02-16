@@ -2,14 +2,10 @@ NAME =		MiniRT
 
 HEAD =		./srcs/includes/
 
-SRC =		srcs/gnl/get_next_line.c \
-			srcs/gnl/get_next_line_utils.c \
-			srcs/lists_funcs/list_camera_funcs.c \
-			srcs/lists_funcs/list_figures_funcs.c \
+SRC =		srcs/lists_funcs/list_camera_funcs.c \
 			srcs/lists_funcs/list_lights_func.c \
 			srcs/parser/parser.c \
 			srcs/parser/parse_utils.c \
-			srcs/parser/parser_two.c \
 			srcs/parser/utils.c \
 			srcs/parser/figures_creation.c \
 			srcs/utilits/killed_by_error.c \
@@ -26,24 +22,27 @@ SRC =		srcs/gnl/get_next_line.c \
 			srcs/intersec/interset.c \
 			srcs/save_to_bmp.c \
 			srcs/hooks_utils.c \
-			srcs/scene_utils.c \
+			srcs/arena/arena.c \
+			srcs/string/rt_string.c \
+			srcs/file/rt_file.c \
 			srcs/main.c
 
 OBJS =		${SRC:.c=.o}
 
-CFLAGS	= -Werror -Wall -Wextra -O2 -I $(HEAD) -I ./mlx/ -D THREADS_MAX=$(NUM_THREADS)
+#-fsanitize=address
+# CFLAGS	= -Werror -Wall -Wextra -DVECTORIZE -std=c11 -g -fsanitize=address -I $(HEAD) `sdl2-config --cflags` -D THREADS_MAX=$(NUM_THREADS)
+CFLAGS	= -Werror -Wall -Wextra -std=c11 -march=native -O3 -DVECTORIZE -I $(HEAD) `sdl2-config --cflags` -D THREADS_MAX=$(NUM_THREADS)
 
-FLAGS = -O2 -Lmlx -lmlx -framework OpenGL -framework AppKit
+FLAGS = 	-lm `sdl2-config --libs`
 
 RM =		rm -rf
 
 CC =		gcc
 
-NUM_THREADS = $(shell sysctl -n hw.ncpu)
+NUM_THREADS = 12
 
 $(NAME):	$(OBJS)
-			#cd mlx && $(MAKE) && mv libmlx.dylib ..
-			$(CC) $(CFLAGS) $(OBJS) $(FLAGS) libmlx.a -o $(NAME)
+			$(CC) $(CFLAGS) $(OBJS) $(FLAGS) -o $(NAME)
 
 all:		$(NAME)
 

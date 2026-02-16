@@ -11,19 +11,43 @@
 /* ************************************************************************** */
 
 #ifndef ARRAY_H
-# define ARRAY_H
-# include "lists.h"
+#define ARRAY_H
+#include "../arena/arena.h"
+#include "../includes/my_types.h"
+#include "figures.h"
+#include "lists.h"
 
-typedef struct		s_vec_fig
+typedef union u_figure
 {
-	t_figures		*node;
-	int				capacity;
-	int				length;
-}					t_vec_fig;
+    t_triangle triangle;
+    t_cylinder cylender;
+    t_square   square;
+    t_plane    plane;
+    t_sphere   sphere;
+} u_figure;
 
-t_vec_fig			*realloc_vec(t_vec_fig *old);
-t_vec_fig			*add_elem_vec(t_vec_fig *vec, t_figures next);
-t_vec_fig			*new_vec_fig(void);
-void				free_fig_test(t_vec_fig *v);
+typedef enum figure_type
+{
+    Triangle = 0,
+    Cylender,
+    Square,
+    Plane,
+    Sphere
+} figure_type;
+
+typedef struct s_figure_holder
+{
+    u_figure    _figure;
+    figure_type type;
+} t_figure_holder;
+
+typedef struct s_vec_fig
+{
+    t_figure_holder* figure_holder;
+    int              length;
+} t_vec_fig;
+
+t_vec_fig* add_elem_vec(t_vec_fig* vec, t_figure_holder next);
+t_vec_fig* new_vec_fig(u32 size, t_memory_arena* arena);
 
 #endif

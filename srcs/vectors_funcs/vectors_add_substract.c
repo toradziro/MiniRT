@@ -11,25 +11,38 @@
 /* ************************************************************************** */
 
 #include "../includes/MiniRT.h"
+#include <immintrin.h>
 
-t_vector		add_vectors(t_vector a, t_vector b)
+t_vector add_vectors(t_vector a, t_vector b)
 {
-	t_vector	res;
-
-	res = new_vector(0, 0, 0);
-	res.v_x = a.v_x + b.v_x;
-	res.v_y = a.v_y + b.v_y;
-	res.v_z = a.v_z + b.v_z;
-	return (res);
+#ifdef VECTORIZE
+    //--_mm_set_ps(w, z, y, x)
+    t_vector            res;
+    t_vector_vectorized vres;
+    vres.m_vectorized = _mm_add_ps(to_vectorized(a).m_vectorized, to_vectorized(b).m_vectorized);
+    memcpy(&res, &vres, sizeof(res));
+#else
+    t_vector res = new_vector(0, 0, 0);
+    res.v_x      = a.v_x + b.v_x;
+    res.v_y      = a.v_y + b.v_y;
+    res.v_z      = a.v_z + b.v_z;
+#endif
+    return (res);
 }
 
-t_vector		subs_vectors(t_vector a, t_vector b)
+t_vector subs_vectors(t_vector a, t_vector b)
 {
-	t_vector	res;
-
-	res = new_vector(0, 0, 0);
-	res.v_x = a.v_x - b.v_x;
-	res.v_y = a.v_y - b.v_y;
-	res.v_z = a.v_z - b.v_z;
-	return (res);
+#ifdef VECTORIZE
+    //--_mm_set_ps(w, z, y, x)
+    t_vector            res;
+    t_vector_vectorized vres;
+    vres.m_vectorized = _mm_sub_ps(to_vectorized(a).m_vectorized, to_vectorized(b).m_vectorized);
+    memcpy(&res, &vres, sizeof(res));
+#else
+    t_vector res = new_vector(0, 0, 0);
+    res.v_x      = a.v_x - b.v_x;
+    res.v_y      = a.v_y - b.v_y;
+    res.v_z      = a.v_z - b.v_z;
+#endif
+    return (res);
 }
