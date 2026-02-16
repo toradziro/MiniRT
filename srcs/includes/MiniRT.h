@@ -94,9 +94,6 @@ int mouse_press(int b, int x, int y, t_scene* scene);
 
 void check_scene(t_scene* scene);
 
-void free_cams(t_cameras* cam);
-void free_light(t_lights* light);
-
 void save_to_bmp(t_scene* scene);
 void init_head(char* head, t_scene* scene, int file_size);
 

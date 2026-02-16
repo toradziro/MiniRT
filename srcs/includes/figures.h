@@ -20,14 +20,14 @@ typedef struct s_sphere
     t_vector coordinates;
     t_color  color;
     float    radius;
-} __attribute__((aligned(16))) t_sphere;
+} t_sphere;
 
 typedef struct s_plane
 {
     t_vector coordinates;
     t_vector normal;
     t_color  color;
-} __attribute__((aligned(16))) t_plane;
+} t_plane;
 
 typedef struct s_square
 {
@@ -35,7 +35,7 @@ typedef struct s_square
     t_vector normal;
     float    side;
     t_color  color;
-} __attribute__((aligned(16))) t_square;
+} t_square;
 
 typedef struct s_cylinder
 {
@@ -45,7 +45,7 @@ typedef struct s_cylinder
     float    diameter;
     float    height;
     t_color  color;
-} __attribute__((aligned(16))) t_cylinder;
+} t_cylinder;
 
 typedef struct s_triangle
 {
@@ -56,7 +56,7 @@ typedef struct s_triangle
     t_vector ab;
     t_vector ac;
     t_color  color;
-} __attribute__((aligned(16))) t_triangle;
+} t_triangle;
 
 t_triangle new_triangle(t_vector frs_vector, t_vector sec_point, t_vector thd_point, t_color color);
 t_cylinder new_cylinder(t_vector coordinates, t_vector normal, float diameter, t_color color);

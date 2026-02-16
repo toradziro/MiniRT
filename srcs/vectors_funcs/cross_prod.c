@@ -15,14 +15,19 @@
 t_vector cross_prod(t_vector b, t_vector a)
 {
 #ifdef VECTORIZE
-    t_vector res;
+    t_vector_vectorized va      = to_vectorized(a);
+    t_vector_vectorized vb      = to_vectorized(b);
+    t_vector_vectorized res_vec = to_vectorized(b);
+    t_vector            res;
 
-    const __m128 a_yzx = _mm_shuffle_ps(a.m_vectorized, a.m_vectorized, _MM_SHUFFLE(3, 0, 2, 1));
-    const __m128 a_zxy = _mm_shuffle_ps(a.m_vectorized, a.m_vectorized, _MM_SHUFFLE(3, 1, 0, 2));
-    const __m128 b_yzx = _mm_shuffle_ps(b.m_vectorized, b.m_vectorized, _MM_SHUFFLE(3, 0, 2, 1));
-    const __m128 b_zxy = _mm_shuffle_ps(b.m_vectorized, b.m_vectorized, _MM_SHUFFLE(3, 1, 0, 2));
+    const __m128 a_yzx = _mm_shuffle_ps(va.m_vectorized, va.m_vectorized, _MM_SHUFFLE(3, 0, 2, 1));
+    const __m128 a_zxy = _mm_shuffle_ps(va.m_vectorized, va.m_vectorized, _MM_SHUFFLE(3, 1, 0, 2));
+    const __m128 b_yzx = _mm_shuffle_ps(vb.m_vectorized, vb.m_vectorized, _MM_SHUFFLE(3, 0, 2, 1));
+    const __m128 b_zxy = _mm_shuffle_ps(vb.m_vectorized, vb.m_vectorized, _MM_SHUFFLE(3, 1, 0, 2));
 
-    res.m_vectorized = _mm_sub_ps(_mm_mul_ps(a_yzx, b_zxy), _mm_mul_ps(a_zxy, b_yzx));
+    res_vec.m_vectorized = _mm_sub_ps(_mm_mul_ps(a_yzx, b_zxy), _mm_mul_ps(a_zxy, b_yzx));
+    memcpy(&res, &res_vec, sizeof(res));
+
 #else
     t_vector res = new_vector(0, 0, 0);
     res.v_x      = a.v_y * b.v_z - a.v_z * b.v_y;

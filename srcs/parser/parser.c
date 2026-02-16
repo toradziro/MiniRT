@@ -13,7 +13,6 @@
 #include "../file/rt_file.h"
 #include "../includes/MiniRT.h"
 #include "../string/rt_string.h"
-#include <time.h>
 
 typedef struct s_primitives_amount
 {
@@ -24,6 +23,7 @@ typedef struct s_primitives_amount
 
 primitives_amount calculate_primitives(str8 file, t_memory_arena* arena)
 {
+    // TODO: Remove allocations in strings
     primitives_amount amount;
     amount.figures_count = 0;
     amount.cams_count    = 0;
@@ -66,7 +66,6 @@ primitives_amount calculate_primitives(str8 file, t_memory_arena* arena)
         {
             ++amount.figures_count;
         }
-        arena_pop(arena, line.size);
     }
     return amount;
 }
@@ -80,7 +79,6 @@ void start_parse(t_scene* scene, const char* path, t_memory_arena* arena)
     primitives_amount amount = calculate_primitives(file, arena);
     scene->figures           = new_vec_fig(amount.figures_count, arena);
 
-    // preallocate_memory();
     u32 curr = 0;
     while (curr < file.size)
     {
@@ -89,14 +87,13 @@ void start_parse(t_scene* scene, const char* path, t_memory_arena* arena)
         {
             continue;
         }
-        parse_primitives((char*)line.mem, scene);
-        arena_pop(arena, line.size);
+        parse_primitives((char*)line.mem, scene, arena);
     }
 
     clean_file(&file);
 }
 
-void parse_primitives(char* str, t_scene* scene)
+void parse_primitives(char* str, t_scene* scene, t_memory_arena* arena)
 {
     if (str[0] == 'c' && str[1] == 'y')
     {
@@ -108,15 +105,15 @@ void parse_primitives(char* str, t_scene* scene)
     }
     else if (str[0] == 'A')
     {
-        parse_ambl(str + 1, scene);
+        parse_ambl(str + 1, scene, arena);
     }
     else if (str[0] == 'c')
     {
-        parse_cam(str + 1, scene);
+        parse_cam(str + 1, scene, arena);
     }
     else if (str[0] == 'l')
     {
-        parse_light(str + 1, scene);
+        parse_light(str + 1, scene, arena);
     }
     else if (str[0] == 's' && str[1] == 'p')
     {
@@ -279,14 +276,9 @@ void parse_size(char* str, t_scene* scene)
     scene->is_size++;
 }
 
-void parse_ambl(char* str, t_scene* scene)
+void parse_ambl(char* str, t_scene* scene, t_memory_arena* arena)
 {
-    t_ab_light* new;
-
-    if (!(new = (t_ab_light*)malloc(sizeof(t_ab_light))))
-    {
-        killed_by_error(MALLOC_ERROR);
-    }
+    t_ab_light* new = arena_push(arena, sizeof(t_ab_light));
     str             = skip_spaces(str);
     new->intensity  = d_atoi(str);
     str             = skip_nums(str);
@@ -297,7 +289,7 @@ void parse_ambl(char* str, t_scene* scene)
     scene->is_amb_l++;
 }
 
-void parse_cam(char* str, t_scene* scene)
+void parse_cam(char* str, t_scene* scene, t_memory_arena* arena)
 {
     t_cameras* new;
     t_vector dir;
@@ -310,7 +302,7 @@ void parse_cam(char* str, t_scene* scene)
     dir  = parse_coordinares(str);
     str  = skip_pattern(str);
     fov  = d_atoi(str);
-    new  = new_camera_node(coor, vector_normalise(dir), fov);
+    new  = new_camera_node(coor, vector_normalise(dir), fov, arena);
     if (!scene->cams)
     {
         scene->cams      = new;
@@ -323,7 +315,7 @@ void parse_cam(char* str, t_scene* scene)
     scene->is_cam++;
 }
 
-void parse_light(char* str, t_scene* scene)
+void parse_light(char* str, t_scene* scene, t_memory_arena* arena)
 {
     t_lights* new;
     t_vector coor;
@@ -337,14 +329,14 @@ void parse_light(char* str, t_scene* scene)
     str    = skip_nums(str);
     str    = skip_spaces(str);
     color  = col_parse(str);
-    new    = new_light_node(coor, intens, color);
+    new    = new_light_node(coor, intens, color, arena);
     if (!(scene->lights))
     {
         scene->lights = new;
     }
     else
     {
-        push_back_light(scene->lights, coor, intens, color);
+        push_back_light(scene->lights, coor, intens, color, arena);
     }
     scene->is_light++;
 }

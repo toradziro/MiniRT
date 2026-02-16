@@ -71,27 +71,3 @@ void check_valid_name(char* str)
         killed_by_error(INV_FILE_NAME);
     }
 }
-
-void free_cams(t_cameras* cam)
-{
-    t_cameras* tmp;
-
-    while (cam)
-    {
-        tmp = cam->next;
-        free(cam);
-        cam = tmp;
-    }
-}
-
-void free_light(t_lights* light)
-{
-    t_lights* tmp;
-
-    while (light)
-    {
-        tmp = light->next;
-        free(light);
-        light = tmp;
-    }
-}

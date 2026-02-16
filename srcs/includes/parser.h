@@ -43,16 +43,16 @@ typedef struct s_scene
     bool        is_running;
 } t_scene;
 
-void     parse_primitives(char* str, t_scene* scene);
+void     parse_primitives(char* str, t_scene* scene, t_memory_arena* arena);
 void     start_parse(t_scene* scene, const char* path, t_memory_arena* arena);
 char*    skip_spaces(char* str);
 char*    skip_pattern(char* str);
 char*    skip_nums(char* str);
 t_vector parse_coordinares(char* str);
 void     parse_size(char* str, t_scene* scene);
-void     parse_ambl(char* str, t_scene* scene);
-void     parse_cam(char* str, t_scene* scene);
-void     parse_light(char* str, t_scene* scene);
+void     parse_ambl(char* str, t_scene* scene, t_memory_arena* arena);
+void     parse_cam(char* str, t_scene* scene, t_memory_arena* arena);
+void     parse_light(char* str, t_scene* scene, t_memory_arena* arena);
 void     parse_sphere(char* str, t_scene* scene);
 void     parse_plane(char* str, t_scene* scene);
 void     parse_square(char* str, t_scene* scene);

@@ -23,7 +23,6 @@ t_vec_fig* new_vec_fig(u32 size, t_memory_arena* arena)
 
 t_vec_fig* add_elem_vec(t_vec_fig* vec, t_figure_holder next)
 {
-    printf("%d", vec->length);
     vec->figure_holder[vec->length] = next;
     ++vec->length;
     return (vec);

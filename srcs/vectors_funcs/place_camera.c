@@ -15,7 +15,7 @@
 t_cam_to_w matrix_place(t_vector coor, t_vector dir)
 {
     t_cam_to_w res;
-    t_vector   tmp;
+    t_vector   tmp = new_vector(0, 0, 0);
 
     tmp              = new_vector(0, 1, 0);
     tmp              = cross_prod(tmp, dir);
@@ -39,7 +39,7 @@ t_cam_to_w matrix_place(t_vector coor, t_vector dir)
 
 t_vector matrix_mult(t_vector vec, t_cam_to_w m)
 {
-    t_vector v;
+    t_vector v = new_vector(0, 0, 0);
 
     t_vector col0 = new_vector(m.matrix[0][0], m.matrix[1][0], m.matrix[2][0]);
     t_vector col1 = new_vector(m.matrix[0][1], m.matrix[1][1], m.matrix[2][1]);
@@ -52,7 +52,7 @@ t_vector matrix_mult(t_vector vec, t_cam_to_w m)
 
 float vec_matrix_mult_first_row(t_vector vec, t_cam_to_w c)
 {
-    t_vector tmp;
+    t_vector tmp = new_vector(0, 0, 0);
 
     tmp = new_vector(c.matrix[0][0], c.matrix[0][1], c.matrix[0][2]);
     return (vector_scalar_mult(vec, tmp));
@@ -60,7 +60,7 @@ float vec_matrix_mult_first_row(t_vector vec, t_cam_to_w c)
 
 float vec_matrix_mult_second_row(t_vector vec, t_cam_to_w c)
 {
-    t_vector tmp;
+    t_vector tmp = new_vector(0, 0, 0);
 
     tmp = new_vector(c.matrix[1][0], c.matrix[1][1], c.matrix[1][2]);
     return (vector_scalar_mult(vec, tmp));

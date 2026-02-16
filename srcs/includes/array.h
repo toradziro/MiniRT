@@ -39,7 +39,7 @@ typedef struct s_figure_holder
 {
     u_figure    _figure;
     figure_type type;
-} __attribute__((aligned(16))) t_figure_holder;
+} t_figure_holder;
 
 typedef struct s_vec_fig
 {

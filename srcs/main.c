@@ -140,6 +140,7 @@ int main(int argc, char** argv)
     SDL_DestroyTexture(backbuffer_texture);
     SDL_DestroyRenderer(sdl_renderer);
     SDL_DestroyWindow(scene.window);
+    SDL_Quit();
     destroy_arena(&global_arena);
     return (0);
 }

@@ -17,8 +17,10 @@ float vector_scalar_mult(t_vector a, t_vector b)
     float res;
 
 #ifdef VECTORIZE
-    t_vector mres;
-    mres.m_vectorized = _mm_mul_ps(a.m_vectorized, b.m_vectorized);
+    t_vector_vectorized va = to_vectorized(a);
+    t_vector_vectorized vb = to_vectorized(b);
+    t_vector_vectorized mres;
+    mres.m_vectorized = _mm_mul_ps(va.m_vectorized, vb.m_vectorized);
 
     // SSE2-friendly horizontal sum (no _mm_hadd_ps)
     __m128 shuf = _mm_shuffle_ps(mres.m_vectorized, mres.m_vectorized, _MM_SHUFFLE(2, 3, 0, 1));
@@ -36,9 +38,17 @@ float vector_scalar_mult(t_vector a, t_vector b)
 t_vector vector_by_scalar(t_vector a, float num)
 {
 #ifdef VECTORIZE
-    __m128   vb = _mm_setr_ps(num, num, num, num);
+    t_vector_vectorized va = to_vectorized(a);
+    t_vector_vectorized vb;
+    vb.v_x = num;
+    vb.v_y = num;
+    vb.v_z = num;
+    vb.v_w = num;
+    t_vector_vectorized vres;
+    vres.m_vectorized = _mm_mul_ps(va.m_vectorized, vb.m_vectorized);
+
     t_vector res;
-    res.m_vectorized = _mm_mul_ps(a.m_vectorized, vb);
+    memcpy(&res, &vres, sizeof(res));
 #else
     t_vector res = {0, 0, 0};
     res.v_x      = a.v_x * num;

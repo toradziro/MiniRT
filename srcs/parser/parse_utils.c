@@ -85,7 +85,7 @@ char* skip_nums(char* str)
 
 t_vector parse_coordinares(char* str)
 {
-    t_vector new;
+    t_vector new = new_vector(0, 0, 0);
 
     new.v_x = d_atoi(str);
     str     = skip_nums(str);

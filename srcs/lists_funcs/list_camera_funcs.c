@@ -12,14 +12,10 @@
 
 #include "../includes/MiniRT.h"
 
-t_cameras* new_camera_node(t_vector coordinates, t_vector dir, float fov)
+t_cameras* new_camera_node(t_vector coordinates, t_vector dir, float fov, t_memory_arena* arena)
 {
-    t_cameras* new;
+    t_cameras* new = arena_push(arena, sizeof(t_cameras));
 
-    if (!(new = (t_cameras*)malloc(sizeof(t_cameras))))
-    {
-        killed_by_error(MALLOC_ERROR);
-    }
     new->coordinates = coordinates;
     new->direction   = dir;
     new->field_of_v  = fov;
