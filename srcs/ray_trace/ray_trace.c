@@ -55,6 +55,7 @@ t_color find_color(t_scene* scene, t_ray ray, float min, t_vector* normal, t_col
 {
     t_vector  intersec_point;
     t_vector  dir_to_light;
+    t_vector  dir_to_light_norm;
     t_lights* tmp_light;
     float     coeff;
     t_phong   phong;
@@ -69,21 +70,24 @@ t_color find_color(t_scene* scene, t_ray ray, float min, t_vector* normal, t_col
     while (tmp_light)
     {
         dir_to_light = subs_vectors(tmp_light->coordinates, intersec_point);
-        if (!(shadow_intersec(scene->figures, &intersec_point, &dir_to_light)))
+        dir_to_light_norm = vector_normalise(dir_to_light);
+        coeff = vector_scalar_mult(*normal, dir_to_light_norm);
+        if (coeff <= 0.0f)
         {
-            dir_to_light = vector_normalise(dir_to_light);
-            coeff        = vector_scalar_mult(*(normal), dir_to_light);
-            if (coeff < 0)
-            {
-                coeff = 0;
-            }
-            coeff     = coeff * tmp_light->intensity;
-            tmp_color = multip_color(&tmp_light->color, coeff);
-            tmp_color = shad_color(f_color, &tmp_color);
-            ret_color = add_color(&ret_color, &tmp_color);
-            phong     = calc_phong(intersec_point, scene, *normal);
-            ret_color = add_color(&ret_color, &phong.specular);
+            tmp_light = tmp_light->next;
+            continue;
         }
+        if (shadow_intersec(scene->figures, &intersec_point, &dir_to_light))
+        {
+            tmp_light = tmp_light->next;
+            continue;
+        }
+        coeff     = coeff * tmp_light->intensity;
+        tmp_color = multip_color(&tmp_light->color, coeff);
+        tmp_color = shad_color(f_color, &tmp_color);
+        ret_color = add_color(&ret_color, &tmp_color);
+        phong     = calc_phong(intersec_point, scene, *normal);
+        ret_color = add_color(&ret_color, &phong.specular);
         tmp_light = tmp_light->next;
     }
     return (ret_color);
@@ -138,9 +142,9 @@ int shadow_intersec(t_vec_fig* figures, t_vector* intersec_point, t_vector* dir_
 
     len      = figures->length;
     ray.orig = *(intersec_point);
-    ray.dir  = vector_normalise(*dir_to_light);
     i        = 0;
     x_one    = vector_length(*dir_to_light);
+    ray.dir  = vector_by_scalar(*dir_to_light, 1 / x_one);
     while (i < len)
     {
         switch (figures->figure_holder[i].type)
@@ -330,10 +334,13 @@ float cy_intersect(t_ray ray, t_cylinder* cy)
     if (cy)
     {
         co  = subs_vectors(ray.orig, cy->coordinates);
-        a   = -(pow(vector_scalar_mult(ray.dir, cy->axis), 2) - 1);
+        const float dirByCyAxis = vector_scalar_mult(ray.dir, cy->axis);
+        const float cyAxisByCo = vector_scalar_mult(cy->axis, co);
+        const float radius = cy->diameter * 0.5;
+        a   = -((dirByCyAxis * dirByCyAxis) - 1);
         b   = -(2 * (vector_scalar_mult(co, cy->axis) * vector_scalar_mult(ray.dir, cy->axis) -
                    vector_scalar_mult(ray.dir, co)));
-        c   = +(vector_scalar_mult(co, co) - pow(vector_scalar_mult(cy->axis, co), 2) - pow(cy->diameter * 0.5, 2));
+        c   = (vector_scalar_mult(co, co) - (cyAxisByCo * cyAxisByCo) - (radius * radius));
         det = b * b - 4 * a * c;
         if (det < 0)
         {

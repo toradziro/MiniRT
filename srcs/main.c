@@ -22,6 +22,8 @@
 #include <stdio.h>
 #include <x86intrin.h>
 
+#define M_PI (3.14159)
+
 void handle_event(SDL_Event* event, t_scene* scene)
 {
     switch (event->type)
@@ -116,6 +118,7 @@ int main(int argc, char** argv)
         }
 
         scene.mtrx = matrix_place(scene.cams->coordinates, scene.cams->direction);
+        scene.projection_coeff = scene.width / (2 * tan(scene.cams->field_of_v * 0.5 * M_PI * 0.00555555555));
         render(&thread_pool, scene.height);
 
         if (SDL_UpdateTexture(backbuffer_texture, 0, scene.pixels, scene.width * sizeof(int)))

@@ -30,6 +30,7 @@ typedef struct s_scene
     t_cam_to_w  mtrx;
     SDL_Window* window;
     void*       pixels;
+    float       projection_coeff;
     int         is_save;
     int         is_cam;
     int         is_light;

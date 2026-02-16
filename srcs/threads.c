@@ -14,8 +14,6 @@
 #include "includes/MiniRT.h"
 #include "includes/parser.h"
 
-#define M_PI (3.14159)
-
 void start_render_threads(t_thread_pool* thread_pool, t_scene* scene)
 {
     for (int i = 0; i < THREADS_MAX; ++i)
@@ -80,10 +78,9 @@ void* main_rt_loop(void* thread_data)
         {
             trace.coefs[1] = -trace.y_pixel + (trace.scene->height * 0.5);
             trace.coefs[0] = trace.x_pixel - (trace.scene->width * 0.5);
-            trace.coefs[2] = trace.scene->width / (2 * tan(trace.scene->cams->field_of_v * 0.5 * M_PI * 0.00555555555));
+            trace.coefs[2] = trace.scene->projection_coeff;
             trace.ray.dir  = new_vector(trace.coefs[0], trace.coefs[1], trace.coefs[2]);
             trace.ray.dir  = matrix_mult(trace.ray.dir, trace.scene->mtrx);
-            trace.ray.dir  = vector_normalise(trace.ray.dir);
             trace.color    = intersec(trace.scene, trace.ray);
             //-- TODO: Make a function
             void* color_ptr    = (((u32*)trace.scene->pixels) + (trace.scene->width * trace.y_pixel) + trace.x_pixel);

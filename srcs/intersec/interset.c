@@ -36,17 +36,17 @@ void plane_start(t_scene* scene, t_plane* pl, float* min, t_ray ray, t_color* c_
 {
     t_plane* plane_tmp;
     float    intersec;
+    t_vector normal;
 
     plane_tmp = pl;
     intersec  = plane_intersect(ray, plane_tmp);
     if (intersec < *(min) && intersec > MIN_I)
     {
-        if (vector_scalar_mult(ray.dir, plane_tmp->normal) > 0)
-        {
-            plane_tmp->normal = vector_by_scalar(plane_tmp->normal, -1);
-        }
-        *(min)   = intersec;
-        *(c_tmp) = find_color(scene, ray, *(min), &plane_tmp->normal, &plane_tmp->color);
+        normal = pl->normal;
+        if (vector_scalar_mult(ray.dir, normal) > 0)
+            normal = vector_by_scalar(normal, -1);
+        *min   = intersec;
+        *c_tmp = find_color(scene, ray, *min, &normal, &pl->color);
     }
 }
 
