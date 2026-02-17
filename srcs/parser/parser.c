@@ -116,10 +116,10 @@ void parse_triangle(char* str, t_scene* scene)
     str            = skip_pattern(str);
     new            = new_triangle(tmp_a, tmp_b, tmp_c, col_parse(str));
     new.normal     = new_vector(0, 0, 0);
-    new.ab         = subs_vectors(tmp_b, tmp_a);
-    new.ac         = subs_vectors(tmp_c, tmp_a);
-    new.normal     = cross_prod(new.ab, new.ac);
-    new.normal     = vector_normalise(new.normal);
+    new.ab         = subs_vectors(&tmp_b, &tmp_a);
+    new.ac         = subs_vectors(&tmp_c, &tmp_a);
+    new.normal     = cross_prod(&new.ab, &new.ac);
+    new.normal     = vector_normalize(&new.normal);
     scene->figures = add_elem_vec(scene->figures, new);
     scene->is_figur++;
 }
@@ -169,7 +169,7 @@ void parse_cam(char* str, t_scene* scene, t_memory_arena* arena)
     dir  = parse_coordinares(str);
     str  = skip_pattern(str);
     fov  = d_atoi(str);
-    new  = new_camera_node(coor, vector_normalise(dir), fov, arena);
+    new  = new_camera_node(coor, vector_normalize(&dir), fov, arena);
     if (!scene->cams)
     {
         scene->cams      = new;

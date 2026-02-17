@@ -78,9 +78,9 @@ t_color traverseBVH(t_scene* scene, t_ray* ray)
 
                     if (intersec < min && intersec > MIN_I)
                     {
-                        if (vector_scalar_mult(ray->dir, normal) > 0)
+                        if (vector_scalar_mult(&ray->dir, &normal) > 0)
                         {
-                            normal = vector_by_scalar(normal, -1);
+                            normal = vector_by_scalar(&normal, -1);
                         }
                         min   = intersec;
                         c_tmp = find_color(scene, *ray, min, &normal, &currNode->batch[i].color);
@@ -165,14 +165,14 @@ t_color find_color(t_scene* scene, t_ray ray, float min, t_vector* normal, t_col
 
     dir_to_light   = new_vector(0, 0, 0);
     tmp_light      = scene->lights;
-    intersec_point = vector_by_scalar(ray.dir, min);
-    intersec_point = add_vectors(intersec_point, ray.orig);
+    intersec_point = vector_by_scalar(&ray.dir, min);
+    intersec_point = add_vectors(&intersec_point, &ray.orig);
     ret_color      = shad_color(f_color, &scene->ab_light->color);
     while (tmp_light)
     {
-        dir_to_light      = subs_vectors(tmp_light->coordinates, intersec_point);
-        dir_to_light_norm = vector_normalise(dir_to_light);
-        coeff             = vector_scalar_mult(*normal, dir_to_light_norm);
+        dir_to_light      = subs_vectors(&tmp_light->coordinates, &intersec_point);
+        dir_to_light_norm = vector_normalize(&dir_to_light);
+        coeff             = vector_scalar_mult(normal, &dir_to_light_norm);
         if (coeff <= 0.0f)
         {
             tmp_light = tmp_light->next;
@@ -199,13 +199,13 @@ t_phong calc_phong(t_vector intersec_point, t_scene* scene, t_vector normal)
     t_phong phong;
 
     phong.intersec_point = intersec_point;
-    phong.light_dir      = subs_vectors(scene->lights->coordinates, intersec_point);
-    phong.light_dir      = vector_normalise(phong.light_dir);
-    phong.view_dir       = subs_vectors(scene->cams->coordinates, intersec_point);
-    phong.view_dir       = vector_normalise(phong.view_dir);
-    phong.halfway_dir    = add_vectors(phong.light_dir, phong.view_dir);
-    phong.halfway_dir    = vector_normalise(phong.halfway_dir);
-    phong.spec           = pow(MAX(vector_scalar_mult(normal, phong.halfway_dir), 0.0), SHININESS);
+    phong.light_dir      = subs_vectors(&scene->lights->coordinates, &intersec_point);
+    phong.light_dir      = vector_normalize(&phong.light_dir);
+    phong.view_dir       = subs_vectors(&scene->cams->coordinates, &intersec_point);
+    phong.view_dir       = vector_normalize(&phong.view_dir);
+    phong.halfway_dir    = add_vectors(&phong.light_dir, &phong.view_dir);
+    phong.halfway_dir    = vector_normalize(&phong.halfway_dir);
+    phong.spec           = pow(MAX(vector_scalar_mult(&normal, &phong.halfway_dir), 0.0), SHININESS);
     phong.specular       = multip_color(&scene->lights->color, scene->lights->intensity);
     phong.specular       = multip_color(&phong.specular, phong.spec);
     return (phong);
@@ -239,8 +239,8 @@ int shadow_intersec(t_scene* scene, t_vector* intersec_point, t_vector* dir_to_l
     float x_one;
 
     ray.orig = *(intersec_point);
-    x_one    = vector_length(*dir_to_light);
-    ray.dir  = vector_by_scalar(*dir_to_light, 1 / x_one);
+    x_one    = vector_length(dir_to_light);
+    ray.dir  = vector_by_scalar(dir_to_light, 1 / x_one);
     if (traverseBVHHasAnyIntersec(scene, &ray, x_one))
     {
         return (1);
@@ -258,26 +258,26 @@ float triangle_intersec(t_ray ray, t_triangle* triangle)
     t_vector qvec;
     float    v;
 
-    pvec = cross_prod(triangle->ac, ray.dir);
-    det  = vector_scalar_mult(triangle->ab, pvec);
+    pvec = cross_prod(&triangle->ac, &ray.dir);
+    det  = vector_scalar_mult(&triangle->ab, &pvec);
     if (det == 0)
     {
         return (0);
     }
     inv_det = 1.0 / det;
-    tvec    = subs_vectors(ray.orig, triangle->a);
-    u       = vector_scalar_mult(tvec, pvec) * inv_det;
+    tvec    = subs_vectors(&ray.orig, &triangle->a);
+    u       = vector_scalar_mult(&tvec, &pvec) * inv_det;
     if (u < 0 || u > 1)
     {
         return (0);
     }
-    qvec = cross_prod(triangle->ab, tvec);
-    v    = vector_scalar_mult(ray.dir, qvec) * inv_det;
+    qvec = cross_prod(&triangle->ab, &tvec);
+    v    = vector_scalar_mult(&ray.dir, &qvec) * inv_det;
     if (v < 0 || u + v > 1)
     {
         return (0);
     }
-    v = vector_scalar_mult(triangle->ac, qvec) * inv_det;
+    v = vector_scalar_mult(&triangle->ac, &qvec) * inv_det;
     if (v > MIN_I)
     {
         return (v);
