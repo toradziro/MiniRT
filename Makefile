@@ -19,7 +19,6 @@ SRC =		srcs/lists_funcs/list_camera_funcs.c \
 			srcs/vectors_funcs/place_camera.c \
 			srcs/threads.c \
 			srcs/lists_funcs/array_funcs.c \
-			srcs/intersec/interset.c \
 			srcs/save_to_bmp.c \
 			srcs/hooks_utils.c \
 			srcs/arena/arena.c \

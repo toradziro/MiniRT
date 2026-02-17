@@ -14,39 +14,14 @@
 
 t_color intersec(t_scene* scene, t_ray ray)
 {
-    t_color          c_tmp;
-    t_figure_holder* tmp;
-    float            min;
-    int              i;
+    t_color     c_tmp;
+    float       min;
 
-    i     = 0;
     c_tmp = new_color(0, 0, 0);
-    tmp   = scene->figures->figure_holder;
     min   = MAX_INTERSEC;
-    while (i < scene->figures->length)
+    for (int i = 0; i < scene->figures->length; ++i)
     {
-        switch (tmp->type)
-        {
-        case Triangle:
-            triangle_start(scene, &tmp->_figure.triangle, &min, ray, &c_tmp);
-            break;
-        case Sphere:
-            sphere_start(scene, &tmp->_figure.sphere, &min, ray, &c_tmp);
-            break;
-        case Plane:
-            plane_start(scene, &tmp->_figure.plane, &min, ray, &c_tmp);
-            break;
-        case Square:
-            sq_start(scene, &tmp->_figure.square, &min, ray, &c_tmp);
-            break;
-        case Cylender:
-            cy_start(scene, &tmp->_figure.cylender, &min, ray, &c_tmp);
-            break;
-        default:
-            break;
-        }
-        ++i;
-        ++tmp;
+        triangle_start(scene, &scene->figures->triangles[i], &min, ray, &c_tmp);
     }
     return (c_tmp);
 }
@@ -69,9 +44,9 @@ t_color find_color(t_scene* scene, t_ray ray, float min, t_vector* normal, t_col
     ret_color      = shad_color(f_color, &scene->ab_light->color);
     while (tmp_light)
     {
-        dir_to_light = subs_vectors(tmp_light->coordinates, intersec_point);
+        dir_to_light      = subs_vectors(tmp_light->coordinates, intersec_point);
         dir_to_light_norm = vector_normalise(dir_to_light);
-        coeff = vector_scalar_mult(*normal, dir_to_light_norm);
+        coeff             = vector_scalar_mult(*normal, dir_to_light_norm);
         if (coeff <= 0.0f)
         {
             tmp_light = tmp_light->next;
@@ -147,111 +122,34 @@ int shadow_intersec(t_vec_fig* figures, t_vector* intersec_point, t_vector* dir_
     ray.dir  = vector_by_scalar(*dir_to_light, 1 / x_one);
     while (i < len)
     {
-        switch (figures->figure_holder[i].type)
+        res = triangle_intersec(ray, &figures->triangles[i]);
+        if (res < x_one && res > MIN_I)
         {
-        case Triangle:
-        {
-            res = triangle_intersec(ray, &figures->figure_holder[i]._figure.triangle);
-            if (res < x_one && res > MIN_I)
-            {
-                return (1);
-            }
-        }
-        break;
-        case Sphere:
-        {
-            res = sphere_intersect(ray, &figures->figure_holder[i]._figure.sphere);
-            if (res < x_one && res > MIN_I)
-            {
-                return (1);
-            }
-        }
-        break;
-        case Plane:
-        {
-            res = plane_intersect(ray, &figures->figure_holder[i]._figure.plane);
-            if (res < x_one && res > MIN_I)
-            {
-                return (1);
-            }
-        }
-        break;
-        case Square:
-        {
-            res = square_intersec(ray, &figures->figure_holder[i]._figure.square);
-            if (res < x_one && res > MIN_I)
-            {
-                return (1);
-            }
-        }
-        break;
-        case Cylender:
-        {
-            res = cy_intersect(ray, &figures->figure_holder[i]._figure.cylender);
-            if (res < x_one && res > MIN_I)
-            {
-                return (1);
-            }
-        }
-        break;
-        default:
-            break;
+            return (1);
         }
         ++i;
     }
     return (0);
 }
 
-float sphere_intersect(t_ray ray, t_sphere* sp)
+void triangle_start(t_scene* scene, t_triangle* tr, float* min, t_ray ray, t_color* c_tmp)
 {
-    float    b;
-    float    c;
-    float    discr;
-    float    x_one;
-    float    x_two;
-    t_vector res;
+    float       intersec;
+    t_triangle* triangle_tmp;
+    t_vector    normal;
 
-    if (sp)
+    triangle_tmp = tr;
+    normal       = triangle_tmp->normal;
+    intersec     = triangle_intersec(ray, tr);
+    if (intersec < *(min) && intersec > MIN_I)
     {
-        res   = subs_vectors(ray.orig, sp->coordinates);
-        b     = 2 * vector_scalar_mult(res, ray.dir);
-        c     = vector_scalar_mult(res, res) - (sp->radius * sp->radius);
-        discr = (b * b) - (4 * c);
-        if (discr < 0)
+        if (vector_scalar_mult(ray.dir, normal) > 0)
         {
-            return (0);
+            normal = vector_by_scalar(normal, -1);
         }
-        x_one = (-b - sqrt(discr)) * 0.5;
-        x_two = (-b + sqrt(discr)) * 0.5;
-        if (x_one > MIN_I && x_two > MIN_I)
-        {
-            return (MIN(x_one, x_two));
-        }
-        if (x_one > MIN_I || x_two > MIN_I)
-        {
-            return (MAX(x_one, x_two));
-        }
+        *(min)   = intersec;
+        *(c_tmp) = find_color(scene, ray, *(min), &normal, &triangle_tmp->color);
     }
-    return (0);
-}
-
-float plane_intersect(t_ray ray, t_plane* plane)
-{
-    float    denom;
-    t_vector tmp;
-    float    t;
-
-    denom = vector_scalar_mult(plane->normal, ray.dir);
-    if (ABS(denom) > MIN_I)
-    {
-        tmp = subs_vectors(plane->coordinates, ray.orig);
-        t   = vector_scalar_mult(tmp, plane->normal) / denom;
-        if (t > 0)
-        {
-            return (t);
-        }
-    }
-    return (0);
 }
 
 float triangle_intersec(t_ray ray, t_triangle* triangle)
@@ -289,102 +187,6 @@ float triangle_intersec(t_ray ray, t_triangle* triangle)
         return (v);
     }
     return (0);
-}
-
-float square_intersec(t_ray ray, t_square* sq)
-{
-    t_cam_to_w b;
-    t_vector   intersec_point;
-    t_vector   a_p;
-    float      res;
-    float      tmp_1;
-    float      tmp_2;
-
-    res = 0;
-    if ((res = plane_intersect(ray, (t_plane*)sq)) > 0)
-    {
-        intersec_point = vector_by_scalar(ray.dir, res);
-        intersec_point = add_vectors(intersec_point, ray.orig);
-        a_p            = subs_vectors(intersec_point, sq->center);
-        b              = matrix_place(sq->center, sq->normal);
-        tmp_1          = vec_matrix_mult_first_row(a_p, b);
-        tmp_2          = vec_matrix_mult_second_row(a_p, b);
-        if ((ABS(tmp_1) > sq->side * 0.5) || (ABS(tmp_2) > sq->side * 0.5))
-        {
-            return (0);
-        }
-    }
-    return (res);
-}
-
-float cy_intersect(t_ray ray, t_cylinder* cy)
-{
-    t_vector co;
-    t_vector ap_one;
-    t_vector ap_two;
-    float    d_one;
-    float    d_two;
-    float    a;
-    float    b;
-    float    c;
-    float    det;
-    float    x_one;
-    float    x_two;
-
-    if (cy)
-    {
-        co  = subs_vectors(ray.orig, cy->coordinates);
-        const float dirByCyAxis = vector_scalar_mult(ray.dir, cy->axis);
-        const float cyAxisByCo = vector_scalar_mult(cy->axis, co);
-        const float radius = cy->diameter * 0.5;
-        a   = -((dirByCyAxis * dirByCyAxis) - 1);
-        b   = -(2 * (vector_scalar_mult(co, cy->axis) * vector_scalar_mult(ray.dir, cy->axis) -
-                   vector_scalar_mult(ray.dir, co)));
-        c   = (vector_scalar_mult(co, co) - (cyAxisByCo * cyAxisByCo) - (radius * radius));
-        det = b * b - 4 * a * c;
-        if (det < 0)
-        {
-            return (0);
-        }
-        x_one  = (-b - sqrt(det)) / (2 * a);
-        x_two  = (-b + sqrt(det)) / (2 * a);
-        ap_one = vector_by_scalar(cy->axis, x_one);
-        ap_two = vector_by_scalar(cy->axis, x_two);
-        d_one  = vector_scalar_mult(ray.dir, ap_one) + vector_scalar_mult(co, cy->axis);
-        d_two  = vector_scalar_mult(ray.dir, ap_two) + vector_scalar_mult(co, cy->axis);
-        if (ABS(d_one) >= cy->height / 2)
-        {
-            x_one = -1;
-        }
-        if (ABS(d_two) >= cy->height / 2)
-        {
-            x_two = -1;
-        }
-        if (x_one > MIN_I && x_two > MIN_I)
-        {
-            return (MIN(x_one, x_two));
-        }
-        if (x_one > MIN_I || x_two > MIN_I)
-        {
-            return (MAX(x_one, x_two));
-        }
-    }
-    return (0);
-}
-
-t_vector find_cy_normal(float intersec, t_cylinder cy, t_ray ray)
-{
-    t_vector intersec_point;
-    t_vector cp;
-    t_vector t;
-    t_vector normal;
-
-    intersec_point = vector_by_scalar(ray.dir, intersec);
-    intersec_point = add_vectors(ray.orig, intersec_point);
-    cp             = subs_vectors(intersec_point, cy.coordinates);
-    t              = cross_prod(cp, cy.axis);
-    normal         = cross_prod(t, cy.axis);
-    return (normal);
 }
 
 t_color multip_color(t_color* color, float coeff)

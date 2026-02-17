@@ -30,6 +30,7 @@ typedef struct s_scene
     t_cam_to_w  mtrx;
     SDL_Window* window;
     void*       pixels;
+    t_BVH       bvh;
     float       projection_coeff;
     int         is_save;
     int         is_cam;
@@ -54,10 +55,6 @@ void     parse_size(char* str, t_scene* scene);
 void     parse_ambl(char* str, t_scene* scene, t_memory_arena* arena);
 void     parse_cam(char* str, t_scene* scene, t_memory_arena* arena);
 void     parse_light(char* str, t_scene* scene, t_memory_arena* arena);
-void     parse_sphere(char* str, t_scene* scene);
-void     parse_plane(char* str, t_scene* scene);
-void     parse_square(char* str, t_scene* scene);
-void     parse_cylinder(char* str, t_scene* scene);
 void     parse_triangle(char* str, t_scene* scene);
 t_color  new_color(int r, int g, int b);
 

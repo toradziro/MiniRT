@@ -17,37 +17,13 @@
 #include "figures.h"
 #include "lists.h"
 
-typedef union u_figure
-{
-    t_triangle triangle;
-    t_cylinder cylender;
-    t_square   square;
-    t_plane    plane;
-    t_sphere   sphere;
-} u_figure;
-
-typedef enum figure_type
-{
-    Triangle = 0,
-    Cylender,
-    Square,
-    Plane,
-    Sphere
-} figure_type;
-
-typedef struct s_figure_holder
-{
-    u_figure    _figure;
-    figure_type type;
-} t_figure_holder;
-
 typedef struct s_vec_fig
 {
-    t_figure_holder* figure_holder;
-    int              length;
+    t_triangle* triangles;
+    int         length;
 } t_vec_fig;
 
-t_vec_fig* add_elem_vec(t_vec_fig* vec, t_figure_holder next);
+t_vec_fig* add_elem_vec(t_vec_fig* vec, t_triangle next);
 t_vec_fig* new_vec_fig(u32 size, t_memory_arena* arena);
 
 #endif

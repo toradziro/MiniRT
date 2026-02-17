@@ -14,38 +14,7 @@
 #define FIGURES_H
 #include "colors.h"
 #include "vectors.h"
-
-typedef struct s_sphere
-{
-    t_vector coordinates;
-    t_color  color;
-    float    radius;
-} t_sphere;
-
-typedef struct s_plane
-{
-    t_vector coordinates;
-    t_vector normal;
-    t_color  color;
-} t_plane;
-
-typedef struct s_square
-{
-    t_vector center;
-    t_vector normal;
-    float    side;
-    t_color  color;
-} t_square;
-
-typedef struct s_cylinder
-{
-    t_vector coordinates;
-    t_vector normal;
-    t_vector axis;
-    float    diameter;
-    float    height;
-    t_color  color;
-} t_cylinder;
+#include <stdbool.h>
 
 typedef struct s_triangle
 {
@@ -56,12 +25,35 @@ typedef struct s_triangle
     t_vector ab;
     t_vector ac;
     t_color  color;
+    t_AABB   aabb;
 } t_triangle;
 
+typedef struct s_BVHNode
+{
+    union
+    {
+        struct
+        {
+            struct s_BVHNode* left;
+            struct s_BVHNode* right;
+        };
+        struct
+        {
+            int count;
+            t_triangle* batch;
+        };
+    };
+    t_AABB  aabb;
+    bool    is_leaf;
+} t_BVHNode;
+
+typedef struct s_BVH
+{
+    t_BVHNode* root;
+    t_triangle*  triangles;
+    int          triangle_count;
+} t_BVH;
+
 t_triangle new_triangle(t_vector frs_vector, t_vector sec_point, t_vector thd_point, t_color color);
-t_cylinder new_cylinder(t_vector coordinates, t_vector normal, float diameter, t_color color);
-t_square   new_square(t_vector center, t_vector normal, float side, t_color color);
-t_plane    new_plane(t_vector coordinates, t_vector normal, t_color color);
-t_sphere   new_sphere(float radius, t_vector coordinates, t_color color);
 
 #endif
