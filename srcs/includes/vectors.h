@@ -43,12 +43,6 @@ typedef struct s_ray
     t_vector orig;
 } t_ray;
 
-typedef struct s_AABB
-{
-    t_vector min;
-    t_vector max;
-} t_AABB;
-
 typedef struct s_cam_to_w
 {
     float matrix[4][4];

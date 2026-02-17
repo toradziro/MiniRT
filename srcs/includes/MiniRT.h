@@ -59,16 +59,6 @@
     fflush(stdout);
 */
 
-enum e_spec
-{
-    S_NUL = 0b00000000,
-    S_SP  = 0b00000001,
-    S_PL  = 0b00000010,
-    S_SQ  = 0b00000100,
-    S_CL  = 0b00001000,
-    S_TR  = 0b00010000,
-};
-
 void    killed_by_error(int num);
 void    check_valid_name(char* str);
 float   d_atoi(char* str);
@@ -81,7 +71,7 @@ void    free_scene(t_scene* scene);
 t_color find_color(t_scene* scene, t_ray ray, float min, t_vector* normal, t_color* f_color);
 t_color intersec(t_scene* scene, t_ray ray);
 
-int shadow_intersec(t_vec_fig* figures, t_vector* intersec_point, t_vector* dir_to_light);
+int shadow_intersec(t_scene* scene, t_vector* intersec_point, t_vector* dir_to_light);
 
 t_color multip_color(t_color* color, float coeff);
 t_color add_color(t_color* color, t_color* color_s);

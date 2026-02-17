@@ -12,18 +12,144 @@
 
 #include "../includes/MiniRT.h"
 
+void swap(float* a, float* b)
+{
+    float tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+bool intersectAABB(t_BVHNode* currNode, t_ray* ray, float closest)
+{
+    float t_min_x = (currNode->aabb.min.v_x - ray->orig.v_x) / ray->dir.v_x;
+    float t_max_x = (currNode->aabb.max.v_x - ray->orig.v_x) / ray->dir.v_x;
+    if (ray->dir.v_x < 0)
+    {
+        swap(&t_min_x, &t_max_x);
+    }
+
+    float t_min_y = (currNode->aabb.min.v_y - ray->orig.v_y) / ray->dir.v_y;
+    float t_max_y = (currNode->aabb.max.v_y - ray->orig.v_y) / ray->dir.v_y;
+    if (ray->dir.v_y < 0)
+    {
+        swap(&t_min_y, &t_max_y);
+    }
+
+    float t_min_z = (currNode->aabb.min.v_z - ray->orig.v_z) / ray->dir.v_z;
+    float t_max_z = (currNode->aabb.max.v_z - ray->orig.v_z) / ray->dir.v_z;
+    if (ray->dir.v_z < 0)
+    {
+        swap(&t_min_z, &t_max_z);
+    }
+
+    float lastHit = MAX(MAX(t_min_x, t_min_y), t_min_z);
+    float firstPassed = MIN(MIN(t_max_x, t_max_y), t_max_z);
+
+    if (lastHit > closest || firstPassed < 0.0f)
+    {
+        return false;
+    }
+
+    return lastHit <= firstPassed;
+}
+
+t_color traverseBVH(t_scene* scene, t_ray* ray)
+{
+    t_BVHNode* nodes[100];
+    memset(nodes, 0, sizeof(t_BVHNode*) * 100);
+    nodes[0] = scene->bvh.root;
+    int stackSize = 1;
+
+    t_color c_tmp = new_color(0, 0, 0);
+    float min   = MAX_INTERSEC;
+
+    while (stackSize > 0)
+    {
+        --stackSize;
+        t_BVHNode* currNode = nodes[stackSize];
+        if (intersectAABB(currNode, ray, min))
+        {
+            if (currNode->is_leaf)
+            {
+                for (int i = 0; i < currNode->count; ++i)
+                {
+                    float    intersec = triangle_intersec(*ray, &currNode->batch[i]);
+                    t_vector normal   = currNode->batch[i].normal;
+
+                    if (intersec < min && intersec > MIN_I)
+                    {
+                        if (vector_scalar_mult(ray->dir, normal) > 0)
+                        {
+                            normal = vector_by_scalar(normal, -1);
+                        }
+                        min   = intersec;
+                        c_tmp = find_color(scene, *ray, min, &normal, &currNode->batch[i].color);
+                    }
+                }
+            }
+            else
+            {
+                if (currNode->left != NULL)
+                {
+                    nodes[stackSize] = currNode->left;
+                    ++stackSize;
+                }
+                if (currNode->right != NULL)
+                {
+                    nodes[stackSize] = currNode->right;
+                    ++stackSize;
+                }
+            }
+        }
+    }
+    return c_tmp;
+}
+
+bool traverseBVHHasAnyIntersec(t_scene* scene, t_ray* ray, float min)
+{
+    t_BVHNode* nodes[100];
+    memset(nodes, 0, sizeof(t_BVHNode*) * 100);
+    nodes[0] = scene->bvh.root;
+    int stackSize = 1;
+
+    while (stackSize > 0)
+    {
+        --stackSize;
+        t_BVHNode* currNode = nodes[stackSize];
+        if (intersectAABB(currNode, ray, min))
+        {
+            if (currNode->is_leaf)
+            {
+                for (int i = 0; i < currNode->count; ++i)
+                {
+                    float    intersec = triangle_intersec(*ray, &currNode->batch[i]);
+                    if (intersec < min && intersec > MIN_I)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                if (currNode->left != NULL)
+                {
+                    nodes[stackSize] = currNode->left;
+                    ++stackSize;
+                }
+                if (currNode->right != NULL)
+                {
+                    nodes[stackSize] = currNode->right;
+                    ++stackSize;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 t_color intersec(t_scene* scene, t_ray ray)
 {
-    t_color     c_tmp;
-    float       min;
-
-    c_tmp = new_color(0, 0, 0);
-    min   = MAX_INTERSEC;
-    for (int i = 0; i < scene->figures->length; ++i)
-    {
-        triangle_start(scene, &scene->figures->triangles[i], &min, ray, &c_tmp);
-    }
-    return (c_tmp);
+    return traverseBVH(scene, &ray);
 }
 
 t_color find_color(t_scene* scene, t_ray ray, float min, t_vector* normal, t_color* f_color)
@@ -52,7 +178,7 @@ t_color find_color(t_scene* scene, t_ray ray, float min, t_vector* normal, t_col
             tmp_light = tmp_light->next;
             continue;
         }
-        if (shadow_intersec(scene->figures, &intersec_point, &dir_to_light))
+        if (shadow_intersec(scene, &intersec_point, &dir_to_light))
         {
             tmp_light = tmp_light->next;
             continue;
@@ -107,49 +233,19 @@ t_color shad_color(t_color* figur, t_color* ab_light)
     return (res);
 }
 
-int shadow_intersec(t_vec_fig* figures, t_vector* intersec_point, t_vector* dir_to_light)
+int shadow_intersec(t_scene* scene, t_vector* intersec_point, t_vector* dir_to_light)
 {
-    int   len;
     t_ray ray;
-    float res;
     float x_one;
-    int   i;
 
-    len      = figures->length;
     ray.orig = *(intersec_point);
-    i        = 0;
     x_one    = vector_length(*dir_to_light);
     ray.dir  = vector_by_scalar(*dir_to_light, 1 / x_one);
-    while (i < len)
+    if (traverseBVHHasAnyIntersec(scene, &ray, x_one))
     {
-        res = triangle_intersec(ray, &figures->triangles[i]);
-        if (res < x_one && res > MIN_I)
-        {
-            return (1);
-        }
-        ++i;
+        return (1);
     }
     return (0);
-}
-
-void triangle_start(t_scene* scene, t_triangle* tr, float* min, t_ray ray, t_color* c_tmp)
-{
-    float       intersec;
-    t_triangle* triangle_tmp;
-    t_vector    normal;
-
-    triangle_tmp = tr;
-    normal       = triangle_tmp->normal;
-    intersec     = triangle_intersec(ray, tr);
-    if (intersec < *(min) && intersec > MIN_I)
-    {
-        if (vector_scalar_mult(ray.dir, normal) > 0)
-        {
-            normal = vector_by_scalar(normal, -1);
-        }
-        *(min)   = intersec;
-        *(c_tmp) = find_color(scene, ray, *(min), &normal, &triangle_tmp->color);
-    }
 }
 
 float triangle_intersec(t_ray ray, t_triangle* triangle)

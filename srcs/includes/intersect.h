@@ -13,7 +13,6 @@
 #ifndef MINIRT_INTERSECT_H
 #define MINIRT_INTERSECT_H
 
-void  triangle_start(t_scene* scene, t_triangle* tr, float* min, t_ray ray, t_color* c_tmp);
 float triangle_intersec(t_ray ray, t_triangle* triangle);
 
 #endif
