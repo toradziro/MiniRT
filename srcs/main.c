@@ -13,11 +13,9 @@
 #include "arena/arena.h"
 #include "includes/MiniRT.h"
 #include "includes/array.h"
-#include "includes/figures.h"
 #include "includes/my_types.h"
 #include "includes/parser.h"
 #include "includes/threads.h"
-#include "includes/vectors.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_render.h>

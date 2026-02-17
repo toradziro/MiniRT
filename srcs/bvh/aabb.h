@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../includes/vectors.h"
+#include "../vectors_funcs/rt_math.h"
 
 typedef struct s_AABB
 {

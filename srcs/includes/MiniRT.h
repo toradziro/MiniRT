@@ -12,14 +12,13 @@
 
 #ifndef MINIRT_H
 #define MINIRT_H
-#include "array.h"
+#include "../vectors_funcs/rt_math.h"
 #include "parser.h"
 #include "colors.h"
 #include "figures.h"
 #include "intersect.h"
 #include "lists.h"
 #include "my_types.h"
-#include "vectors.h"
 
 #include <fcntl.h>
 #include <math.h>

@@ -312,7 +312,7 @@ bool test_cubic_distribution()
 
     t_memory_arena arena = create_arena(MB(1));
 
-    int grid_size = 5; // 5x5x5 = 125 треугольников
+    int grid_size = 5;
     int count = grid_size * grid_size * grid_size;
     t_triangle* triangles = (t_triangle*)malloc(count * sizeof(t_triangle));
 

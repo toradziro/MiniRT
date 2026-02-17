@@ -14,7 +14,7 @@
 #define LISTS_H
 
 #include "colors.h"
-#include "vectors.h"
+#include "../vectors_funcs/rt_math.h"
 #include "../arena/arena.h"
 
 typedef struct s_cameras

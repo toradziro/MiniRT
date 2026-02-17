@@ -17,6 +17,7 @@
 #include "figures.h"
 #include "lists.h"
 #include "../bvh/bvh.h"
+#include "../vectors_funcs/matrix.h"
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 #include <stdint.h>

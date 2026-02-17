@@ -9,12 +9,6 @@ SRC =		srcs/lists_funcs/list_camera_funcs.c \
 			srcs/parser/utils.c \
 			srcs/parser/figures_creation.c \
 			srcs/utilits/killed_by_error.c \
-			srcs/vectors_funcs/cross_prod.c \
-			srcs/vectors_funcs/new_vector.c \
-			srcs/vectors_funcs/vector_length.c \
-			srcs/vectors_funcs/vector_normalise.c \
-			srcs/vectors_funcs/vector_scalar_mult.c \
-			srcs/vectors_funcs/vectors_add_substract.c \
 			srcs/ray_trace/ray_trace.c \
 			srcs/vectors_funcs/place_camera.c \
 			srcs/threads.c \
@@ -31,9 +25,9 @@ SRC =		srcs/lists_funcs/list_camera_funcs.c \
 OBJS =		${SRC:.c=.o}
 
 #-fsanitize=address
-# CFLAGS	= -Werror -Wall -Wextra -DVECTORIZE -std=c11 -g -fsanitize=address -I $(HEAD) `sdl2-config --cflags` -D THREADS_MAX=$(NUM_THREADS)
-CFLAGS	= -Werror -Wall -Wextra -std=c11 -march=native -O3 -DVECTORIZE -I $(HEAD) `sdl2-config --cflags` -D THREADS_MAX=$(NUM_THREADS)
-# CFLAGS	= -Werror -Wall -Wextra -std=c11 -march=native -O3 -DVECTORIZE -DTESTS -I $(HEAD) `sdl2-config --cflags` -D THREADS_MAX=$(NUM_THREADS)
+# CFLAGS	= -Werror -Wall -Wextra -std=c11 -g -fsanitize=address -I $(HEAD) `sdl2-config --cflags` -D THREADS_MAX=$(NUM_THREADS)
+CFLAGS	= -Werror -Wall -Wextra -std=c11 -march=native -O3 -I $(HEAD) `sdl2-config --cflags` -D THREADS_MAX=$(NUM_THREADS)
+# CFLAGS	= -Werror -Wall -Wextra -std=c11 -march=native -O3 -DTESTS -I $(HEAD) `sdl2-config --cflags` -D THREADS_MAX=$(NUM_THREADS)
 
 FLAGS = 	-lm `sdl2-config --libs`
 

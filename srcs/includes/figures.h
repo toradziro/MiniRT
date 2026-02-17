@@ -13,7 +13,7 @@
 #ifndef FIGURES_H
 #define FIGURES_H
 #include "colors.h"
-#include "vectors.h"
+#include "../vectors_funcs/rt_math.h"
 #include <stdbool.h>
 #include "../bvh/aabb.h"
 

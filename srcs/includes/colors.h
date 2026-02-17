@@ -13,7 +13,7 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-#include "../includes/vectors.h"
+#include "../vectors_funcs/rt_math.h"
 
 typedef struct s_color
 {
