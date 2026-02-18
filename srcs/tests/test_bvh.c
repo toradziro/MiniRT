@@ -5,9 +5,7 @@
 #include "../includes/MiniRT.h"
 #include "../arena/arena.h"
 
-t_triangle create_triangle(float x1, float y1, float z1,
-                          float x2, float y2, float z2,
-                          float x3, float y3, float z3)
+t_triangle create_triangle(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3)
 {
     t_triangle tri;
     tri.a = new_vector(x1, y1, z1);
@@ -19,28 +17,40 @@ t_triangle create_triangle(float x1, float y1, float z1,
 int count_nodes(t_BVHNode* node)
 {
     if (node == NULL)
+    {
         return 0;
+    }
     if (node->is_leaf)
+    {
         return 1;
+    }
     return 1 + count_nodes(node->left) + count_nodes(node->right);
 }
 
 int count_leaves(t_BVHNode* node)
 {
     if (node == NULL)
+    {
         return 0;
+    }
     if (node->is_leaf)
+    {
         return 1;
+    }
     return count_leaves(node->left) + count_leaves(node->right);
 }
 
 int max_depth(t_BVHNode* node)
 {
     if (node == NULL)
+    {
         return 0;
+    }
     if (node->is_leaf)
+    {
         return 1;
-    int left_depth = max_depth(node->left);
+    }
+    int left_depth  = max_depth(node->left);
     int right_depth = max_depth(node->right);
     return 1 + MAX(left_depth, right_depth);
 }
@@ -48,16 +58,22 @@ int max_depth(t_BVHNode* node)
 int count_triangles_in_leaves(t_BVHNode* node)
 {
     if (node == NULL)
+    {
         return 0;
+    }
     if (node->is_leaf)
+    {
         return node->count;
+    }
     return count_triangles_in_leaves(node->left) + count_triangles_in_leaves(node->right);
 }
 
 bool validate_aabb_hierarchy(t_BVHNode* node)
 {
     if (node == NULL || node->is_leaf)
+    {
         return true;
+    }
 
     if (node->left != NULL)
     {
@@ -91,11 +107,14 @@ bool validate_aabb_hierarchy(t_BVHNode* node)
 bool validate_leaf_sizes(t_BVHNode* node, int max_triangles)
 {
     if (node == NULL)
+    {
         return true;
+    }
     if (node->is_leaf)
+    {
         return node->count <= max_triangles;
-    return validate_leaf_sizes(node->left, max_triangles) &&
-           validate_leaf_sizes(node->right, max_triangles);
+    }
+    return validate_leaf_sizes(node->left, max_triangles) && validate_leaf_sizes(node->right, max_triangles);
 }
 
 bool test_single_triangle()
@@ -109,7 +128,7 @@ bool test_single_triangle()
 
     t_vec_fig figures;
     figures.triangles = triangles;
-    figures.length = 1;
+    figures.length    = 1;
     assignAABB(&figures);
 
     t_BVHNode* root = build_BVH_from_triangles(triangles, 1, &arena);
@@ -135,7 +154,7 @@ bool test_four_triangles()
 
     t_vec_fig figures;
     figures.triangles = triangles;
-    figures.length = 4;
+    figures.length    = 4;
     assignAABB(&figures);
 
     t_BVHNode* root = build_BVH_from_triangles(triangles, 4, &arena);
@@ -156,26 +175,22 @@ bool test_five_triangles()
     t_triangle triangles[5];
     for (int i = 0; i < 5; i++)
     {
-        triangles[i] = create_triangle(i*2, 0, 0, i*2+1, 0, 0, i*2, 1, 0);
+        triangles[i] = create_triangle(i * 2, 0, 0, i * 2 + 1, 0, 0, i * 2, 1, 0);
     }
 
     t_vec_fig figures;
     figures.triangles = triangles;
-    figures.length = 5;
+    figures.length    = 5;
     assignAABB(&figures);
 
     t_BVHNode* root = build_BVH_from_triangles(triangles, 5, &arena);
 
-    bool passed = (root != NULL &&
-                  !root->is_leaf &&
-                  root->left != NULL &&
-                  root->right != NULL);
+    bool passed = (root != NULL && !root->is_leaf && root->left != NULL && root->right != NULL);
     printf("%s\n", passed ? "PASSED" : "FAILED");
 
     if (passed)
     {
-        printf("  - Left: %d triangles, Right: %d triangles\n",
-               count_triangles_in_leaves(root->left),
+        printf("  - Left: %d triangles, Right: %d triangles\n", count_triangles_in_leaves(root->left),
                count_triangles_in_leaves(root->right));
     }
 
@@ -192,18 +207,18 @@ bool test_nine_triangles()
     t_triangle triangles[9];
     for (int i = 0; i < 9; i++)
     {
-        triangles[i] = create_triangle(i*2, 0, 0, i*2+1, 0, 0, i*2, 1, 0);
+        triangles[i] = create_triangle(i * 2, 0, 0, i * 2 + 1, 0, 0, i * 2, 1, 0);
     }
 
     t_vec_fig figures;
     figures.triangles = triangles;
-    figures.length = 9;
+    figures.length    = 9;
     assignAABB(&figures);
 
     t_BVHNode* root = build_BVH_from_triangles(triangles, 9, &arena);
 
-    int total_triangles = count_triangles_in_leaves(root);
-    bool passed = (root != NULL && total_triangles == 9);
+    int  total_triangles = count_triangles_in_leaves(root);
+    bool passed          = (root != NULL && total_triangles == 9);
 
     printf("%s\n", passed ? "PASSED" : "FAILED");
 
@@ -225,23 +240,22 @@ bool test_hundred_triangles()
     t_triangle* triangles = (t_triangle*)malloc(100 * sizeof(t_triangle));
     for (int i = 0; i < 100; i++)
     {
-        triangles[i] = create_triangle(i*2, 0, 0, i*2+1, 0, 0, i*2, 1, 0);
+        triangles[i] = create_triangle(i * 2, 0, 0, i * 2 + 1, 0, 0, i * 2, 1, 0);
     }
 
     t_vec_fig figures;
     figures.triangles = triangles;
-    figures.length = 100;
+    figures.length    = 100;
     assignAABB(&figures);
 
     t_BVHNode* root = build_BVH_from_triangles(triangles, 100, &arena);
 
-    int total_triangles = count_triangles_in_leaves(root);
-    int depth = max_depth(root);
-    bool passed = (root != NULL && total_triangles == 100 && depth > 1);
+    int  total_triangles = count_triangles_in_leaves(root);
+    int  depth           = max_depth(root);
+    bool passed          = (root != NULL && total_triangles == 100 && depth > 1);
 
     printf("%s\n", passed ? "PASSED" : "FAILED");
-    printf("  - Depth: %d, Nodes: %d, Leaves: %d\n",
-           depth, count_nodes(root), count_leaves(root));
+    printf("  - Depth: %d, Nodes: %d, Leaves: %d\n", depth, count_nodes(root), count_leaves(root));
 
     free(triangles);
     destroy_arena(&arena);
@@ -262,7 +276,7 @@ bool test_coincident_triangles()
 
     t_vec_fig figures;
     figures.triangles = triangles;
-    figures.length = 10;
+    figures.length    = 10;
     assignAABB(&figures);
 
     t_BVHNode* root = build_BVH_from_triangles(triangles, 10, &arena);
@@ -283,24 +297,21 @@ bool test_linear_arrangement()
     t_triangle triangles[20];
     for (int i = 0; i < 20; i++)
     {
-        triangles[i] = create_triangle(i*10, 0, 0, i*10+1, 0, 0, i*10, 1, 0);
+        triangles[i] = create_triangle(i * 10, 0, 0, i * 10 + 1, 0, 0, i * 10, 1, 0);
     }
 
     t_vec_fig figures;
     figures.triangles = triangles;
-    figures.length = 20;
+    figures.length    = 20;
     assignAABB(&figures);
 
     t_BVHNode* root = build_BVH_from_triangles(triangles, 20, &arena);
 
-    BreakingAxis axis = findBreakingAxis(root);
-    bool passed = (root != NULL &&
-                  axis == BreakingAxisX &&
-                  count_triangles_in_leaves(root) == 20);
+    BreakingAxis axis   = findBreakingAxis(root);
+    bool         passed = (root != NULL && axis == BreakingAxisX && count_triangles_in_leaves(root) == 20);
 
     printf("%s\n", passed ? "PASSED" : "FAILED");
-    printf("  - Breaking axis: %s\n",
-           axis == BreakingAxisX ? "X" : axis == BreakingAxisY ? "Y" : "Z");
+    printf("  - Breaking axis: %s\n", axis == BreakingAxisX ? "X" : axis == BreakingAxisY ? "Y" : "Z");
 
     destroy_arena(&arena);
     return passed;
@@ -312,8 +323,8 @@ bool test_cubic_distribution()
 
     t_memory_arena arena = create_arena(MB(1));
 
-    int grid_size = 5;
-    int count = grid_size * grid_size * grid_size;
+    int         grid_size = 5;
+    int         count     = grid_size * grid_size * grid_size;
     t_triangle* triangles = (t_triangle*)malloc(count * sizeof(t_triangle));
 
     int idx = 0;
@@ -323,25 +334,20 @@ bool test_cubic_distribution()
         {
             for (int z = 0; z < grid_size; z++)
             {
-                triangles[idx++] = create_triangle(
-                    x, y, z,
-                    x+0.5f, y, z,
-                    x, y+0.5f, z);
+                triangles[idx++] = create_triangle(x, y, z, x + 0.5f, y, z, x, y + 0.5f, z);
             }
         }
     }
 
     t_vec_fig figures;
     figures.triangles = triangles;
-    figures.length = count;
+    figures.length    = count;
     assignAABB(&figures);
 
     t_BVHNode* root = build_BVH_from_triangles(triangles, count, &arena);
 
     bool hierarchy_valid = validate_aabb_hierarchy(root);
-    bool passed = (root != NULL &&
-                  count_triangles_in_leaves(root) == count &&
-                  hierarchy_valid);
+    bool passed          = (root != NULL && count_triangles_in_leaves(root) == count && hierarchy_valid);
 
     printf("%s\n", passed ? "PASSED" : "FAILED");
     printf("  - Hierarchy valid: %s\n", hierarchy_valid ? "YES" : "NO");
@@ -357,32 +363,31 @@ bool test_large_array()
 
     t_memory_arena arena = create_arena(MB(10));
 
-    int count = 1000;
+    int         count     = 1000;
     t_triangle* triangles = (t_triangle*)malloc(count * sizeof(t_triangle));
 
     for (int i = 0; i < count; i++)
     {
-        float x = (float)(i % 100);
-        float y = (float)((i / 100) % 10);
-        float z = (float)(i / 1000);
-        triangles[i] = create_triangle(x, y, z, x+0.5f, y, z, x, y+0.5f, z);
+        float x      = (float)(i % 100);
+        float y      = (float)((i / 100) % 10);
+        float z      = (float)(i / 1000);
+        triangles[i] = create_triangle(x, y, z, x + 0.5f, y, z, x, y + 0.5f, z);
     }
 
     t_vec_fig figures;
     figures.triangles = triangles;
-    figures.length = count;
+    figures.length    = count;
     assignAABB(&figures);
 
     t_BVHNode* root = build_BVH_from_triangles(triangles, count, &arena);
 
-    int total = count_triangles_in_leaves(root);
-    int depth = max_depth(root);
+    int  total        = count_triangles_in_leaves(root);
+    int  depth        = max_depth(root);
     bool leaves_valid = validate_leaf_sizes(root, 4);
-    bool passed = (root != NULL && total == count && leaves_valid);
+    bool passed       = (root != NULL && total == count && leaves_valid);
 
     printf("%s\n", passed ? "PASSED" : "FAILED");
-    printf("  - Total triangles: %d, Depth: %d, Leaves valid: %s\n",
-           total, depth, leaves_valid ? "YES" : "NO");
+    printf("  - Total triangles: %d, Depth: %d, Leaves valid: %s\n", total, depth, leaves_valid ? "YES" : "NO");
 
     free(triangles);
     destroy_arena(&arena);
@@ -398,20 +403,20 @@ bool test_aabb_containment()
     t_triangle triangles[30];
     for (int i = 0; i < 30; i++)
     {
-        float x = (float)(i % 10) * 2.0f;
-        float y = (float)(i / 10) * 2.0f;
-        triangles[i] = create_triangle(x, y, 0, x+1, y, 0, x, y+1, 0);
+        float x      = (float)(i % 10) * 2.0f;
+        float y      = (float)(i / 10) * 2.0f;
+        triangles[i] = create_triangle(x, y, 0, x + 1, y, 0, x, y + 1, 0);
     }
 
     t_vec_fig figures;
     figures.triangles = triangles;
-    figures.length = 30;
+    figures.length    = 30;
     assignAABB(&figures);
 
     t_BVHNode* root = build_BVH_from_triangles(triangles, 30, &arena);
 
     bool hierarchy_valid = validate_aabb_hierarchy(root);
-    bool passed = (root != NULL && hierarchy_valid);
+    bool passed          = (root != NULL && hierarchy_valid);
 
     printf("%s\n", passed ? "PASSED" : "FAILED");
 
@@ -428,24 +433,24 @@ bool test_power_of_two_sizes()
 {
     printf("TEST 12: Power-of-two sizes (8, 16, 32, 64)... ");
 
-    int sizes[] = {8, 16, 32, 64};
+    int  sizes[]    = {8, 16, 32, 64};
     bool all_passed = true;
 
     for (int s = 0; s < 4; s++)
     {
         t_memory_arena arena = create_arena(MB(1));
 
-        int size = sizes[s];
+        int         size      = sizes[s];
         t_triangle* triangles = (t_triangle*)malloc(size * sizeof(t_triangle));
 
         for (int i = 0; i < size; i++)
         {
-            triangles[i] = create_triangle(i, 0, 0, i+0.5f, 0, 0, i, 0.5f, 0);
+            triangles[i] = create_triangle(i, 0, 0, i + 0.5f, 0, 0, i, 0.5f, 0);
         }
 
         t_vec_fig figures;
         figures.triangles = triangles;
-        figures.length = size;
+        figures.length    = size;
         assignAABB(&figures);
 
         t_BVHNode* root = build_BVH_from_triangles(triangles, size, &arena);
@@ -472,7 +477,7 @@ void run_all_bvh_tests()
     printf("       BVH CONSTRUCTION TEST SUITE\n");
     printf("==============================================\n\n");
 
-    int total_tests = 11;
+    int total_tests  = 11;
     int passed_tests = 0;
 
     passed_tests += test_single_triangle();
@@ -488,8 +493,7 @@ void run_all_bvh_tests()
     passed_tests += test_power_of_two_sizes();
 
     printf("\n==============================================\n");
-    printf("RESULTS: %d/%d tests passed (%.1f%%)\n",
-           passed_tests, total_tests,
+    printf("RESULTS: %d/%d tests passed (%.1f%%)\n", passed_tests, total_tests,
            (float)passed_tests / total_tests * 100.0f);
     printf("==============================================\n\n");
 }

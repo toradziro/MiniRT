@@ -17,73 +17,70 @@ typedef struct s_ray
     t_vector orig;
 } t_ray;
 
-__attribute__((always_inline)) static inline t_vector		new_vector(float x, float y, float z)
+__attribute__((always_inline)) static inline t_vector new_vector(float x, float y, float z)
 {
-	t_vector	new_vec;
+    t_vector new_vec;
 
-	new_vec.v_x = x;
-	new_vec.v_y = y;
-	new_vec.v_z = z;
-	return (new_vec);
+    new_vec.v_x = x;
+    new_vec.v_y = y;
+    new_vec.v_z = z;
+    return (new_vec);
 }
 
-__attribute__((always_inline)) static inline t_vector		add_vectors(t_vector* a, t_vector* b)
+__attribute__((always_inline)) static inline t_vector add_vectors(t_vector* a, t_vector* b)
 {
-	t_vector res = new_vector(0, 0, 0);
-	res.v_x = a->v_x + b->v_x;
-	res.v_y = a->v_y + b->v_y;
-	res.v_z = a->v_z + b->v_z;
+    t_vector res = new_vector(0, 0, 0);
+    res.v_x      = a->v_x + b->v_x;
+    res.v_y      = a->v_y + b->v_y;
+    res.v_z      = a->v_z + b->v_z;
 
-	return (res);
+    return (res);
 }
 
-__attribute__((always_inline)) static inline t_vector		subs_vectors(t_vector* a, t_vector* b)
+__attribute__((always_inline)) static inline t_vector subs_vectors(t_vector* a, t_vector* b)
 {
-	t_vector res = new_vector(0, 0, 0);
-	res.v_x = a->v_x - b->v_x;
-	res.v_y = a->v_y - b->v_y;
-	res.v_z = a->v_z - b->v_z;
+    t_vector res = new_vector(0, 0, 0);
+    res.v_x      = a->v_x - b->v_x;
+    res.v_y      = a->v_y - b->v_y;
+    res.v_z      = a->v_z - b->v_z;
 
-	return (res);
+    return (res);
 }
 
-__attribute__((always_inline)) static inline float			vector_scalar_mult(t_vector* a, t_vector* b)
+__attribute__((always_inline)) static inline float vector_scalar_mult(t_vector* a, t_vector* b)
 {
-	float		res;
-	res = a->v_x * b->v_x + a->v_y * b->v_y + a->v_z * b->v_z;
+    float res;
+    res = a->v_x * b->v_x + a->v_y * b->v_y + a->v_z * b->v_z;
 
-	return (res);
+    return (res);
 }
 
-__attribute__((always_inline)) static inline t_vector		vector_by_scalar(t_vector* a, float num)
+__attribute__((always_inline)) static inline t_vector vector_by_scalar(t_vector* a, float num)
 {
-    t_vector	res = { 0, 0, 0 };
-	res.v_x = a->v_x * num;
-	res.v_y = a->v_y * num;
-	res.v_z = a->v_z * num;
+    t_vector res = {0, 0, 0};
+    res.v_x      = a->v_x * num;
+    res.v_y      = a->v_y * num;
+    res.v_z      = a->v_z * num;
 
-	return (res);
+    return (res);
 }
 
-__attribute__((always_inline)) static inline float	vector_length(t_vector* v)
+__attribute__((always_inline)) static inline float vector_length(t_vector* v) { return sqrt(vector_scalar_mult(v, v)); }
+
+__attribute__((always_inline)) static inline t_vector vector_normalize(t_vector* v)
 {
-	return sqrt(vector_scalar_mult(v, v));
+    float len_coeff;
+
+    len_coeff = 1 / vector_length(v);
+    return vector_by_scalar(v, len_coeff);
 }
 
-__attribute__((always_inline)) static inline t_vector		vector_normalize(t_vector* v)
+__attribute__((always_inline)) static inline t_vector cross_prod(t_vector* b, t_vector* a)
 {
-	float		len_coeff;
+    t_vector res = new_vector(0, 0, 0);
+    res.v_x      = a->v_y * b->v_z - a->v_z * b->v_y;
+    res.v_y      = a->v_z * b->v_x - a->v_x * b->v_z;
+    res.v_z      = a->v_x * b->v_y - a->v_y * b->v_x;
 
-	len_coeff = 1 / vector_length(v);
-	return vector_by_scalar(v, len_coeff);
-}
-
-__attribute__((always_inline)) static inline t_vector		cross_prod(t_vector* b, t_vector* a)
-{
-	t_vector	res = new_vector(0, 0, 0);
-	res.v_x = a->v_y * b->v_z - a->v_z * b->v_y;
-	res.v_y = a->v_z * b->v_x - a->v_x * b->v_z;
-	res.v_z = a->v_x * b->v_y - a->v_y * b->v_x;
-
-	return (res);
+    return (res);
 }

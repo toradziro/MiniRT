@@ -107,19 +107,19 @@ void parse_triangle(char* str, t_scene* scene)
     t_vector tmp_b;
     t_vector tmp_c;
 
-    str            = skip_spaces(str);
-    tmp_a          = parse_coordinares(str);
-    str            = skip_pattern(str);
-    tmp_b          = parse_coordinares(str);
-    str            = skip_pattern(str);
-    tmp_c          = parse_coordinares(str);
-    str            = skip_pattern(str);
-    new            = new_triangle(tmp_a, tmp_b, tmp_c, col_parse(str));
-    str            = skip_pattern(str);
+    str   = skip_spaces(str);
+    tmp_a = parse_coordinares(str);
+    str   = skip_pattern(str);
+    tmp_b = parse_coordinares(str);
+    str   = skip_pattern(str);
+    tmp_c = parse_coordinares(str);
+    str   = skip_pattern(str);
+    new   = new_triangle(tmp_a, tmp_b, tmp_c, col_parse(str));
+    str   = skip_pattern(str);
     if (*str)
     {
         new.reflection_value = d_atoi(str);
-        new.reflective = true;
+        new.reflective       = true;
         printf("%f\n", new.reflection_value);
     }
     new.normal     = new_vector(0, 0, 0);

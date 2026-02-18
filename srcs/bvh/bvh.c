@@ -70,10 +70,10 @@ t_AABB findNodeAABB(t_triangle* triangles, int count)
 
 BreakingAxis findBreakingAxis(t_BVHNode* node)
 {
-    float axisXLength = node->aabb.max.v_x - node->aabb.min.v_x;
-    float axisYLength = node->aabb.max.v_y - node->aabb.min.v_y;
-    float axisZLength = node->aabb.max.v_z - node->aabb.min.v_z;
-    BreakingAxis baxis = None;
+    float        axisXLength = node->aabb.max.v_x - node->aabb.min.v_x;
+    float        axisYLength = node->aabb.max.v_y - node->aabb.min.v_y;
+    float        axisZLength = node->aabb.max.v_z - node->aabb.min.v_z;
+    BreakingAxis baxis       = None;
     if (axisXLength >= axisYLength && axisXLength >= axisZLength)
     {
         baxis = BreakingAxisX;
@@ -89,29 +89,29 @@ BreakingAxis findBreakingAxis(t_BVHNode* node)
     return baxis;
 }
 
-int compareTriangles(const void *a, const void *b)
+int compareTriangles(const void* a, const void* b)
 {
-    t_triangle* atr = (t_triangle*)a;
-    t_triangle* btr = (t_triangle*)b;
-    float comparing_centroid_a = 0.0f;
-    float comparing_centroid_b = 0.0f;
+    t_triangle* atr                  = (t_triangle*)a;
+    t_triangle* btr                  = (t_triangle*)b;
+    float       comparing_centroid_a = 0.0f;
+    float       comparing_centroid_b = 0.0f;
     switch (g_breaking_strategy)
     {
-        case (BreakingAxisX):
-            comparing_centroid_a = (atr->aabb.max.v_x + atr->aabb.min.v_x) * 0.5f;
-            comparing_centroid_b = (btr->aabb.max.v_x + btr->aabb.min.v_x) * 0.5f;
-            break;
-        case (BreakingAxisY):
-            comparing_centroid_a = (atr->aabb.max.v_y + atr->aabb.min.v_y) * 0.5f;
-            comparing_centroid_b = (btr->aabb.max.v_y + btr->aabb.min.v_y) * 0.5f;
-            break;
-        case (BreakingAxisZ):
-            comparing_centroid_a = (atr->aabb.max.v_z + atr->aabb.min.v_z) * 0.5f;
-            comparing_centroid_b = (btr->aabb.max.v_z + btr->aabb.min.v_z) * 0.5f;
-            break;
-        default:
-            assert(false);
-            break;
+    case (BreakingAxisX):
+        comparing_centroid_a = (atr->aabb.max.v_x + atr->aabb.min.v_x) * 0.5f;
+        comparing_centroid_b = (btr->aabb.max.v_x + btr->aabb.min.v_x) * 0.5f;
+        break;
+    case (BreakingAxisY):
+        comparing_centroid_a = (atr->aabb.max.v_y + atr->aabb.min.v_y) * 0.5f;
+        comparing_centroid_b = (btr->aabb.max.v_y + btr->aabb.min.v_y) * 0.5f;
+        break;
+    case (BreakingAxisZ):
+        comparing_centroid_a = (atr->aabb.max.v_z + atr->aabb.min.v_z) * 0.5f;
+        comparing_centroid_b = (btr->aabb.max.v_z + btr->aabb.min.v_z) * 0.5f;
+        break;
+    default:
+        assert(false);
+        break;
     }
     if (comparing_centroid_a < comparing_centroid_b)
     {
@@ -134,24 +134,24 @@ void sortByAxis(BreakingAxis baxis, t_triangle* triangles, int count)
 t_BVHNode* build_BVH_from_triangles(t_triangle* triangles, int count, t_memory_arena* arena)
 {
     t_BVHNode* node = (t_BVHNode*)arena_push(arena, sizeof(t_BVHNode));
-    node->left = NULL;
-    node->right = NULL;
-    node->is_leaf = false;
-    node->aabb = findNodeAABB(triangles, count);
+    node->left      = NULL;
+    node->right     = NULL;
+    node->is_leaf   = false;
+    node->aabb      = findNodeAABB(triangles, count);
 
     if (count <= 4)
     {
         node->is_leaf = true;
-        node->batch = triangles;
-        node->count = count;
+        node->batch   = triangles;
+        node->count   = count;
         return node;
     }
 
     BreakingAxis baxis = findBreakingAxis(node);
     sortByAxis(baxis, triangles, count);
     int newCount = count / 2;
-    node->left = build_BVH_from_triangles(triangles, newCount, arena);
-    node->right = build_BVH_from_triangles(triangles + newCount, count - newCount, arena) ;
+    node->left   = build_BVH_from_triangles(triangles, newCount, arena);
+    node->right  = build_BVH_from_triangles(triangles + newCount, count - newCount, arena);
 
     return node;
 }
@@ -159,8 +159,8 @@ t_BVHNode* build_BVH_from_triangles(t_triangle* triangles, int count, t_memory_a
 t_BVH buildBVH(t_triangle* triangles, int count, t_memory_arena* arena)
 {
     t_BVH bvh;
-    bvh.triangles = triangles;
+    bvh.triangles      = triangles;
     bvh.triangle_count = count;
-    bvh.root = build_BVH_from_triangles(bvh.triangles, bvh.triangle_count, arena);
+    bvh.root           = build_BVH_from_triangles(bvh.triangles, bvh.triangle_count, arena);
     return bvh;
 }

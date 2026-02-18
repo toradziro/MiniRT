@@ -20,7 +20,6 @@ typedef struct s_cam_to_w
     float matrix[4][4];
 } t_cam_to_w;
 
-
 t_cam_to_w matrix_place(t_vector coor, t_vector dir);
 t_vector   matrix_mult(t_vector vec, t_cam_to_w m);
 
