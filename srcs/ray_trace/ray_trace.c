@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/MiniRT.h"
+#include <math.h>
 
 void swap(float* a, float* b)
 {
@@ -53,15 +54,21 @@ bool intersectAABB(t_BVHNode* currNode, t_ray* ray, float closest)
     return lastHit <= firstPassed;
 }
 
-t_color traverseBVH(t_scene* scene, t_ray* ray)
+typedef struct s_hit
+{
+    t_triangle* triangle;
+    t_vector    normal;
+    float       t;
+}   t_hit;
+
+t_hit traverseBVH(t_scene* scene, t_ray* ray, float min, bool stop_on_first)
 {
     t_BVHNode* nodes[100];
     memset(nodes, 0, sizeof(t_BVHNode*) * 100);
     nodes[0] = scene->bvh.root;
     int stackSize = 1;
 
-    t_color c_tmp = new_color(0, 0, 0);
-    float min   = MAX_INTERSEC;
+    t_hit res = { NULL, { 0,0,0 },0 };
 
     while (stackSize > 0)
     {
@@ -83,7 +90,13 @@ t_color traverseBVH(t_scene* scene, t_ray* ray)
                             normal = vector_by_scalar(&normal, -1);
                         }
                         min   = intersec;
-                        c_tmp = find_color(scene, *ray, min, &normal, &currNode->batch[i].color);
+                        res.normal = normal;
+                        res.triangle = &currNode->batch[i];
+                        res.t = intersec;
+                        if (stop_on_first)
+                        {
+                            return res;
+                        }
                     }
                 }
             }
@@ -102,54 +115,50 @@ t_color traverseBVH(t_scene* scene, t_ray* ray)
             }
         }
     }
-    return c_tmp;
-}
-
-bool traverseBVHHasAnyIntersec(t_scene* scene, t_ray* ray, float min)
-{
-    t_BVHNode* nodes[100];
-    memset(nodes, 0, sizeof(t_BVHNode*) * 100);
-    nodes[0] = scene->bvh.root;
-    int stackSize = 1;
-
-    while (stackSize > 0)
-    {
-        --stackSize;
-        t_BVHNode* currNode = nodes[stackSize];
-        if (intersectAABB(currNode, ray, min))
-        {
-            if (currNode->is_leaf)
-            {
-                for (int i = 0; i < currNode->count; ++i)
-                {
-                    float    intersec = triangle_intersec(*ray, &currNode->batch[i]);
-                    if (intersec < min && intersec > MIN_I)
-                    {
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                if (currNode->left != NULL)
-                {
-                    nodes[stackSize] = currNode->left;
-                    ++stackSize;
-                }
-                if (currNode->right != NULL)
-                {
-                    nodes[stackSize] = currNode->right;
-                    ++stackSize;
-                }
-            }
-        }
-    }
-    return false;
+    return res;
 }
 
 t_color intersec(t_scene* scene, t_ray ray)
 {
-    return traverseBVH(scene, &ray);
+    t_color c_tmp = scene->ab_light->color;
+    float min   = MAX_INTERSEC;
+
+    t_hit hit = traverseBVH(scene, &ray, min, false);
+    if (hit.triangle)
+    {
+        c_tmp = find_color(scene, ray, hit.t, &hit.normal, &hit.triangle->color);
+        if (hit.triangle->reflective)
+        {
+            float dot_product = vector_scalar_mult(&ray.dir, &hit.normal);  // d · n
+            t_vector scaled_normal = vector_by_scalar(&hit.normal, 2.0f * dot_product);  // 2 * (d · n) * n
+            t_vector reflected_v = subs_vectors(&ray.dir, &scaled_normal);
+
+            t_ray reflected_ray;
+            float epsilon = 0.001f;
+            reflected_ray.orig.v_x = ray.orig.v_x + hit.t * ray.dir.v_x + epsilon * hit.normal.v_x;
+            reflected_ray.orig.v_y = ray.orig.v_y + hit.t * ray.dir.v_y + epsilon * hit.normal.v_y;
+            reflected_ray.orig.v_z = ray.orig.v_z + hit.t * ray.dir.v_z + epsilon * hit.normal.v_z;
+            reflected_ray.dir = reflected_v;
+
+            min   = MAX_INTERSEC;
+            t_hit reflected_hit = traverseBVH(scene, &reflected_ray, min, false);
+            t_color reflected_color;
+            if (reflected_hit.triangle)
+            {
+                reflected_color = find_color(scene, reflected_ray, reflected_hit.t, &reflected_hit.normal, &reflected_hit.triangle->color);
+            }
+            else
+            {
+                reflected_color = scene->ab_light->color;
+            }
+
+            c_tmp.r = c_tmp.r * (1.0f - hit.triangle->reflection_value) + reflected_color.r * hit.triangle->reflection_value;
+            c_tmp.g = c_tmp.g * (1.0f - hit.triangle->reflection_value) + reflected_color.g * hit.triangle->reflection_value;
+            c_tmp.b = c_tmp.b * (1.0f - hit.triangle->reflection_value) + reflected_color.b * hit.triangle->reflection_value;
+        }
+    }
+
+    return c_tmp;
 }
 
 t_color find_color(t_scene* scene, t_ray ray, float min, t_vector* normal, t_color* f_color)
@@ -241,7 +250,8 @@ int shadow_intersec(t_scene* scene, t_vector* intersec_point, t_vector* dir_to_l
     ray.orig = *(intersec_point);
     x_one    = vector_length(dir_to_light);
     ray.dir  = vector_by_scalar(dir_to_light, 1 / x_one);
-    if (traverseBVHHasAnyIntersec(scene, &ray, x_one))
+
+    if (traverseBVH(scene, &ray, x_one, true).triangle)
     {
         return (1);
     }

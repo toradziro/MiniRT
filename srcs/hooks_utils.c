@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "includes/MiniRT.h"
+#include "vectors_funcs/rt_math.h"
 #include <SDL2/SDL_scancode.h>
 
 // int				mouse_press(int b, int x, int y, t_scene *scene)
@@ -45,6 +46,10 @@
 
 int press_key(SDL_Keysym key, t_scene* scene)
 {
+    t_vector forward = scene->cams->direction;
+    t_vector up = new_vector(0, 1, 0);
+    t_vector right = cross_prod(&forward, &up);
+
     switch (key.scancode)
     {
     case (SDL_SCANCODE_TAB):
@@ -54,32 +59,38 @@ int press_key(SDL_Keysym key, t_scene* scene)
     break;
     case (SDL_SCANCODE_W):
     {
-        scene->cams->coordinates.v_z += 4;
+        forward = vector_by_scalar(&forward, 4);
+        scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &forward);
     }
     break;
     case (SDL_SCANCODE_S):
     {
-        scene->cams->coordinates.v_z -= 4;
+        forward = vector_by_scalar(&forward, -4);
+        scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &forward);
     }
     break;
     case (SDL_SCANCODE_A):
     {
-        scene->cams->coordinates.v_x += 4;
+        right = vector_by_scalar(&right, 4);
+        scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &right);
     }
     break;
     case (SDL_SCANCODE_D):
     {
-        scene->cams->coordinates.v_x -= 4;
+        right = vector_by_scalar(&right, -4);
+        scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &right);
     }
     break;
     case (SDL_SCANCODE_Q):
     {
-        scene->cams->coordinates.v_y += 4;
+        up = vector_by_scalar(&up, 4);
+        scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &up);
     }
     break;
     case (SDL_SCANCODE_E):
     {
-        scene->cams->coordinates.v_y -= 4;
+        up = vector_by_scalar(&up, -4);
+        scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &up);
     }
     break;
     case (SDL_SCANCODE_ESCAPE):
