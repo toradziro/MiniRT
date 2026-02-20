@@ -12,20 +12,17 @@
 
 #include "arena/arena.h"
 #include "includes/MiniRT.h"
-#include "includes/array.h"
+#include "lists_funcs/array.h"
 #include "includes/my_types.h"
-#include "includes/parser.h"
-#include "includes/threads.h"
+#include "parser/parser.h"
+#include "render/render.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
 #include <stdio.h>
-#include <x86intrin.h>
 #include "bvh/bvh.h"
-#ifdef TESTS
-#include "tests/test_bvh.h"
-#endif
+#include "unity_build.h"
 
 #define M_PI (3.14159)
 
@@ -67,19 +64,11 @@ u64 time_ms(void)
 
 int main(int argc, char** argv)
 {
-#ifdef TESTS
-    //-- To avoid compiler error
-    argc = argc;
-    argv = argv;
-    run_all_bvh_tests();
-    return 0;
-#else
     t_memory_arena global_arena = create_arena(GB(1));
     t_scene        scene;
-
     memset(&scene, 0, sizeof(scene));
 
-    if (argc != 2 && argc != 3)
+    if (argc < 2 || argc > 4)
     {
         killed_by_error(INV_AM_OF_ARG);
     }
@@ -99,17 +88,25 @@ int main(int argc, char** argv)
                          /*SDL_WINDOW_RESIZABLE*/ 0);
     scene.window = sdl_window;
 
-    if (argc == 3 && !strcmp(argv[2], "--save"))
+    //-- Roughness will be set the same for all reflective primitives
+    //-- Better to avoid passing values bigger then 0.1
+    if (argc == 4 && !strcmp(argv[2], "--roughness_and_multisample"))
+    {
+        scene.roughness_and_multisample = true;
+        scene.roughness_val             = d_atoi(argv[3]);
+    }
+    else if (argc == 3 && !strcmp(argv[2], "--save"))
     {
         scene.is_save = 1;
     }
-    else if (argc == 3 && strcmp(argv[2], "--save"))
+    else if (argc != 2)
     {
         killed_by_error(UNKNWN_ARG);
     }
 
-    //-- TODO: change to mmap
-    scene.pixels               = arena_push(&global_arena, scene.width * scene.height * sizeof(int));
+    scene.pixels     = arena_push(&global_arena, scene.width * scene.height * sizeof(i32));
+    scene.pixels_avg = arena_push(&global_arena, scene.width * scene.height * sizeof(t_accum_data));
+    memset(scene.pixels_avg, 0, scene.width * scene.height * sizeof(t_accum_data));
     SDL_Renderer* sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
     //-- TODO: recreate on window resize
     SDL_Texture* backbuffer_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_ARGB8888,
@@ -122,7 +119,6 @@ int main(int argc, char** argv)
 
     while (scene.is_running)
     {
-        const u64 clocks_start     = __rdtsc();
         const u64 time_frame_start = time_ms();
 
         SDL_RenderClear(sdl_renderer);
@@ -138,8 +134,8 @@ int main(int argc, char** argv)
 
         if (SDL_UpdateTexture(backbuffer_texture, 0, scene.pixels, scene.width * sizeof(int)))
         {
-            //-- TODO: Do something about this error!
             printf("!SDL_UpdateTexture() error!");
+            exit_rt(&scene);
         }
 
         SDL_RenderCopy(sdl_renderer, backbuffer_texture, 0, 0);
@@ -148,9 +144,7 @@ int main(int argc, char** argv)
 
         const u64 time_frame_end = time_ms();
         const u64 time_elapsed   = time_frame_end - time_frame_start;
-        const u64 clocks_end     = __rdtsc();
-        printf("MCl: %lu -- MS: %lu -- FPS: %lu\n", (clocks_end - clocks_start) / 1000, time_elapsed,
-               1000 / time_elapsed);
+        printf("MS: %lu -- FPS: %lu\n", time_elapsed, 1000 / time_elapsed);
     }
 
     destroy_render(&thread_pool);
@@ -161,7 +155,6 @@ int main(int argc, char** argv)
     SDL_Quit();
     destroy_arena(&global_arena);
     return (0);
-#endif
 }
 
 int exit_rt(t_scene* scene)
@@ -172,7 +165,8 @@ int exit_rt(t_scene* scene)
 
 void check_scene(t_scene* scene)
 {
-    if (!scene->is_amb_l || !scene->is_cam || !scene->is_figur || !scene->is_light || !scene->is_size)
+    if (!scene->ab_light || !scene->cams || !scene->figures || !scene->lights ||
+        (scene->width == 0 && scene->height == 0))
     {
         killed_by_error(NOT_ENOUGH);
     }

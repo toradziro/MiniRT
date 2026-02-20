@@ -102,7 +102,7 @@ void parse_primitives(char* str, t_scene* scene, t_memory_arena* arena)
 
 void parse_triangle(char* str, t_scene* scene)
 {
-    t_triangle new;
+    t_triangle new = {0};
     t_vector tmp_a;
     t_vector tmp_b;
     t_vector tmp_c;
@@ -120,7 +120,6 @@ void parse_triangle(char* str, t_scene* scene)
     {
         new.reflection_value = d_atoi(str);
         new.reflective       = true;
-        printf("%f\n", new.reflection_value);
     }
     new.normal     = new_vector(0, 0, 0);
     new.ab         = subs_vectors(&tmp_b, &tmp_a);
@@ -128,7 +127,6 @@ void parse_triangle(char* str, t_scene* scene)
     new.normal     = cross_prod(&new.ab, &new.ac);
     new.normal     = vector_normalize(&new.normal);
     scene->figures = add_elem_vec(scene->figures, new);
-    scene->is_figur++;
 }
 
 void parse_size(char* str, t_scene* scene)
@@ -147,7 +145,6 @@ void parse_size(char* str, t_scene* scene)
     str           = skip_spaces(str);
     tmp_y         = (int)d_atoi(str);
     scene->height = MIN(tmp_y, y);
-    scene->is_size++;
 }
 
 void parse_ambl(char* str, t_scene* scene, t_memory_arena* arena)
@@ -160,12 +157,11 @@ void parse_ambl(char* str, t_scene* scene, t_memory_arena* arena)
     new->color      = col_parse(str);
     new->color      = multip_color(&new->color, new->intensity);
     scene->ab_light = new;
-    scene->is_amb_l++;
 }
 
 void parse_cam(char* str, t_scene* scene, t_memory_arena* arena)
 {
-    t_cameras* new;
+    t_cameras* new = NULL;
     t_vector dir;
     t_vector coor;
     float    fov;
@@ -186,12 +182,11 @@ void parse_cam(char* str, t_scene* scene, t_memory_arena* arena)
     {
         push_back_cam(scene->cams, new);
     }
-    scene->is_cam++;
 }
 
 void parse_light(char* str, t_scene* scene, t_memory_arena* arena)
 {
-    t_lights* new;
+    t_lights* new = NULL;
     t_vector coor;
     float    intens;
     t_color  color;
@@ -212,5 +207,4 @@ void parse_light(char* str, t_scene* scene, t_memory_arena* arena)
     {
         push_back_light(scene->lights, coor, intens, color, arena);
     }
-    scene->is_light++;
 }

@@ -11,7 +11,7 @@ SRC =		srcs/lists_funcs/list_camera_funcs.c \
 			srcs/utilits/killed_by_error.c \
 			srcs/ray_trace/ray_trace.c \
 			srcs/vectors_funcs/place_camera.c \
-			srcs/threads.c \
+			srcs/render/render.c \
 			srcs/lists_funcs/array_funcs.c \
 			srcs/save_to_bmp.c \
 			srcs/hooks_utils.c \
@@ -19,6 +19,7 @@ SRC =		srcs/lists_funcs/list_camera_funcs.c \
 			srcs/string/rt_string.c \
 			srcs/file/rt_file.c \
 			srcs/bvh/bvh.c \
+			srcs/color/color.c \
 			srcs/tests/test_bvh.c \
 			srcs/main.c
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../includes/array.h"
+#include "../lists_funcs/array.h"
 #include "../includes/figures.h"
 #include "aabb.h"
 

@@ -13,7 +13,7 @@
 #ifndef LISTS_H
 #define LISTS_H
 
-#include "colors.h"
+#include "../color/color.h"
 #include "../vectors_funcs/rt_math.h"
 #include "../arena/arena.h"
 

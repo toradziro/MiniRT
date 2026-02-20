@@ -10,8 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/MiniRT.h"
+#include "../random/random.h"
+#include "ray_trace.h"
 #include <math.h>
+#include <threads.h>
+
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
+#define MIN_I 0.004
+#define MAX_INTERSEC 100000
+
+#define SHININESS 100.0
+#define COLOR_COEFF 0.003921568627
+
+#define MAX_COLOR 255
+
+typedef struct s_hit
+{
+    t_triangle* triangle;
+    t_vector    normal;
+    float       t;
+} t_hit;
 
 void swap(float* a, float* b)
 {
@@ -54,17 +74,11 @@ bool intersectAABB(t_BVHNode* currNode, t_ray* ray, float closest)
     return lastHit <= firstPassed;
 }
 
-typedef struct s_hit
-{
-    t_triangle* triangle;
-    t_vector    normal;
-    float       t;
-} t_hit;
-
 t_hit traverseBVH(t_scene* scene, t_ray* ray, float min, bool stop_on_first)
 {
     t_BVHNode* nodes[100];
     memset(nodes, 0, sizeof(t_BVHNode*) * 100);
+
     nodes[0]      = scene->bvh.root;
     int stackSize = 1;
 
@@ -118,51 +132,107 @@ t_hit traverseBVH(t_scene* scene, t_ray* ray, float min, bool stop_on_first)
     return res;
 }
 
-t_color intersec(t_scene* scene, t_ray ray)
+t_color mix_colors(t_color a, t_color b, float reflection_value)
 {
-    t_color c_tmp = scene->ab_light->color;
-    float   min   = MAX_INTERSEC;
+    a.r = a.r * (1.0f - reflection_value) + b.r * reflection_value;
+    a.g = a.g * (1.0f - reflection_value) + b.g * reflection_value;
+    a.b = a.b * (1.0f - reflection_value) + b.b * reflection_value;
+    return a;
+}
+
+void add_roughness(t_vector* vec, float roughness)
+{
+    t_vector coef_vec = {2.0f, 2.0f, 2.0f};
+    coef_vec.v_x      = 2.0f * rng_float(&thread_local_rng) - 1.0f;
+    coef_vec.v_y      = 2.0f * rng_float(&thread_local_rng) - 1.0f;
+    coef_vec.v_z      = 2.0f * rng_float(&thread_local_rng) - 1.0f;
+    coef_vec          = vector_normalize(&coef_vec);
+    coef_vec          = vector_by_scalar(&coef_vec, roughness);
+    *vec              = add_vectors(vec, &coef_vec);
+    *vec              = vector_normalize(vec);
+}
+
+t_color reflect(t_scene* scene, t_ray* ray, t_hit* hit, int reflect_depth)
+{
+    float    dot_product   = vector_scalar_mult(&ray->dir, &hit->normal);        // d · n
+    t_vector scaled_normal = vector_by_scalar(&hit->normal, 2.0f * dot_product); // 2 * (d · n) * n
+    t_vector reflected_v   = subs_vectors(&ray->dir, &scaled_normal);
+
+    t_ray reflected_ray;
+    float epsilon          = 0.001f;
+    reflected_ray.orig.v_x = ray->orig.v_x + hit->t * ray->dir.v_x + epsilon * hit->normal.v_x;
+    reflected_ray.orig.v_y = ray->orig.v_y + hit->t * ray->dir.v_y + epsilon * hit->normal.v_y;
+    reflected_ray.orig.v_z = ray->orig.v_z + hit->t * ray->dir.v_z + epsilon * hit->normal.v_z;
+    reflected_ray.dir      = reflected_v;
+    if (scene->roughness_and_multisample)
+    {
+        add_roughness(&reflected_ray.dir, scene->roughness_val);
+    }
+
+    float min           = MAX_INTERSEC;
+    t_hit reflected_hit = traverseBVH(scene, &reflected_ray, min, false);
+    if (reflected_hit.triangle)
+    {
+        t_color reflected_color =
+            find_color(scene, reflected_ray, reflected_hit.t, &reflected_hit.normal, &reflected_hit.triangle->color);
+        if (reflected_hit.triangle->reflective && reflect_depth > 0)
+        {
+            t_color recursive_reflection = reflect(scene, &reflected_ray, &reflected_hit, reflect_depth - 1);
+            reflected_color =
+                mix_colors(reflected_color, recursive_reflection, reflected_hit.triangle->reflection_value);
+        }
+
+        return reflected_color;
+    }
+    return scene->ab_light->color;
+}
+
+t_color* accumulative_multisampling(t_accum_data* accum, t_color* base_color)
+{
+    if (accum->count == 0)
+    {
+        accum->med_color = *base_color;
+        ++accum->count;
+    }
+    else
+    {
+        ++accum->count;
+        const float delta_r = (base_color->r - accum->med_color.r) / accum->count;
+        const float delta_g = (base_color->g - accum->med_color.g) / accum->count;
+        const float delta_b = (base_color->b - accum->med_color.b) / accum->count;
+
+        accum->med_color.r += delta_r;
+        accum->med_color.g += delta_g;
+        accum->med_color.b += delta_b;
+    }
+    return &accum->med_color;
+}
+
+t_color ray_trace(t_scene* scene, t_ray ray, i32 x, i32 y)
+{
+    if (thread_local_rng.state == 0)
+    {
+        thread_local_rng.state = (unsigned int)time(NULL) + (ray.orig.v_x + 40) * 1234;
+    }
+    t_color base_color = scene->ab_light->color;
+    float   min        = MAX_INTERSEC;
 
     t_hit hit = traverseBVH(scene, &ray, min, false);
     if (hit.triangle)
     {
-        c_tmp = find_color(scene, ray, hit.t, &hit.normal, &hit.triangle->color);
+        base_color = find_color(scene, ray, hit.t, &hit.normal, &hit.triangle->color);
         if (hit.triangle->reflective)
         {
-            float    dot_product   = vector_scalar_mult(&ray.dir, &hit.normal);         // d · n
-            t_vector scaled_normal = vector_by_scalar(&hit.normal, 2.0f * dot_product); // 2 * (d · n) * n
-            t_vector reflected_v   = subs_vectors(&ray.dir, &scaled_normal);
-
-            t_ray reflected_ray;
-            float epsilon          = 0.001f;
-            reflected_ray.orig.v_x = ray.orig.v_x + hit.t * ray.dir.v_x + epsilon * hit.normal.v_x;
-            reflected_ray.orig.v_y = ray.orig.v_y + hit.t * ray.dir.v_y + epsilon * hit.normal.v_y;
-            reflected_ray.orig.v_z = ray.orig.v_z + hit.t * ray.dir.v_z + epsilon * hit.normal.v_z;
-            reflected_ray.dir      = reflected_v;
-
-            min                   = MAX_INTERSEC;
-            t_hit   reflected_hit = traverseBVH(scene, &reflected_ray, min, false);
-            t_color reflected_color;
-            if (reflected_hit.triangle)
-            {
-                reflected_color = find_color(scene, reflected_ray, reflected_hit.t, &reflected_hit.normal,
-                                             &reflected_hit.triangle->color);
-            }
-            else
-            {
-                reflected_color = scene->ab_light->color;
-            }
-
-            c_tmp.r =
-                c_tmp.r * (1.0f - hit.triangle->reflection_value) + reflected_color.r * hit.triangle->reflection_value;
-            c_tmp.g =
-                c_tmp.g * (1.0f - hit.triangle->reflection_value) + reflected_color.g * hit.triangle->reflection_value;
-            c_tmp.b =
-                c_tmp.b * (1.0f - hit.triangle->reflection_value) + reflected_color.b * hit.triangle->reflection_value;
+            base_color = mix_colors(base_color, reflect(scene, &ray, &hit, 4), hit.triangle->reflection_value);
         }
     }
-
-    return c_tmp;
+    //-- Real-time multisampling
+    if (scene->roughness_and_multisample)
+    {
+        t_accum_data* accum = scene->pixels_avg + (y * scene->width) + x;
+        base_color          = *accumulative_multisampling(accum, &base_color);
+    }
+    return base_color;
 }
 
 t_color find_color(t_scene* scene, t_ray ray, float min, t_vector* normal, t_color* f_color)
@@ -297,46 +367,4 @@ float triangle_intersec(t_ray ray, t_triangle* triangle)
         return (v);
     }
     return (0);
-}
-
-t_color multip_color(t_color* color, float coeff)
-{
-    t_color res;
-
-    res.r = coeff * color->r;
-    if (res.r >= 255)
-    {
-        res.r = 255;
-    }
-    res.g = coeff * color->g;
-    if (res.g >= 255)
-    {
-        res.g = 255;
-    }
-    res.b = coeff * color->b;
-    if (res.b >= 255)
-    {
-        res.b = 255;
-    }
-    return (res);
-}
-
-t_color add_color(t_color* color, t_color* color_s)
-{
-    color->r = color->r + color_s->r;
-    if (color->r >= 255)
-    {
-        color->r = 255;
-    }
-    color->g = color->g + color_s->g;
-    if (color->g >= 255)
-    {
-        color->g = 255;
-    }
-    color->b = color->b + color_s->b;
-    if (color->b >= 255)
-    {
-        color->b = 255;
-    }
-    return (*color);
 }

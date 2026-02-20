@@ -10,9 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/threads.h"
-#include "includes/MiniRT.h"
-#include "includes/parser.h"
+#include "render.h"
+#include "../includes/MiniRT.h"
+#include "../includes/scene.h"
+
+typedef struct s_stride_coeff
+{
+    float x;
+    float y;
+} t_stride_coeff;
 
 void start_render_threads(t_thread_pool* thread_pool, t_scene* scene)
 {
@@ -58,6 +64,39 @@ void destroy_render(t_thread_pool* thread_pool)
     }
 }
 
+void set_color(void* pixels, t_color* color, i32 x, i32 y, i32 width)
+{
+    void* color_ptr    = (((u32*)pixels) + (width * y) + x);
+    (*(u32*)color_ptr) = (int)color->r << 16 | (int)color->g << 8 | (int)color->b;
+}
+
+//-- We need to move a ray inside the pixel to gain anti-aliasing
+t_stride_coeff calculate_stride(t_accum_data* accum)
+{
+    t_stride_coeff res;
+    if (!(accum->count % 4))
+    {
+        res.x = 0.25f;
+        res.y = 0.25f;
+    }
+    else if (!(accum->count % 3))
+    {
+        res.x = 0.75f;
+        res.y = 0.25f;
+    }
+    else if (!(accum->count % 2))
+    {
+        res.x = 0.25f;
+        res.y = 0.75f;
+    }
+    else
+    {
+        res.x = 0.75f;
+        res.y = 0.75f;
+    }
+    return res;
+}
+
 void* main_rt_loop(void* thread_data)
 {
     t_thread_data* curr_thread_data = (t_thread_data*)thread_data;
@@ -65,7 +104,6 @@ void* main_rt_loop(void* thread_data)
     {
         if (!curr_thread_data->is_task_assigned)
         {
-            // _mm_pause();
             continue;
         }
         t_ray_trace trace;
@@ -76,15 +114,25 @@ void* main_rt_loop(void* thread_data)
 
         while (trace.x_pixel < trace.scene->width)
         {
-            trace.coefs[1] = -trace.y_pixel + (trace.scene->height * 0.5);
-            trace.coefs[0] = trace.x_pixel - (trace.scene->width * 0.5);
-            trace.coefs[2] = trace.scene->projection_coeff;
-            trace.ray.dir  = new_vector(trace.coefs[0], trace.coefs[1], trace.coefs[2]);
-            trace.ray.dir  = matrix_mult(trace.ray.dir, trace.scene->mtrx);
-            trace.color    = intersec(trace.scene, trace.ray);
-            //-- TODO: Make a function
-            void* color_ptr    = (((u32*)trace.scene->pixels) + (trace.scene->width * trace.y_pixel) + trace.x_pixel);
-            (*(u32*)color_ptr) = (int)trace.color.r << 16 | (int)trace.color.g << 8 | (int)trace.color.b;
+            //-- Accumulative anti-aliasing
+            if (trace.scene->roughness_and_multisample)
+            {
+                t_accum_data*  accum  = trace.scene->pixels_avg + (trace.y_pixel * trace.scene->width) + trace.x_pixel;
+                t_stride_coeff coeffs = calculate_stride(accum);
+
+                trace.ray.dir.v_x = (trace.x_pixel - (trace.scene->width * 0.5)) + coeffs.x;
+                trace.ray.dir.v_y = (-trace.y_pixel + (trace.scene->height * 0.5)) + coeffs.y;
+            }
+            else
+            {
+                trace.ray.dir.v_x = trace.x_pixel - (trace.scene->width * 0.5);
+                trace.ray.dir.v_y = -trace.y_pixel + (trace.scene->height * 0.5);
+            }
+            trace.ray.dir.v_z = trace.scene->projection_coeff;
+            trace.ray.dir     = matrix_mult(trace.ray.dir, trace.scene->mtrx);
+            trace.color       = ray_trace(trace.scene, trace.ray, trace.x_pixel, trace.y_pixel);
+            set_color(trace.scene->pixels, &trace.color, trace.x_pixel, trace.y_pixel, trace.scene->width);
+
             trace.x_pixel++;
         }
         curr_thread_data->is_task_assigned = false;

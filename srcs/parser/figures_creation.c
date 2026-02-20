@@ -14,7 +14,7 @@
 
 t_triangle new_triangle(t_vector frt_vector, t_vector sec_point, t_vector thd_point, t_color color)
 {
-    t_triangle new;
+    t_triangle new = {0};
     t_vector tmp;
 
     tmp        = new_vector(0, 0, 0);

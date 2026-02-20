@@ -12,9 +12,13 @@
 
 #ifndef THREADS_H
 #define THREADS_H
-#include "MiniRT.h"
-#include "intersect.h"
+
+#include "../ray_trace/ray_trace.h"
 #include "pthread.h"
+
+#ifndef THREADS_MAX
+#define THREADS_MAX 4
+#endif
 
 typedef struct s_thread_data
 {
@@ -41,7 +45,6 @@ typedef struct s_ray_trace
     t_scene* scene;
     t_ray    ray;
     t_color  color;
-    float    coefs[3];
     int      x_pixel;
     int      y_pixel;
 } t_ray_trace;

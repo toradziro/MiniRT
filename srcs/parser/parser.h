@@ -12,40 +12,10 @@
 
 #ifndef PARSER_H
 #define PARSER_H
-#include "../arena/arena.h"
-#include "array.h"
-#include "figures.h"
-#include "lists.h"
-#include "../bvh/bvh.h"
-#include "../vectors_funcs/matrix.h"
-#include <SDL2/SDL.h>
-#include <stdbool.h>
-#include <stdint.h>
 
-typedef struct s_scene
-{
-    t_cameras*  cams;
-    t_cameras*  first_cam;
-    t_vec_fig*  figures;
-    t_lights*   lights;
-    t_ab_light* ab_light;
-    t_cam_to_w  mtrx;
-    SDL_Window* window;
-    void*       pixels;
-    t_BVH       bvh;
-    float       projection_coeff;
-    int         is_save;
-    int         is_cam;
-    int         is_light;
-    int         is_size;
-    int         is_amb_l;
-    int         is_figur;
-    int         width;
-    int         height;
-    int         mouse_x;
-    int         mouse_y;
-    bool        is_running;
-} t_scene;
+#include "../arena/arena.h"
+#include "../string/rt_string.h"
+#include "../includes/scene.h"
 
 void     parse_primitives(char* str, t_scene* scene, t_memory_arena* arena);
 void     start_parse(t_scene* scene, const char* path, t_memory_arena* arena);

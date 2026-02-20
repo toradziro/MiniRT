@@ -61,36 +61,42 @@ int press_key(SDL_Keysym key, t_scene* scene)
     {
         forward                  = vector_by_scalar(&forward, 4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &forward);
+        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (SDL_SCANCODE_S):
     {
         forward                  = vector_by_scalar(&forward, -4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &forward);
+        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (SDL_SCANCODE_A):
     {
         right                    = vector_by_scalar(&right, 4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &right);
+        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (SDL_SCANCODE_D):
     {
         right                    = vector_by_scalar(&right, -4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &right);
+        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (SDL_SCANCODE_Q):
     {
         up                       = vector_by_scalar(&up, 4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &up);
+        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (SDL_SCANCODE_E):
     {
         up                       = vector_by_scalar(&up, -4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &up);
+        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (SDL_SCANCODE_ESCAPE):
@@ -101,5 +107,13 @@ int press_key(SDL_Keysym key, t_scene* scene)
     default:
         break;
     }
+    // printf("pos: %f,%f,%f\ndir: %f,%f,%f",
+    //     scene->cams->coordinates.v_x,
+    //     scene->cams->coordinates.v_y,
+    //     scene->cams->coordinates.v_z,
+    //     scene->cams->direction.v_x,
+    //     scene->cams->direction.v_y,
+    //     scene->cams->direction.v_z
+    //     );
     return (0);
 }

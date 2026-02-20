@@ -44,8 +44,7 @@ void killed_by_error(int num)
                           "TOUCH MY PARSER!\n",
                           67);
     }
-    error_num += 1;
-    exit(num);
+    exit(error_num == 0 ? 1 : error_num);
 }
 
 void check_valid_name(char* str)

@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef COLORS_H
-#define COLORS_H
+#pragma once
 
 #include "../vectors_funcs/rt_math.h"
 
@@ -31,4 +30,6 @@ typedef struct s_phong
     t_color  specular;
     float    spec;
 } t_phong;
-#endif
+
+t_color multip_color(t_color* color, float coeff);
+t_color add_color(t_color* color, t_color* color_s);

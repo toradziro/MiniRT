@@ -12,9 +12,10 @@
 
 #ifndef FIGURES_H
 #define FIGURES_H
-#include "colors.h"
-#include "../vectors_funcs/rt_math.h"
+
 #include <stdbool.h>
+#include "../color/color.h"
+#include "../vectors_funcs/rt_math.h"
 #include "../bvh/aabb.h"
 
 typedef struct s_triangle
