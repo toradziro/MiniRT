@@ -17,18 +17,12 @@
 #include "parser/parser.h"
 #include "render/render.h"
 #include "bvh/bvh.h"
+#include "utilits/rt_time.h"
 #include "unity_build.h"
 #include "window/window.h"
 #include <stdio.h>
 
 #define M_PI (3.14159)
-
-u64 time_ms(void)
-{
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (u64)ts.tv_sec * 1000 + (u64)ts.tv_nsec / 1000000;
-}
 
 int main(int argc, char** argv)
 {
@@ -76,7 +70,7 @@ int main(int argc, char** argv)
 
     while (scene.is_running)
     {
-        const u64 time_frame_start = time_ms();
+        const u32 time_frame_start = time_ms();
 
         process_events(&window, &scene);
 
@@ -86,9 +80,9 @@ int main(int argc, char** argv)
 
         present_buffer_in_window(&window);
 
-        const u64 time_frame_end = time_ms();
-        const u64 time_elapsed   = time_frame_end - time_frame_start;
-        printf("MS: %lu -- FPS: %lu\n", time_elapsed, 1000 / time_elapsed);
+        const u32 time_frame_end = time_ms();
+        const u32 time_elapsed   = time_frame_end - time_frame_start;
+        printf("MS: %u -- FPS: %u\n", time_elapsed, 1000 / time_elapsed);
     }
 
     destroy_render(&thread_pool);

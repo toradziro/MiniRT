@@ -13,6 +13,7 @@
 #include "render.h"
 #include "../includes/MiniRT.h"
 #include "../includes/scene.h"
+#include <threads.h>
 
 typedef struct s_stride_coeff
 {
@@ -28,7 +29,7 @@ void start_render_threads(t_thread_pool* thread_pool, t_scene* scene)
         thread_pool->m_thread_data[i].is_task_assigned = false;
         thread_pool->m_thread_data[i].scene            = scene;
 
-        if (pthread_create(&thread_pool->m_thread[i], NULL, main_rt_loop, &thread_pool->m_thread_data[i]))
+        if (thrd_create(&thread_pool->m_thread[i], main_rt_loop, &thread_pool->m_thread_data[i]))
         {
             killed_by_error(MALLOC_ERROR);
         }
@@ -60,7 +61,9 @@ void destroy_render(t_thread_pool* thread_pool)
     }
     for (int i = 0; i < THREADS_MAX; ++i)
     {
-        pthread_join(thread_pool->m_thread[i], NULL);
+        int thrd_res;
+        thrd_join(thread_pool->m_thread[i], &thrd_res);
+        (void)thrd_res;
     }
 }
 
@@ -97,7 +100,7 @@ t_stride_coeff calculate_stride(t_accum_data* accum)
     return res;
 }
 
-void* main_rt_loop(void* thread_data)
+int main_rt_loop(void* thread_data)
 {
     t_thread_data* curr_thread_data = (t_thread_data*)thread_data;
     while (curr_thread_data->is_running)
@@ -137,5 +140,5 @@ void* main_rt_loop(void* thread_data)
         }
         curr_thread_data->is_task_assigned = false;
     }
-    pthread_exit(NULL);
+    thrd_exit(0);
 }

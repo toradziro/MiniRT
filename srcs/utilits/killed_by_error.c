@@ -11,40 +11,35 @@
 /* ************************************************************************** */
 
 #include "../includes/MiniRT.h"
+#include <stdio.h>
 
 void killed_by_error(int num)
 {
-    int error_num;
-
-    error_num = 0;
     if (num == MALLOC_ERROR)
     {
-        error_num = write(2, "Error: malloc error.\n", 20);
+        printf("Error: malloc error.\n");
     }
     else if (num == INV_AM_OF_ARG)
     {
-        error_num = write(2, "Error: invalid amount of the arguments.\n", 40);
+        printf("Error: invalid amount of the arguments.\n");
     }
     else if (num == INV_FILE_NAME)
     {
-        error_num = write(2, "Error: invalid file name.\n", 26);
+        printf("Error: invalid file name.\n");
     }
     else if (num == INV_COLOR)
     {
-        error_num = write(2, "Error: invalid color.\n", 22);
+        printf("Error: invalid color.\n");
     }
     else if (num == UNKNWN_ARG)
     {
-        error_num = write(2, "Error: unknown argument.\n", 25);
+        printf("Error: unknown argument.\n");
     }
     else if (num == NOT_ENOUGH)
     {
-        error_num = write(2,
-                          "Error: NOT ENOUGH ARGUMENTS, JUST FIX FILE, DON'T"
-                          "TOUCH MY PARSER!\n",
-                          67);
+        printf("Error: NOT ENOUGH ARGUMENTS, JUST FIX FILE, DON'T TOUCH MY PARSER!\n");
     }
-    exit(error_num == 0 ? 1 : error_num);
+    exit(1);
 }
 
 void check_valid_name(char* str)

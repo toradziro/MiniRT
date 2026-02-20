@@ -1,4 +1,5 @@
 #include "rt_file.h"
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <sys/mman.h>
@@ -7,9 +8,9 @@
 
 str8 read_full_file(const char* path)
 {
-    int fd = open(path, O_RDONLY);
+    str8 ret = {0};
+    int  fd  = open(path, O_RDONLY);
 
-    str8 ret;
     ret.mem  = NULL;
     ret.size = 0;
 
@@ -37,7 +38,11 @@ str8 read_full_file(const char* path)
 
 void clean_file(str8* file)
 {
-    munmap(file->mem, file->size);
+    if (file->mem != NULL)
+    {
+        munmap(file->mem, file->size);
+    }
+
     file->mem  = NULL;
     file->size = 0;
 }

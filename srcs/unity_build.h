@@ -3,7 +3,6 @@
 #include "arena/arena.c"
 #include "bvh/bvh.c"
 #include "color/color.c"
-#include "file/rt_file.c"
 #include "lists_funcs/array_funcs.c"
 #include "lists_funcs/list_camera_funcs.c"
 #include "lists_funcs/list_lights_func.c"
@@ -19,5 +18,11 @@
 #include "hooks_utils.c"
 #include "save_to_bmp.c"
 #ifdef RT_LINUX
+#include "file/rt_file_linux.c"
+#include "utilits/rt_time_linux.c"
 #include "window/window_linux.c"
+#elif RT_WIN32
+#include "file/rt_file_win32.c"
+#include "window/window_win32.c"
+#include "utilits/rt_time_win32.c"
 #endif
