@@ -7,7 +7,6 @@
 #include "../vectors_funcs/matrix.h"
 #include "figures.h"
 #include "my_types.h"
-#include <SDL2/SDL.h>
 
 typedef struct s_accum_data
 {
@@ -24,7 +23,6 @@ typedef struct s_scene
     t_lights*     lights;
     t_ab_light*   ab_light;
     t_cam_to_w    mtrx;
-    SDL_Window*   window;
     void*         pixels;
     t_accum_data* pixels_avg;
     float         projection_coeff;

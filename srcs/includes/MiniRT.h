@@ -56,7 +56,6 @@ t_color col_parse(char* str);
 t_color check_valid_color(t_color* c);
 void    free_scene(t_scene* scene);
 
-int press_key(SDL_Keysym key, t_scene* scene);
 int mouse_press(int b, int x, int y, t_scene* scene);
 
 void check_scene(t_scene* scene);

@@ -18,3 +18,6 @@
 #include "vectors_funcs/place_camera.c"
 #include "hooks_utils.c"
 #include "save_to_bmp.c"
+#ifdef RT_LINUX
+#include "window/window_linux.c"
+#endif

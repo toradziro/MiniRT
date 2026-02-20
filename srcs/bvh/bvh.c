@@ -1,5 +1,6 @@
 #include "bvh.h"
 #include <assert.h>
+#include <float.h>
 #include "../includes/MiniRT.h"
 
 static BreakingAxis g_breaking_strategy;

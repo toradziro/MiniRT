@@ -12,7 +12,7 @@
 
 #include "includes/MiniRT.h"
 #include "vectors_funcs/rt_math.h"
-#include <SDL2/SDL_scancode.h>
+#include "window/window.h"
 
 // int				mouse_press(int b, int x, int y, t_scene *scene)
 // {
@@ -44,62 +44,62 @@
 // 	return (0);
 // }
 
-int press_key(SDL_Keysym key, t_scene* scene)
+int press_key(t_key key, t_scene* scene)
 {
     t_vector forward = scene->cams->direction;
     t_vector up      = new_vector(0, 1, 0);
     t_vector right   = cross_prod(&forward, &up);
 
-    switch (key.scancode)
+    switch (key)
     {
-    case (SDL_SCANCODE_TAB):
+    case (RT_SCANCODE_TAB):
     {
         scene->cams = (scene->cams->next == NULL) ? scene->first_cam : scene->cams->next;
     }
     break;
-    case (SDL_SCANCODE_W):
+    case (RT_SCANCODE_W):
     {
         forward                  = vector_by_scalar(&forward, 4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &forward);
         memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
-    case (SDL_SCANCODE_S):
+    case (RT_SCANCODE_S):
     {
         forward                  = vector_by_scalar(&forward, -4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &forward);
         memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
-    case (SDL_SCANCODE_A):
+    case (RT_SCANCODE_A):
     {
         right                    = vector_by_scalar(&right, 4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &right);
         memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
-    case (SDL_SCANCODE_D):
+    case (RT_SCANCODE_D):
     {
         right                    = vector_by_scalar(&right, -4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &right);
         memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
-    case (SDL_SCANCODE_Q):
+    case (RT_SCANCODE_Q):
     {
         up                       = vector_by_scalar(&up, 4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &up);
         memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
-    case (SDL_SCANCODE_E):
+    case (RT_SCANCODE_E):
     {
         up                       = vector_by_scalar(&up, -4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &up);
         memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
-    case (SDL_SCANCODE_ESCAPE):
+    case (RT_SCANCODE_ESCAPE):
     {
         exit_rt(scene);
     }

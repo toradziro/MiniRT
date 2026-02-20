@@ -16,44 +16,12 @@
 #include "includes/my_types.h"
 #include "parser/parser.h"
 #include "render/render.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_video.h>
-#include <stdio.h>
 #include "bvh/bvh.h"
 #include "unity_build.h"
+#include "window/window.h"
+#include <stdio.h>
 
 #define M_PI (3.14159)
-
-void handle_event(SDL_Event* event, t_scene* scene)
-{
-    switch (event->type)
-    {
-    case SDL_QUIT:
-    {
-        exit_rt(scene);
-    }
-    break;
-
-    case SDL_WINDOWEVENT:
-    {
-        switch (event->window.event)
-        {
-        case SDL_WINDOWEVENT_RESIZED:
-        {
-        }
-        break;
-        }
-    }
-    break;
-    case SDL_KEYDOWN:
-    {
-        press_key(event->key.keysym, scene);
-    }
-    break;
-    }
-}
 
 u64 time_ms(void)
 {
@@ -73,20 +41,11 @@ int main(int argc, char** argv)
         killed_by_error(INV_AM_OF_ARG);
     }
     check_valid_name(argv[1]);
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
-    {
-        //-- TODO: Add new error
-        killed_by_error(MALLOC_ERROR);
-    }
+
     start_parse(&scene, argv[1], &global_arena);
     check_scene(&scene);
     assignAABB(scene.figures);
     scene.bvh = buildBVH(scene.figures->triangles, scene.figures->length, &global_arena);
-
-    SDL_Window* sdl_window =
-        SDL_CreateWindow("MiniRT", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scene.width, scene.height,
-                         /*SDL_WINDOW_RESIZABLE*/ 0);
-    scene.window = sdl_window;
 
     //-- Roughness will be set the same for all reflective primitives
     //-- Better to avoid passing values bigger then 0.1
@@ -107,13 +66,11 @@ int main(int argc, char** argv)
     scene.pixels     = arena_push(&global_arena, scene.width * scene.height * sizeof(i32));
     scene.pixels_avg = arena_push(&global_arena, scene.width * scene.height * sizeof(t_accum_data));
     memset(scene.pixels_avg, 0, scene.width * scene.height * sizeof(t_accum_data));
-    SDL_Renderer* sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
-    //-- TODO: recreate on window resize
-    SDL_Texture* backbuffer_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_ARGB8888,
-                                                        SDL_TEXTUREACCESS_STREAMING, scene.width, scene.height);
+
+    t_window window = create_window("MiniRT", scene.width, scene.height, &global_arena);
+    window.buffer   = scene.pixels;
 
     scene.is_running = true;
-    //-- TODO: Cleanup
     t_thread_pool thread_pool;
     start_render_threads(&thread_pool, &scene);
 
@@ -121,26 +78,13 @@ int main(int argc, char** argv)
     {
         const u64 time_frame_start = time_ms();
 
-        SDL_RenderClear(sdl_renderer);
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
-            handle_event(&event, &scene);
-        }
+        process_events(&window, &scene);
 
         scene.mtrx             = matrix_place(scene.cams->coordinates, scene.cams->direction);
         scene.projection_coeff = scene.width / (2 * tan(scene.cams->field_of_v * 0.5 * M_PI * 0.00555555555));
         render(&thread_pool, scene.height);
 
-        if (SDL_UpdateTexture(backbuffer_texture, 0, scene.pixels, scene.width * sizeof(int)))
-        {
-            printf("!SDL_UpdateTexture() error!");
-            exit_rt(&scene);
-        }
-
-        SDL_RenderCopy(sdl_renderer, backbuffer_texture, 0, 0);
-
-        SDL_RenderPresent(sdl_renderer);
+        present_buffer_in_window(&window);
 
         const u64 time_frame_end = time_ms();
         const u64 time_elapsed   = time_frame_end - time_frame_start;
@@ -148,11 +92,7 @@ int main(int argc, char** argv)
     }
 
     destroy_render(&thread_pool);
-
-    SDL_DestroyTexture(backbuffer_texture);
-    SDL_DestroyRenderer(sdl_renderer);
-    SDL_DestroyWindow(scene.window);
-    SDL_Quit();
+    destroy_window(&window);
     destroy_arena(&global_arena);
     return (0);
 }
