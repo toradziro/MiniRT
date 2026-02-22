@@ -13,7 +13,7 @@
 #include "../random/random.h"
 #include "ray_trace.h"
 #include <math.h>
-#include <threads.h>
+#include <time.h>
 
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))

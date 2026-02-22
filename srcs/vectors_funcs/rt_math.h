@@ -2,7 +2,6 @@
 
 #include "rt_math.h"
 #include <math.h>
-#include <immintrin.h>
 
 typedef struct s_vector
 {

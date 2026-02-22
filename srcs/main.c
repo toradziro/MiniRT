@@ -22,7 +22,7 @@
 #include "window/window.h"
 #include <stdio.h>
 
-#define M_PI (3.14159)
+#define M_RT_PI (3.14159)
 
 int main(int argc, char** argv)
 {
@@ -75,7 +75,7 @@ int main(int argc, char** argv)
         process_events(&window, &scene);
 
         scene.mtrx             = matrix_place(scene.cams->coordinates, scene.cams->direction);
-        scene.projection_coeff = scene.width / (2 * tan(scene.cams->field_of_v * 0.5 * M_PI * 0.00555555555));
+        scene.projection_coeff = scene.width / (2 * tan(scene.cams->field_of_v * 0.5 * M_RT_PI * 0.00555555555));
         render(&thread_pool, scene.height);
 
         present_buffer_in_window(&window);

@@ -1,10 +1,18 @@
 #include "window.h"
 #include "../includes/MiniRT.h"
+#ifdef MAC_OS
+#include <SDL.h>
+#include <SDL_events.h>
+#include <SDL_keyboard.h>
+#include <SDL_render.h>
+#include <SDL_video.h>
+#else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
+#endif
 
 typedef struct s_platform_window
 {

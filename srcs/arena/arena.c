@@ -1,5 +1,5 @@
 #include "arena.h"
-#include <malloc.h>
+#include <stdlib.h>
 
 void clear_arena(t_memory_arena* arena) { arena->cursor = 0; }
 
