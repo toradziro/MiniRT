@@ -66,7 +66,7 @@ int main(int argc, char** argv)
 
     scene.is_running = true;
     t_thread_pool thread_pool;
-    start_render_threads(&thread_pool, &scene);
+    start_render_threads(&thread_pool, &scene, &global_arena);
 
     while (scene.is_running)
     {

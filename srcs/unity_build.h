@@ -18,10 +18,12 @@
 #include "hooks_utils.c"
 #include "save_to_bmp.c"
 #ifdef RT_LINUX
+#include "thread/rt_thread_linux.c"
 #include "file/rt_file_linux.c"
 #include "utilits/rt_time_linux.c"
 #include "window/window_linux.c"
 #elif RT_WIN32
+#include "thread/rt_thread_win32.c"
 #include "file/rt_file_win32.c"
 #include "window/window_win32.c"
 #include "utilits/rt_time_win32.c"

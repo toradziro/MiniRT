@@ -13,7 +13,6 @@
 #include "render.h"
 #include "../includes/MiniRT.h"
 #include "../includes/scene.h"
-#include <threads.h>
 
 typedef struct s_stride_coeff
 {
@@ -21,18 +20,14 @@ typedef struct s_stride_coeff
     float y;
 } t_stride_coeff;
 
-void start_render_threads(t_thread_pool* thread_pool, t_scene* scene)
+void start_render_threads(t_thread_pool* thread_pool, t_scene* scene, t_memory_arena* arena)
 {
     for (int i = 0; i < THREADS_MAX; ++i)
     {
         thread_pool->m_thread_data[i].is_running       = true;
         thread_pool->m_thread_data[i].is_task_assigned = false;
         thread_pool->m_thread_data[i].scene            = scene;
-
-        if (thrd_create(&thread_pool->m_thread[i], main_rt_loop, &thread_pool->m_thread_data[i]))
-        {
-            killed_by_error(MALLOC_ERROR);
-        }
+        thread_pool->m_thread[i] = create_thread(arena, &thread_pool->m_thread_data[i]);
     }
 }
 
@@ -61,9 +56,7 @@ void destroy_render(t_thread_pool* thread_pool)
     }
     for (int i = 0; i < THREADS_MAX; ++i)
     {
-        int thrd_res;
-        thrd_join(thread_pool->m_thread[i], &thrd_res);
-        (void)thrd_res;
+        thread_join(thread_pool->m_thread[i]);
     }
 }
 
@@ -100,7 +93,7 @@ t_stride_coeff calculate_stride(t_accum_data* accum)
     return res;
 }
 
-int main_rt_loop(void* thread_data)
+void main_rt_loop(void* thread_data)
 {
     t_thread_data* curr_thread_data = (t_thread_data*)thread_data;
     while (curr_thread_data->is_running)
@@ -140,5 +133,5 @@ int main_rt_loop(void* thread_data)
         }
         curr_thread_data->is_task_assigned = false;
     }
-    thrd_exit(0);
+    thread_exit();
 }
