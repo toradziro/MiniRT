@@ -55,6 +55,7 @@ int press_key(t_key key, t_scene* scene)
     case (RT_SCANCODE_TAB):
     {
         scene->cams = (scene->cams->next == NULL) ? scene->first_cam : scene->cams->next;
+        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (RT_SCANCODE_W):

@@ -52,6 +52,7 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
     case WM_SYSKEYUP:
     {
         [[maybe_unused]] const bool isEsc   = (wParam == VK_ESCAPE);
+        [[maybe_unused]] const bool isTab   = (wParam == VK_TAB);
         [[maybe_unused]] const bool isCtrl  = (wParam == VK_CONTROL);
         [[maybe_unused]] const bool isShift = (wParam == VK_SHIFT);
 
@@ -62,6 +63,14 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
         [[maybe_unused]] bool currStateIsDown = !((1 << 31) & lParam);
 
         press_key(convert_win_key_to_inner(wParam), glob_scene);
+        if (isTab && !prevStateIsDown)
+        {
+            press_key(RT_SCANCODE_TAB, glob_scene);
+        }
+        if (isEsc)
+        {
+            press_key(RT_SCANCODE_ESCAPE, glob_scene);
+        }
 
         return 0;
     }
