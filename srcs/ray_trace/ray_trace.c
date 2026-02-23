@@ -159,7 +159,7 @@ t_color reflect(t_scene* scene, t_ray* ray, t_hit* hit, int reflect_depth)
     t_vector reflected_v   = subs_vectors(&ray->dir, &scaled_normal);
 
     t_ray reflected_ray;
-    float epsilon          = 0.001f;
+    const float epsilon          = 0.001f;
     reflected_ray.orig.v_x = ray->orig.v_x + hit->t * ray->dir.v_x + epsilon * hit->normal.v_x;
     reflected_ray.orig.v_y = ray->orig.v_y + hit->t * ray->dir.v_y + epsilon * hit->normal.v_y;
     reflected_ray.orig.v_z = ray->orig.v_z + hit->t * ray->dir.v_z + epsilon * hit->normal.v_z;
@@ -175,7 +175,7 @@ t_color reflect(t_scene* scene, t_ray* ray, t_hit* hit, int reflect_depth)
     {
         t_color reflected_color =
             find_color(scene, reflected_ray, reflected_hit.t, &reflected_hit.normal, &reflected_hit.triangle->color);
-        if (reflected_hit.triangle->reflective && reflect_depth > 0)
+        if (reflected_hit.triangle->reflection_value != 0 && reflect_depth > 0)
         {
             t_color recursive_reflection = reflect(scene, &reflected_ray, &reflected_hit, reflect_depth - 1);
             reflected_color =
@@ -221,7 +221,7 @@ t_color ray_trace(t_scene* scene, t_ray ray, i32 x, i32 y)
     if (hit.triangle)
     {
         base_color = find_color(scene, ray, hit.t, &hit.normal, &hit.triangle->color);
-        if (hit.triangle->reflective)
+        if (hit.triangle->reflection_value != 0)
         {
             base_color = mix_colors(base_color, reflect(scene, &ray, &hit, 4), hit.triangle->reflection_value);
         }

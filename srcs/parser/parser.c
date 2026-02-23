@@ -103,6 +103,7 @@ void parse_primitives(char* str, t_scene* scene, t_memory_arena* arena)
 void parse_triangle(char* str, t_scene* scene)
 {
     t_triangle new = {0};
+    new.reflection_value = 0;
     t_vector tmp_a;
     t_vector tmp_b;
     t_vector tmp_c;
@@ -119,7 +120,6 @@ void parse_triangle(char* str, t_scene* scene)
     if (*str)
     {
         new.reflection_value = d_atoi(str);
-        new.reflective       = true;
     }
     new.normal     = new_vector(0, 0, 0);
     new.ab         = subs_vectors(&tmp_b, &tmp_a);
