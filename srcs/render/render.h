@@ -30,8 +30,8 @@ typedef struct s_thread_data
 
 typedef struct s_thread_pool
 {
-    t_rt_thread        m_thread[THREADS_MAX];
-    t_thread_data       m_thread_data[THREADS_MAX];
+    t_rt_thread   m_thread[THREADS_MAX];
+    t_thread_data m_thread_data[THREADS_MAX];
 } t_thread_pool;
 
 typedef struct s_thread
@@ -49,7 +49,7 @@ typedef struct s_ray_trace
     int      y_pixel;
 } t_ray_trace;
 
-void  main_rt_loop(void* thread_data);
+void main_rt_loop(void* thread_data);
 void destroy_render(t_thread_pool* thread_pool);
 void render(t_thread_pool* thread_pool, int y);
 void start_render_threads(t_thread_pool* thread_pool, t_scene* scene, t_memory_arena* arena);

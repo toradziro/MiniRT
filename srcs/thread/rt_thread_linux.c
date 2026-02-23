@@ -12,7 +12,7 @@ void* wrapper(void* thread_data)
 t_rt_thread create_thread(t_memory_arena* arena, void* thread_data)
 {
     t_rt_thread thread;
-    pthread_t* curr_thread = arena_push(arena, sizeof(pthread_t));
+    pthread_t*  curr_thread = arena_push(arena, sizeof(pthread_t));
     if (pthread_create(curr_thread, NULL, wrapper, thread_data))
     {
         printf("pthread_create(curr_thread, NULL, wrapper, thread_data\n");
@@ -22,10 +22,7 @@ t_rt_thread create_thread(t_memory_arena* arena, void* thread_data)
     return thread;
 }
 
-void thread_exit()
-{
-    pthread_exit(NULL);
-}
+void thread_exit() { pthread_exit(NULL); }
 
 void thread_join(t_rt_thread thread)
 {

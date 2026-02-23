@@ -158,8 +158,8 @@ t_color reflect(t_scene* scene, t_ray* ray, t_hit* hit, int reflect_depth)
     t_vector scaled_normal = vector_by_scalar(&hit->normal, 2.0f * dot_product); // 2 * (d · n) * n
     t_vector reflected_v   = subs_vectors(&ray->dir, &scaled_normal);
 
-    t_ray reflected_ray;
-    const float epsilon          = 0.001f;
+    t_ray       reflected_ray;
+    const float epsilon    = 0.001f;
     reflected_ray.orig.v_x = ray->orig.v_x + hit->t * ray->dir.v_x + epsilon * hit->normal.v_x;
     reflected_ray.orig.v_y = ray->orig.v_y + hit->t * ray->dir.v_y + epsilon * hit->normal.v_y;
     reflected_ray.orig.v_z = ray->orig.v_z + hit->t * ray->dir.v_z + epsilon * hit->normal.v_z;

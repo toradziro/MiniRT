@@ -27,7 +27,7 @@ void start_render_threads(t_thread_pool* thread_pool, t_scene* scene, t_memory_a
         thread_pool->m_thread_data[i].is_running       = true;
         thread_pool->m_thread_data[i].is_task_assigned = false;
         thread_pool->m_thread_data[i].scene            = scene;
-        thread_pool->m_thread[i] = create_thread(arena, &thread_pool->m_thread_data[i]);
+        thread_pool->m_thread[i]                       = create_thread(arena, &thread_pool->m_thread_data[i]);
     }
 }
 

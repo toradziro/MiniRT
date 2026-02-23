@@ -8,5 +8,5 @@ typedef struct s_rt_thread
 } t_rt_thread;
 
 t_rt_thread create_thread(t_memory_arena* arena, void* thread_data);
-void thread_exit();
-void thread_join(t_rt_thread thread);
+void        thread_exit();
+void        thread_join(t_rt_thread thread);

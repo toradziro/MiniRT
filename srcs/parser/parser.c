@@ -102,7 +102,7 @@ void parse_primitives(char* str, t_scene* scene, t_memory_arena* arena)
 
 void parse_triangle(char* str, t_scene* scene)
 {
-    t_triangle new = {0};
+    t_triangle new       = {0};
     new.reflection_value = 0;
     t_vector tmp_a;
     t_vector tmp_b;
