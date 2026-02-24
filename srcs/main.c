@@ -88,6 +88,7 @@ int main(int argc, char** argv)
         const u32 time_frame_end = time_ms();
         const u32 time_elapsed   = time_frame_end - time_frame_start;
         printf("MS: %u -- FPS: %u\n", time_elapsed, 1000 / time_elapsed);
+        scene.dt = (float)time_elapsed / 1000.0f;
     }
 
     destroy_render(&thread_pool);

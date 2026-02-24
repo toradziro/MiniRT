@@ -47,8 +47,11 @@
 int press_key(t_key key, t_scene* scene)
 {
     t_vector forward = scene->cams->direction;
-    t_vector up      = new_vector(0, 1, 0);
+    t_vector up = scene->cams->up;
     t_vector right   = cross_prod(&forward, &up);
+
+    const float rotation_speed = 1.2 * scene->dt;
+    const float movement_speed = 300 * scene->dt;
 
     switch (key)
     {
@@ -59,58 +62,58 @@ int press_key(t_key key, t_scene* scene)
     break;
     case (RT_SCANCODE_W):
     {
-        forward                  = vector_by_scalar(&forward, 4);
+        forward                  = vector_by_scalar(&forward, movement_speed);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &forward);
     }
     break;
     case (RT_SCANCODE_S):
     {
-        forward                  = vector_by_scalar(&forward, -4);
+        forward                  = vector_by_scalar(&forward, -movement_speed);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &forward);
     }
     break;
     case (RT_SCANCODE_A):
     {
-        right                    = vector_by_scalar(&right, 4);
+        right                    = vector_by_scalar(&right, movement_speed);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &right);
     }
     break;
     case (RT_SCANCODE_D):
     {
-        right                    = vector_by_scalar(&right, -4);
+        right                    = vector_by_scalar(&right, -movement_speed);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &right);
     }
     break;
     case (RT_SCANCODE_Q):
     {
-        up                       = vector_by_scalar(&up, 4);
+        up                       = vector_by_scalar(&up, movement_speed);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &up);
     }
     break;
     case (RT_SCANCODE_E):
     {
-        up                       = vector_by_scalar(&up, -4);
+        up                       = vector_by_scalar(&up, -movement_speed);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &up);
     }
     break;
     case (RT_SCANCODE_ARROW_UP):
     {
-        scene->cams->pitch += 0.01;
+        scene->cams->pitch += rotation_speed;
     }
     break;
     case (RT_SCANCODE_ARROW_DOWN):
     {
-        scene->cams->pitch -= 0.01;
+        scene->cams->pitch -= rotation_speed;
     }
     break;
     case (RT_SCANCODE_ARROW_LEFT):
     {
-        scene->cams->yaw -= 0.01;
+        scene->cams->yaw -= rotation_speed;
     }
     break;
     case (RT_SCANCODE_ARROW_RIGHT):
     {
-        scene->cams->yaw += 0.01;
+        scene->cams->yaw += rotation_speed;
     }
     break;
     case (RT_SCANCODE_ESCAPE):

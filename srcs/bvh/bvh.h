@@ -15,8 +15,8 @@ typedef struct s_BVHNode
         };
         struct
         {
-            int         count;
             t_triangle* batch;
+            int         count;
         };
     };
     t_AABB aabb;

@@ -23,7 +23,6 @@ t_cam_to_w matrix_place(t_cameras* camera)
     camera->direction.v_y = sin(camera->pitch);
     camera->direction.v_z = sin(camera->yaw) * cos(camera->pitch);
     camera->direction = vector_normalize(&camera->direction);
-    // camera->up =;
 
     tmp              = camera->up;
     tmp              = cross_prod(&tmp, &camera->direction);
