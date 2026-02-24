@@ -68,13 +68,18 @@ int main(int argc, char** argv)
     t_thread_pool thread_pool;
     start_render_threads(&thread_pool, &scene, &global_arena);
 
+    scene.need_update_mtx = true;
     while (scene.is_running)
     {
         const u32 time_frame_start = time_ms();
 
         process_events(&window, &scene);
 
-        scene.mtrx             = matrix_place(scene.cams->coordinates, scene.cams->direction);
+        if (scene.need_update_mtx)
+        {
+            scene.mtrx = matrix_place(scene.cams);
+            scene.need_update_mtx = false;
+        }
         scene.projection_coeff = scene.width / (2 * tan(scene.cams->field_of_v * 0.5 * M_RT_PI * 0.00555555555));
         render(&thread_pool, scene.height);
 

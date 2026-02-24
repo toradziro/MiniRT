@@ -34,4 +34,5 @@ typedef struct s_scene
     int           mouse_y;
     bool          is_running;
     bool          roughness_and_multisample;
+    bool          need_update_mtx;
 } t_scene;

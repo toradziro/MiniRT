@@ -55,49 +55,62 @@ int press_key(t_key key, t_scene* scene)
     case (RT_SCANCODE_TAB):
     {
         scene->cams = (scene->cams->next == NULL) ? scene->first_cam : scene->cams->next;
-        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (RT_SCANCODE_W):
     {
         forward                  = vector_by_scalar(&forward, 4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &forward);
-        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (RT_SCANCODE_S):
     {
         forward                  = vector_by_scalar(&forward, -4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &forward);
-        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (RT_SCANCODE_A):
     {
         right                    = vector_by_scalar(&right, 4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &right);
-        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (RT_SCANCODE_D):
     {
         right                    = vector_by_scalar(&right, -4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &right);
-        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (RT_SCANCODE_Q):
     {
         up                       = vector_by_scalar(&up, 4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &up);
-        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     }
     break;
     case (RT_SCANCODE_E):
     {
         up                       = vector_by_scalar(&up, -4);
         scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &up);
-        memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
+    }
+    break;
+    case (RT_SCANCODE_ARROW_UP):
+    {
+        scene->cams->pitch += 0.01;
+    }
+    break;
+    case (RT_SCANCODE_ARROW_DOWN):
+    {
+        scene->cams->pitch -= 0.01;
+    }
+    break;
+    case (RT_SCANCODE_ARROW_LEFT):
+    {
+        scene->cams->yaw -= 0.01;
+    }
+    break;
+    case (RT_SCANCODE_ARROW_RIGHT):
+    {
+        scene->cams->yaw += 0.01;
     }
     break;
     case (RT_SCANCODE_ESCAPE):
@@ -108,13 +121,14 @@ int press_key(t_key key, t_scene* scene)
     default:
         break;
     }
-    // printf("pos: %f,%f,%f\ndir: %f,%f,%f",
-    //     scene->cams->coordinates.v_x,
-    //     scene->cams->coordinates.v_y,
-    //     scene->cams->coordinates.v_z,
-    //     scene->cams->direction.v_x,
-    //     scene->cams->direction.v_y,
-    //     scene->cams->direction.v_z
-    //     );
+    printf("%f,%f,%f   %f   %f\n",
+        scene->cams->coordinates.v_x,
+        scene->cams->coordinates.v_y,
+        scene->cams->coordinates.v_z,
+        scene->cams->pitch,
+        scene->cams->yaw
+        );
+    scene->need_update_mtx = true;
+    memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
     return (0);
 }

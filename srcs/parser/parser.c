@@ -159,20 +159,47 @@ void parse_ambl(char* str, t_scene* scene, t_memory_arena* arena)
     scene->ab_light = new;
 }
 
+void debug_print_camera(t_cameras *cam)
+{
+    printf("=== Camera Debug ===\n");
+    printf("Coordinates: (%.4f, %.4f, %.4f)\n",
+        cam->coordinates.v_x, cam->coordinates.v_y, cam->coordinates.v_z);
+    printf("Direction:   (%.4f, %.4f, %.4f)\n",
+        cam->direction.v_x, cam->direction.v_y, cam->direction.v_z);
+    printf("Up:          (%.4f, %.4f, %.4f)\n",
+        cam->up.v_x, cam->up.v_y, cam->up.v_z);
+    printf("FOV:         %.4f\n", cam->field_of_v);
+    printf("Pitch:       %.4f\n", cam->pitch);
+    printf("Yaw:         %.4f\n", cam->yaw);
+    printf("Next:        %p\n", cam->next);
+    printf("====================\n");
+}
+
 void parse_cam(char* str, t_scene* scene, t_memory_arena* arena)
 {
     t_cameras* new = NULL;
-    t_vector dir;
     t_vector coor;
     float    fov;
+    float   pitch;
+    float   yaw;
 
     str  = skip_spaces(str);
     coor = parse_coordinares(str);
     str  = skip_pattern(str);
-    dir  = parse_coordinares(str);
-    str  = skip_pattern(str);
+
+    pitch = d_atoi(str);
+    str = skip_nums(str);
+    str  = skip_spaces(str);
+
+    yaw = d_atoi(str);
+    str = skip_nums(str);
+    str  = skip_spaces(str);
+
     fov  = d_atoi(str);
-    new  = new_camera_node(coor, vector_normalize(&dir), fov, arena);
+    new  = new_camera_node(coor, pitch, yaw, fov, arena);
+    new->up = new_vector(0, 1, 0);
+
+    // debug_print_camera(new);
     if (!scene->cams)
     {
         scene->cams      = new;

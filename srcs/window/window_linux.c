@@ -41,6 +41,14 @@ t_key convert_sdl_key_to_inner(SDL_Keysym key)
         return RT_SCANCODE_Q;
     case (SDL_SCANCODE_ESCAPE):
         return RT_SCANCODE_ESCAPE;
+    case (SDL_SCANCODE_UP):
+        return RT_SCANCODE_ARROW_UP;
+    case (SDL_SCANCODE_DOWN):
+        return RT_SCANCODE_ARROW_DOWN;
+    case (SDL_SCANCODE_LEFT):
+        return RT_SCANCODE_ARROW_LEFT;
+    case (SDL_SCANCODE_RIGHT):
+        return RT_SCANCODE_ARROW_RIGHT;
     default:
         break;
     }
