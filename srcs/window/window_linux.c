@@ -49,19 +49,21 @@ t_key convert_sdl_key_to_inner(SDL_Keysym key)
         return RT_SCANCODE_ARROW_LEFT;
     case (SDL_SCANCODE_RIGHT):
         return RT_SCANCODE_ARROW_RIGHT;
+    case (SDL_SCANCODE_RETURN):
+        return RT_SCANCODE_ENTER;
     default:
         break;
     }
     return NONE;
 }
 
-void handle_event(SDL_Event* event, t_scene* scene)
+void handle_event(SDL_Event* event, t_application* application)
 {
     switch (event->type)
     {
     case SDL_QUIT:
     {
-        exit_rt(scene);
+        application->is_running = false;
     }
     break;
 
@@ -78,7 +80,7 @@ void handle_event(SDL_Event* event, t_scene* scene)
     break;
     case SDL_KEYDOWN:
     {
-        press_key(convert_sdl_key_to_inner(event->key.keysym), scene);
+        press_key(convert_sdl_key_to_inner(event->key.keysym), application);
     }
     break;
     }
@@ -105,19 +107,21 @@ t_window create_window(const char* name, i32 width, i32 height, t_memory_arena* 
     return window;
 }
 
-void process_events(t_window* window, t_scene* scene)
+void process_events(t_window* window, t_application* application)
 {
     (void)window;
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
-        handle_event(&event, scene);
+        handle_event(&event, application);
     }
 }
 
 void present_buffer_in_window(t_window* window)
 {
     t_platform_window* pl_window = (t_platform_window*)window->window;
+    SDL_SetRenderDrawColor(pl_window->renderer, 0, 0, 0, 255);
+    SDL_RenderClear(pl_window->renderer);
     if (SDL_UpdateTexture(pl_window->texture, 0, window->buffer, window->width * sizeof(int)))
     {
         printf("!SDL_UpdateTexture() error!");

@@ -40,11 +40,19 @@ void render(t_thread_pool* thread_pool, int y)
             if (!thread_pool->m_thread_data[j].is_task_assigned)
             {
                 thread_pool->m_thread_data[j].curr_y = i;
-
                 thread_pool->m_thread_data[j].is_task_assigned = true;
                 ++i;
             }
         }
+    }
+    for (int j = 0; j < THREADS_MAX;)
+    {
+        //-- wait until all threads finished
+        if (thread_pool->m_thread_data[j].is_task_assigned)
+        {
+            continue;
+        }
+        ++j;
     }
 }
 
@@ -103,7 +111,7 @@ void main_rt_loop(void* thread_data)
             continue;
         }
         t_ray_trace trace;
-        trace.scene    = curr_thread_data->scene;
+        trace.scene    = (t_scene*)curr_thread_data->scene;
         trace.y_pixel  = curr_thread_data->curr_y;
         trace.x_pixel  = 0;
         trace.ray.orig = trace.scene->cams->coordinates;
@@ -111,18 +119,12 @@ void main_rt_loop(void* thread_data)
         while (trace.x_pixel < trace.scene->width)
         {
             //-- Accumulative anti-aliasing
-            if (trace.scene->roughness_and_multisample)
             {
                 t_accum_data*  accum  = trace.scene->pixels_avg + (trace.y_pixel * trace.scene->width) + trace.x_pixel;
                 t_stride_coeff coeffs = calculate_stride(accum);
 
                 trace.ray.dir.v_x = (trace.x_pixel - (trace.scene->width * 0.5)) + coeffs.x;
                 trace.ray.dir.v_y = (-trace.y_pixel + (trace.scene->height * 0.5)) + coeffs.y;
-            }
-            else
-            {
-                trace.ray.dir.v_x = trace.x_pixel - (trace.scene->width * 0.5);
-                trace.ray.dir.v_y = -trace.y_pixel + (trace.scene->height * 0.5);
             }
             trace.ray.dir.v_z = trace.scene->projection_coeff;
             trace.ray.dir     = matrix_mult(trace.ray.dir, trace.scene->mtrx);

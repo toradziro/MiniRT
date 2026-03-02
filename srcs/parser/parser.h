@@ -18,7 +18,7 @@
 #include "../includes/scene.h"
 
 void     parse_primitives(char* str, t_scene* scene, t_memory_arena* arena);
-void     start_parse(t_scene* scene, const char* path, t_memory_arena* arena);
+void     start_parse(t_scene* scene, str8 path, t_memory_arena* arena);
 char*    skip_spaces(char* str);
 char*    skip_pattern(char* str);
 char*    skip_nums(char* str);

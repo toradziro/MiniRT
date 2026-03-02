@@ -17,6 +17,8 @@
 #include "vectors_funcs/place_camera.c"
 #include "hooks_utils.c"
 #include "save_to_bmp.c"
+#include "debug_draw/draw_line.c"
+#include "debug_draw/text.c"
 #ifdef RT_LINUX
 #include "thread/rt_thread_linux.c"
 #include "file/rt_file_linux.c"

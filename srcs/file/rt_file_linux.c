@@ -6,17 +6,22 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-str8 read_full_file(const char* path)
+str8 read_full_file(str8 path)
 {
-    str8 ret = {0};
-    int  fd  = open(path, O_RDONLY);
+    str8 ret = { 0 };
+    //-- TODO: Pass an arena here and avoid malloc!
+    char* linux_capable_str = malloc(sizeof(char) * path.size + 1);
+    memcpy(linux_capable_str, path.mem, path.size);
+    linux_capable_str[path.size] = '\0';
+    int  fd  = open(linux_capable_str, O_RDONLY);
+    free(linux_capable_str);
 
     ret.mem  = NULL;
     ret.size = 0;
 
     if (fd < 0)
     {
-        printf("Error opening a file read_full_file %s", path);
+        printf("Error opening a file read_full_file %s", path.mem);
         return ret;
     }
 
@@ -29,7 +34,7 @@ str8 read_full_file(const char* path)
 
     if (ret.mem == MAP_FAILED)
     {
-        printf("Error opening a file read_full_file %s", path);
+        printf("Error opening a file read_full_file %s", path.mem);
         return ret;
     }
 

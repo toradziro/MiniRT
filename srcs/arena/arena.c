@@ -52,8 +52,11 @@ t_memory_arena create_arena(u32 size)
 
 void destroy_arena(t_memory_arena* arena)
 {
-    free(arena->memory);
+    if (arena->memory != NULL && arena->size != 0)
+    {
+        free(arena->memory);
 
-    arena->size   = 0;
-    arena->cursor = 0;
+        arena->size   = 0;
+        arena->cursor = 0;
+    }
 }

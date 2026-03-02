@@ -44,8 +44,9 @@
 // 	return (0);
 // }
 
-int press_key(t_key key, t_scene* scene)
+void process_scene(t_key key, t_application* application)
 {
+    t_scene* scene = &application->curr_scene;
     t_vector forward = scene->cams->direction;
     t_vector up = scene->cams->up;
     t_vector right   = cross_prod(&forward, &up);
@@ -118,20 +119,60 @@ int press_key(t_key key, t_scene* scene)
     break;
     case (RT_SCANCODE_ESCAPE):
     {
-        exit_rt(scene);
+        application->switch_to_menu_triggered = true;
     }
     break;
     default:
         break;
     }
-    printf("%f,%f,%f   %f   %f\n",
-        scene->cams->coordinates.v_x,
-        scene->cams->coordinates.v_y,
-        scene->cams->coordinates.v_z,
-        scene->cams->pitch,
-        scene->cams->yaw
-        );
+    // printf("%f,%f,%f   %f   %f\n",
+    //     scene->cams->coordinates.v_x,
+    //     scene->cams->coordinates.v_y,
+    //     scene->cams->coordinates.v_z,
+    //     scene->cams->pitch,
+    //     scene->cams->yaw
+    //     );
     scene->need_update_mtx = true;
     memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
+}
+
+
+void process_menu(t_key key, t_application* application)
+{
+    switch (key)
+    {
+    case (RT_SCANCODE_ARROW_UP):
+    {
+        application->menu_state.selected_item--;
+    }
+    break;
+    case (RT_SCANCODE_ARROW_DOWN):
+    {
+        application->menu_state.selected_item++;
+    }
+    break;
+    case (RT_SCANCODE_ESCAPE):
+    {
+        application->is_running = false;
+    }
+    break;
+    case (RT_SCANCODE_ENTER):
+    {
+        application->scene_loading_triggered = true;
+    }
+    break;
+    default:
+        break;
+    }
+}
+
+int press_key(t_key key, t_application* application)
+{
+    switch(application->curr_app_state)
+    {
+        case Menu: process_menu(key, application); break;
+        case Scene: process_scene(key, application); break;
+        default: break;
+    }
     return (0);
 }

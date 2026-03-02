@@ -53,19 +53,20 @@ primitives_amount calculate_primitives(str8 file, t_memory_arena* arena)
     return amount;
 }
 
-void start_parse(t_scene* scene, const char* path, t_memory_arena* arena)
+void start_parse(t_scene* scene, str8 path, t_memory_arena* arena)
 {
     str8 file;
 
     //-- Read full file
-    file                     = read_full_file(path);
-    primitives_amount amount = calculate_primitives(file, arena);
+    file                        = read_full_file(path);
+    t_memory_arena parser_arena = create_arena(MB(16));
+    primitives_amount amount = calculate_primitives(file, &parser_arena);
     scene->figures           = new_vec_fig(amount.figures_count, arena);
 
     u32 curr = 0;
     while (curr < file.size)
     {
-        str8 line = get_next_line(file, &curr, arena);
+        str8 line = get_next_line(file, &curr, &parser_arena);
         if (line.mem[0] == '#')
         {
             continue;
@@ -74,6 +75,7 @@ void start_parse(t_scene* scene, const char* path, t_memory_arena* arena)
     }
 
     clean_file(&file);
+    destroy_arena(&parser_arena);
 }
 
 void parse_primitives(char* str, t_scene* scene, t_memory_arena* arena)

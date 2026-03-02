@@ -16,24 +16,6 @@
 #include "../ray_trace/ray_trace.h"
 #include "../thread/rt_thread.h"
 
-#ifndef THREADS_MAX
-#define THREADS_MAX 4
-#endif
-
-typedef struct s_thread_data
-{
-    t_scene*      scene;
-    int           curr_y;
-    volatile bool is_task_assigned;
-    volatile bool is_running;
-} t_thread_data;
-
-typedef struct s_thread_pool
-{
-    t_rt_thread   m_thread[THREADS_MAX];
-    t_thread_data m_thread_data[THREADS_MAX];
-} t_thread_pool;
-
 typedef struct s_thread
 {
     int     id;
@@ -53,5 +35,6 @@ void main_rt_loop(void* thread_data);
 void destroy_render(t_thread_pool* thread_pool);
 void render(t_thread_pool* thread_pool, int y);
 void start_render_threads(t_thread_pool* thread_pool, t_scene* scene, t_memory_arena* arena);
+void set_color(void* pixels, t_color* color, i32 x, i32 y, i32 width);
 
 #endif

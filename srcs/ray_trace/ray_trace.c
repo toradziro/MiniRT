@@ -227,7 +227,6 @@ t_color ray_trace(t_scene* scene, t_ray ray, i32 x, i32 y)
         }
     }
     //-- Real-time multisampling
-    if (scene->roughness_and_multisample)
     {
         t_accum_data* accum = scene->pixels_avg + (y * scene->width) + x;
         base_color          = *accumulative_multisampling(accum, &base_color);

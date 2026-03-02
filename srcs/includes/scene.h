@@ -5,6 +5,7 @@
 #include "../lists_funcs/array.h"
 #include "../bvh/bvh.h"
 #include "../vectors_funcs/matrix.h"
+#include "../application/thread_pool.h"
 #include "figures.h"
 #include "my_types.h"
 
@@ -18,6 +19,8 @@ typedef struct s_scene
 {
     t_cam_to_w    mtrx;
     t_BVH         bvh;
+    t_thread_pool thread_pool;
+    t_memory_arena scene_arena;
     t_cameras*    cams;
     t_cameras*    first_cam;
     t_vec_fig*    figures;

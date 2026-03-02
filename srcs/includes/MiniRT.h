@@ -60,7 +60,5 @@ void check_scene(t_scene* scene);
 void save_to_bmp(t_scene* scene);
 void init_head(char* head, t_scene* scene, int file_size);
 
-int exit_rt(t_scene* scene);
-
 void save_to_bmp(t_scene* scene);
 #endif
