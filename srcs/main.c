@@ -30,30 +30,30 @@
 
 typedef struct
 {
-    i32 width;
-    i32 height;
+    i32   width;
+    i32   height;
     void* pixels;
 } t_application_window;
 
 void create_menu_items(t_menu_state* menu_state, t_memory_arena* arena)
 {
-    menu_state->items = arena_push(arena, sizeof(t_menu_items_list));
+    menu_state->items       = arena_push(arena, sizeof(t_menu_items_list));
     menu_state->items->next = NULL;
 }
 
 void push_next_menu_item(t_menu_items_list* curr, t_memory_arena* arena)
 {
-    curr->next = arena_push(arena, sizeof(t_menu_items_list));
+    curr->next       = arena_push(arena, sizeof(t_menu_items_list));
     curr->next->next = NULL;
 }
 
 void fill_menu_state(t_menu_state* menu_state, t_memory_arena* arena)
 {
-    const char* path = "./assets/";
-    const i32 path_len = strlen(path);
+    const char* path     = "./assets/";
+    const i32   path_len = strlen(path);
 
     str8 dir_path;
-    dir_path.mem = (u8*)path;
+    dir_path.mem  = (u8*)path;
     dir_path.size = strlen(path);
 
     t_directory dir = open_directory(dir_path, arena);
@@ -63,7 +63,7 @@ void fill_menu_state(t_menu_state* menu_state, t_memory_arena* arena)
     str8 filename;
     while ((filename = next_non_dir_file(&dir, arena)).mem != NULL)
     {
-        i32 filename_len = filename.size;
+        i32  filename_len = filename.size;
         str8 filepath;
         filepath.size = path_len + filename_len;
 
@@ -82,17 +82,17 @@ void fill_menu_state(t_menu_state* menu_state, t_memory_arena* arena)
         {
             create_menu_items(menu_state, arena);
             menu_state->items->full_path = filepath;
-            menu_state->items->filename = filename;
-            curr = menu_state->items;
+            menu_state->items->filename  = filename;
+            curr                         = menu_state->items;
         }
         else
         {
             push_next_menu_item(curr, arena);
             curr->next->full_path = filepath;
-            curr->next->filename = filename;
-            curr = curr->next;
+            curr->next->filename  = filename;
+            curr                  = curr->next;
         }
-        filename.mem = NULL;
+        filename.mem  = NULL;
         filename.size = 0;
     }
 
@@ -101,27 +101,22 @@ void fill_menu_state(t_menu_state* menu_state, t_memory_arena* arena)
 
 void update_menu(t_menu_state* menu_state, t_application_window* window)
 {
-    i32 curr = 0;
-    t_color selected_item_color = { 255, 255, 255 };
-    t_color idle_item_color = { 255, 0, 0 };
+    i32     curr                = 0;
+    t_color selected_item_color = {255, 255, 255};
+    t_color idle_item_color     = {255, 0, 0};
 
-    iv2 text_pos = { 10, 20 };
+    iv2                text_pos  = {10, 20};
     t_menu_items_list* curr_item = menu_state->items;
     memcpy(window->pixels, menu_state->menu_background, window->width * window->height * sizeof(i32));
     while (curr_item)
     {
-        draw_debug_text(
-            curr_item->filename,
-            text_pos,
-            curr == menu_state->selected_item ? selected_item_color : idle_item_color,
-            6.0f,      // Overall scale. Default to 1.0f
-            6.0f,      // Width. Default to 1.0f
-            6.0f,     // Height. Default to 1.0f
-            0.0f,    // Character Spacing. Default to 0.0f
-            1.0f,
-            window->width,
-            window->height,
-            window->pixels);
+        draw_debug_text(curr_item->filename, text_pos,
+                        curr == menu_state->selected_item ? selected_item_color : idle_item_color,
+                        6.0f, // Overall scale. Default to 1.0f
+                        6.0f, // Width. Default to 1.0f
+                        6.0f, // Height. Default to 1.0f
+                        0.0f, // Character Spacing. Default to 0.0f
+                        1.0f, window->width, window->height, window->pixels);
         curr_item = curr_item->next;
         text_pos.y += 40;
         curr++;
@@ -130,9 +125,9 @@ void update_menu(t_menu_state* menu_state, t_application_window* window)
 
 str8 curr_selected_menu_item(t_application* application)
 {
-    i32 curr = 0;
+    i32                curr      = 0;
     t_menu_items_list* curr_item = application->menu_state.items;
-    str8 res = { NULL, 0 };
+    str8               res       = {NULL, 0};
 
     while (curr_item)
     {
@@ -162,7 +157,7 @@ void update_scene(t_scene* scene)
 
     if (scene->need_update_mtx)
     {
-        scene->mtrx = matrix_place(scene->cams);
+        scene->mtrx            = matrix_place(scene->cams);
         scene->need_update_mtx = false;
     }
     scene->projection_coeff = scene->width / proj_coeff;
@@ -172,7 +167,7 @@ void update_scene(t_scene* scene)
 void load_scene(t_application* application, t_application_window* app_win)
 {
     t_memory_arena scene_local_arena = create_arena(MB(500));
-    t_scene* scene = &application->curr_scene;
+    t_scene*       scene             = &application->curr_scene;
 
     memset(scene, 0, sizeof(t_scene));
     scene->scene_arena = scene_local_arena;
@@ -195,7 +190,7 @@ void load_scene(t_application* application, t_application_window* app_win)
 void blur_background(void* pixels, i32 width, i32 height, t_memory_arena* arena)
 {
     i32* pixels_i = (i32*)pixels;
-    i32* temp = (i32*)arena_push(arena, width * height * sizeof(i32));
+    i32* temp     = (i32*)arena_push(arena, width * height * sizeof(i32));
     memcpy(temp, pixels_i, width * height * sizeof(i32));
 
     for (i32 y = 0; y < height; ++y)
@@ -218,18 +213,15 @@ void blur_background(void* pixels, i32 width, i32 height, t_memory_arena* arena)
                     {
                         u32 pixel = ((u32*)temp)[ny * width + nx];
                         r += (pixel >> 16) & 0xFF;
-                        g += (pixel >>  8) & 0xFF;
-                        b += (pixel >>  0) & 0xFF;
+                        g += (pixel >> 8) & 0xFF;
+                        b += (pixel >> 0) & 0xFF;
                         a += (pixel >> 24) & 0xFF;
                         count++;
                     }
                 }
             }
 
-            u32 avg = ((a / count) << 24) |
-                      ((r / count) << 16) |
-                      ((g / count) <<  8) |
-                      ((b / count) <<  0);
+            u32 avg = ((a / count) << 24) | ((r / count) << 16) | ((g / count) << 8) | ((b / count) << 0);
 
             ((u32*)pixels_i)[y * width + x] = avg;
         }
@@ -241,27 +233,27 @@ void blur_background(void* pixels, i32 width, i32 height, t_memory_arena* arena)
 int main()
 {
     //-- TODO: Refactor in three calls: init, run, stop
-    const i32 width = 800;
+    const i32 width  = 800;
     const i32 height = 600;
 
     t_memory_arena global_arena = create_arena(GB(2));
 
     t_application application;
-    application.curr_app_state = Scene;
+    application.curr_app_state          = Scene;
     application.scene_loading_triggered = false;
     memset(&application.curr_scene, 0, sizeof(t_scene));
 
     //-- Our screen buffer
-    void* pixels     = arena_push(&global_arena, width * height * sizeof(i32));
+    void* pixels = arena_push(&global_arena, width * height * sizeof(i32));
     memset(pixels, 0, width * height * sizeof(i32));
 
     application.is_running = true;
-    t_window window = create_window("MiniRT", width, height, &global_arena);
-    window.buffer   = pixels;
+    t_window window        = create_window("MiniRT", width, height, &global_arena);
+    window.buffer          = pixels;
 
     //-- Application window
     t_application_window app_win;
-    app_win.width = width;
+    app_win.width  = width;
     app_win.height = height;
     app_win.pixels = pixels;
     memset(&application.menu_state, 0, sizeof(t_menu_state));
@@ -283,45 +275,44 @@ int main()
         memset(app_win.pixels, 0, (app_win.width * app_win.height * sizeof(i32)));
         switch (application.curr_app_state)
         {
-            case Menu: update_menu(&application.menu_state, &app_win); break;
-            case Scene: update_scene(&application.curr_scene); break;
-            default: break;
+        case Menu:
+            update_menu(&application.menu_state, &app_win);
+            break;
+        case Scene:
+            update_scene(&application.curr_scene);
+            break;
+        default:
+            break;
         }
 
         if (application.switch_to_menu_triggered)
         {
             memcpy(application.menu_state.menu_background, application.curr_scene.pixels, width * height * sizeof(i32));
             blur_background(application.menu_state.menu_background, width, height, &global_arena);
-            application.curr_app_state = Menu;
+            application.curr_app_state           = Menu;
             application.switch_to_menu_triggered = false;
         }
-
 
         if (application.scene_loading_triggered)
         {
             destroy_current_scene(&application);
             load_scene(&application, &app_win);
-            application.curr_app_state = Scene;
+            application.curr_app_state          = Scene;
             application.scene_loading_triggered = false;
         }
 
-        const u32 time_frame_end = time_ms();
+        const u32   time_frame_end = time_ms();
         const float time_elapsed   = (time_frame_end - time_frame_start) + 0.0001f;
-        drawing_stat.size = snprintf((char*)drawing_stat.mem, 100, "MS:%.0f FPS:%.0f", time_elapsed, 1000.0f / time_elapsed);
-        iv2 text_pos = { 630, 570 };
-        t_color color = { 255.0f, 0, 0 };
-        draw_debug_text(
-            drawing_stat,
-            text_pos,
-            color,
-            5.0f,      // Overall scale. Default to 1.0f
-            5.0f,      // Width. Default to 1.0f
-            5.0f,     // Height. Default to 1.0f
-            0.0f,    // Character Spacing. Default to 0.0f
-            1.0f,
-            app_win.width,
-            app_win.height,
-            app_win.pixels);
+        drawing_stat.size =
+            snprintf((char*)drawing_stat.mem, 100, "MS:%.0f FPS:%.0f", time_elapsed, 1000.0f / time_elapsed);
+        iv2     text_pos = {630, 570};
+        t_color color    = {255.0f, 0, 0};
+        draw_debug_text(drawing_stat, text_pos, color,
+                        5.0f, // Overall scale. Default to 1.0f
+                        5.0f, // Width. Default to 1.0f
+                        5.0f, // Height. Default to 1.0f
+                        0.0f, // Character Spacing. Default to 0.0f
+                        1.0f, app_win.width, app_win.height, app_win.pixels);
         application.curr_scene.dt = (float)time_elapsed / 1000.0f;
 
         present_buffer_in_window(&window);

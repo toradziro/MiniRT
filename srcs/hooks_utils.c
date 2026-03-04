@@ -46,9 +46,9 @@
 
 void process_scene(t_key key, t_application* application)
 {
-    t_scene* scene = &application->curr_scene;
+    t_scene* scene   = &application->curr_scene;
     t_vector forward = scene->cams->direction;
-    t_vector up = scene->cams->up;
+    t_vector up      = scene->cams->up;
     t_vector right   = cross_prod(&forward, &up);
 
     const float rotation_speed = 1.2 * scene->dt;
@@ -129,7 +129,6 @@ void process_scene(t_key key, t_application* application)
     memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
 }
 
-
 void process_menu(t_key key, t_application* application)
 {
     switch (key)
@@ -161,11 +160,16 @@ void process_menu(t_key key, t_application* application)
 
 int press_key(t_key key, t_application* application)
 {
-    switch(application->curr_app_state)
+    switch (application->curr_app_state)
     {
-        case Menu: process_menu(key, application); break;
-        case Scene: process_scene(key, application); break;
-        default: break;
+    case Menu:
+        process_menu(key, application);
+        break;
+    case Scene:
+        process_scene(key, application);
+        break;
+    default:
+        break;
     }
     return (0);
 }

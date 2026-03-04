@@ -56,10 +56,10 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
         [[maybe_unused]] const bool isCtrl  = (wParam == VK_CONTROL);
         [[maybe_unused]] const bool isShift = (wParam == VK_SHIFT);
         [[maybe_unused]] const bool isEnter = (wParam == VK_RETURN);
-        [[maybe_unused]] const bool isLeft   = (wParam == VK_LEFT);
-        [[maybe_unused]] const bool isRight  = (wParam == VK_RIGHT);
-        [[maybe_unused]] const bool isUp   =   (wParam == VK_UP);
-        [[maybe_unused]] const bool isDown   = (wParam == VK_DOWN);
+        [[maybe_unused]] const bool isLeft  = (wParam == VK_LEFT);
+        [[maybe_unused]] const bool isRight = (wParam == VK_RIGHT);
+        [[maybe_unused]] const bool isUp    = (wParam == VK_UP);
+        [[maybe_unused]] const bool isDown  = (wParam == VK_DOWN);
 
         // 30 	The previous key state. The value is 1 if the key is down before the message is sent, or it is zero if
         // the key is up.
@@ -165,7 +165,7 @@ t_window create_window(const char* name, i32 width, i32 height, t_memory_arena* 
 
 void process_events(t_window* window, t_application* application)
 {
-    glob_application                = application;
+    glob_application          = application;
     t_platform_window* pl_win = (t_platform_window*)window->window;
 
     MSG msg = {};

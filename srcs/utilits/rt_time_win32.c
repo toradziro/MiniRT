@@ -4,9 +4,9 @@
 
 u64 time_ms()
 {
-    static LARGE_INTEGER frequency = {};
-    static LARGE_INTEGER startTime = {};
-    static bool initialized = false;
+    static LARGE_INTEGER frequency   = {};
+    static LARGE_INTEGER startTime   = {};
+    static bool          initialized = false;
 
     if (!initialized)
     {
@@ -15,8 +15,8 @@ u64 time_ms()
         initialized = true;
     }
 
-     LARGE_INTEGER currentTime;
-     QueryPerformanceCounter(&currentTime);
+    LARGE_INTEGER currentTime;
+    QueryPerformanceCounter(&currentTime);
 
-     return ((currentTime.QuadPart - startTime.QuadPart) * 1000) / frequency.QuadPart;
+    return ((currentTime.QuadPart - startTime.QuadPart) * 1000) / frequency.QuadPart;
 }

@@ -9,12 +9,12 @@
 
 str8 read_full_file(str8 path)
 {
-    str8 ret = { 0 };
+    str8 ret = {0};
 
     char* linux_capable_str = alloca(sizeof(char) * path.size + 1);
     memcpy(linux_capable_str, path.mem, path.size);
     linux_capable_str[path.size] = '\0';
-    int  fd  = open(linux_capable_str, O_RDONLY);
+    int fd                       = open(linux_capable_str, O_RDONLY);
 
     ret.mem  = NULL;
     ret.size = 0;

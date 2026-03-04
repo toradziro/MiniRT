@@ -39,7 +39,7 @@ void render(t_thread_pool* thread_pool, int y)
         {
             if (!thread_pool->m_thread_data[j].is_task_assigned)
             {
-                thread_pool->m_thread_data[j].curr_y = i;
+                thread_pool->m_thread_data[j].curr_y           = i;
                 thread_pool->m_thread_data[j].is_task_assigned = true;
                 ++i;
             }

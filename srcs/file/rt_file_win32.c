@@ -8,7 +8,8 @@ str8 read_full_file(str8 path)
     char* win_capable_str = _alloca(sizeof(char) * path.size + 1);
     memcpy(win_capable_str, path.mem, path.size);
     win_capable_str[path.size] = '\0';
-    HANDLE hFile = CreateFileA(win_capable_str, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE hFile =
+        CreateFileA(win_capable_str, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
     {
         return ret;
