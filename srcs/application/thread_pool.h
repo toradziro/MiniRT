@@ -3,6 +3,10 @@
 #include "../thread/rt_thread.h"
 #include <stdbool.h>
 
+#ifndef THREADS_MAX
+# define THREADS_MAX 1
+#endif
+
 typedef struct s_thread_data
 {
     void*         scene;

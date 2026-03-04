@@ -1,13 +1,22 @@
 #include "rt_time.h"
 #include <windows.h>
+#include <stdbool.h>
 
 u64 time_ms()
 {
-    LARGE_INTEGER perfomanceFrequency = {};
-    QueryPerformanceFrequency(&perfomanceFrequency);
-    LARGE_INTEGER perfomanceCounterEnd = {};
-    QueryPerformanceCounter(&perfomanceCounterEnd);
-    float timeSeconds = (float)(perfomanceCounterEnd.QuadPart) / (float)perfomanceFrequency.QuadPart;
-    float timeMs      = timeSeconds * 1000;
-    return timeMs;
+    static LARGE_INTEGER frequency = {};
+    static LARGE_INTEGER startTime = {};
+    static bool initialized = false;
+
+    if (!initialized)
+    {
+        QueryPerformanceFrequency(&frequency);
+        QueryPerformanceCounter(&startTime);
+        initialized = true;
+    }
+
+     LARGE_INTEGER currentTime;
+     QueryPerformanceCounter(&currentTime);
+
+     return ((currentTime.QuadPart - startTime.QuadPart) * 1000) / frequency.QuadPart;
 }

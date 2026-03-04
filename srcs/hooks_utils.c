@@ -125,13 +125,6 @@ void process_scene(t_key key, t_application* application)
     default:
         break;
     }
-    // printf("%f,%f,%f   %f   %f\n",
-    //     scene->cams->coordinates.v_x,
-    //     scene->cams->coordinates.v_y,
-    //     scene->cams->coordinates.v_z,
-    //     scene->cams->pitch,
-    //     scene->cams->yaw
-    //     );
     scene->need_update_mtx = true;
     memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
 }

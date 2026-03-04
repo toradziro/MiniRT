@@ -1,11 +1,14 @@
 #include "rt_file.h"
 #include <windows.h>
 
-str8 read_full_file(const char* path)
+str8 read_full_file(str8 path)
 {
     str8 ret = {0};
 
-    HANDLE hFile = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    char* win_capable_str = _alloca(sizeof(char) * path.size + 1);
+    memcpy(win_capable_str, path.mem, path.size);
+    win_capable_str[path.size] = '\0';
+    HANDLE hFile = CreateFileA(win_capable_str, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
     {
         return ret;

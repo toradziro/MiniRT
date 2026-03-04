@@ -11,7 +11,7 @@ typedef struct s_platform_window
 
 static BITMAPINFO global_bitmap_info = {};
 //-- TODO: Find better solution
-t_scene* glob_scene = NULL;
+t_application* glob_application = NULL;
 
 t_key convert_win_key_to_inner(char key)
 {
@@ -55,6 +55,11 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
         [[maybe_unused]] const bool isTab   = (wParam == VK_TAB);
         [[maybe_unused]] const bool isCtrl  = (wParam == VK_CONTROL);
         [[maybe_unused]] const bool isShift = (wParam == VK_SHIFT);
+        [[maybe_unused]] const bool isEnter = (wParam == VK_RETURN);
+        [[maybe_unused]] const bool isLeft   = (wParam == VK_LEFT);
+        [[maybe_unused]] const bool isRight  = (wParam == VK_RIGHT);
+        [[maybe_unused]] const bool isUp   =   (wParam == VK_UP);
+        [[maybe_unused]] const bool isDown   = (wParam == VK_DOWN);
 
         // 30 	The previous key state. The value is 1 if the key is down before the message is sent, or it is zero if
         // the key is up.
@@ -62,14 +67,34 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
         // 31 	The transition state. The value is always 0 for a WM_KEYDOWN message.
         [[maybe_unused]] bool currStateIsDown = !((1 << 31) & lParam);
 
-        press_key(convert_win_key_to_inner(wParam), glob_scene);
+        press_key(convert_win_key_to_inner(wParam), glob_application);
         if (isTab && !prevStateIsDown)
         {
-            press_key(RT_SCANCODE_TAB, glob_scene);
+            press_key(RT_SCANCODE_TAB, glob_application);
         }
-        if (isEsc)
+        if (isEnter && !prevStateIsDown)
         {
-            press_key(RT_SCANCODE_ESCAPE, glob_scene);
+            press_key(RT_SCANCODE_ENTER, glob_application);
+        }
+        if (isEsc && !prevStateIsDown)
+        {
+            press_key(RT_SCANCODE_ESCAPE, glob_application);
+        }
+        if (isLeft && !prevStateIsDown)
+        {
+            press_key(RT_SCANCODE_ARROW_LEFT, glob_application);
+        }
+        if (isRight && !prevStateIsDown)
+        {
+            press_key(RT_SCANCODE_ARROW_RIGHT, glob_application);
+        }
+        if (isUp && !prevStateIsDown)
+        {
+            press_key(RT_SCANCODE_ARROW_UP, glob_application);
+        }
+        if (isDown && !prevStateIsDown)
+        {
+            press_key(RT_SCANCODE_ARROW_DOWN, glob_application);
         }
 
         return 0;
@@ -77,7 +102,7 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 
     case WM_CLOSE:
     {
-        exit_rt(glob_scene);
+        glob_application->is_running = false;
         return 0;
     }
 
@@ -111,7 +136,7 @@ t_window create_window(const char* name, i32 width, i32 height, t_memory_arena* 
                                    WS_OVERLAPPEDWINDOW, // Window style
 
                                    // Size and position
-                                   CW_USEDEFAULT, CW_USEDEFAULT, width, height,
+                                   CW_USEDEFAULT, CW_USEDEFAULT, width + 10, height + 35,
 
                                    NULL,      // Parent window
                                    NULL,      // Menu
@@ -138,9 +163,9 @@ t_window create_window(const char* name, i32 width, i32 height, t_memory_arena* 
     return res;
 }
 
-void process_events(t_window* window, t_scene* scene)
+void process_events(t_window* window, t_application* application)
 {
-    glob_scene                = scene;
+    glob_application                = application;
     t_platform_window* pl_win = (t_platform_window*)window->window;
 
     MSG msg = {};

@@ -23,8 +23,8 @@
 #include "debug_draw/draw_line.h"
 #include "debug_draw/text.h"
 #include "application/application.h"
+#include "file/directory.h"
 #include <stdio.h>
-#include <dirent.h>
 
 #define M_RT_PI (3.14159)
 
@@ -49,52 +49,54 @@ void push_next_menu_item(t_menu_items_list* curr, t_memory_arena* arena)
 
 void fill_menu_state(t_menu_state* menu_state, t_memory_arena* arena)
 {
-    //-- TODO: move to platform layer
     const char* path = "./assets/";
-    DIR *dir = opendir(path);
-    if (!dir)
-    {
-        return;
-    }
+    const i32 path_len = strlen(path);
 
-    struct dirent *entry;
+    str8 dir_path;
+    dir_path.mem = (u8*)path;
+    dir_path.size = strlen(path);
+
+    t_directory dir = open_directory(dir_path, arena);
+
     t_menu_items_list* curr = NULL;
-    while ((entry = readdir(dir)) != NULL)
+
+    str8 filename;
+    while ((filename = next_non_dir_file(&dir, arena)).mem != NULL)
     {
-        if (entry->d_name[0] == '.')
+        i32 filename_len = filename.size;
+        str8 filepath;
+        filepath.size = path_len + filename_len;
+
+        filepath.mem = arena_push(arena, sizeof(u8) * (filepath.size));
+        for (i32 i = 0; i < path_len; ++i)
         {
-            continue;
+            filepath.mem[i] = path[i];
         }
 
-        if (entry->d_type == DT_REG)
+        for (i32 i = 0; i < filename_len; ++i)
         {
-            u8* filepath = arena_push(arena, sizeof(u8) * 1024);
-            i32 fpath_length = snprintf((char*)filepath, 1024, "%s/%s", path, entry->d_name);
-            i32 filename_len = strlen(entry->d_name);
-            u8* filename = arena_push(arena, sizeof(u8) * filename_len);
-            memcpy(filename, entry->d_name, filename_len);
-            if (menu_state->items == NULL)
-            {
-                create_menu_items(menu_state, arena);
-                menu_state->items->full_path.mem = filepath;
-                menu_state->items->full_path.size = fpath_length;
-                menu_state->items->filename.mem = filename;
-                menu_state->items->filename.size = filename_len;
-                curr = menu_state->items;
-            }
-            else
-            {
-                push_next_menu_item(curr, arena);
-                curr->next->full_path.mem = filepath;
-                curr->next->full_path.size = fpath_length;
-                curr->next->filename.mem = filename;
-                curr->next->filename.size = filename_len;
-                curr = curr->next;
-            }
+            filepath.mem[path_len + i] = filename.mem[i];
         }
+
+        if (menu_state->items == NULL)
+        {
+            create_menu_items(menu_state, arena);
+            menu_state->items->full_path = filepath;
+            menu_state->items->filename = filename;
+            curr = menu_state->items;
+        }
+        else
+        {
+            push_next_menu_item(curr, arena);
+            curr->next->full_path = filepath;
+            curr->next->filename = filename;
+            curr = curr->next;
+        }
+        filename.mem = NULL;
+        filename.size = 0;
     }
 
-    closedir(dir);
+    close_directory(&dir);
 }
 
 void update_menu(t_menu_state* menu_state, t_application_window* window)
@@ -130,7 +132,7 @@ str8 curr_selected_menu_item(t_application* application)
 {
     i32 curr = 0;
     t_menu_items_list* curr_item = application->menu_state.items;
-    str8 res = { 0 };
+    str8 res = { NULL, 0 };
 
     while (curr_item)
     {
@@ -242,7 +244,7 @@ int main()
     const i32 width = 800;
     const i32 height = 600;
 
-    t_memory_arena global_arena = create_arena(GB(1));
+    t_memory_arena global_arena = create_arena(GB(2));
 
     t_application application;
     application.curr_app_state = Scene;
@@ -304,8 +306,8 @@ int main()
         }
 
         const u32 time_frame_end = time_ms();
-        const u32 time_elapsed   = time_frame_end - time_frame_start;
-        drawing_stat.size = snprintf((char*)drawing_stat.mem, 100, "MS:%u FPS:%u", time_elapsed, 1000 / time_elapsed);
+        const float time_elapsed   = (time_frame_end - time_frame_start) + 0.0001f;
+        drawing_stat.size = snprintf((char*)drawing_stat.mem, 100, "MS:%.0f FPS:%.0f", time_elapsed, 1000.0f / time_elapsed);
         iv2 text_pos = { 630, 570 };
         t_color color = { 255.0f, 0, 0 };
         draw_debug_text(
