@@ -22,6 +22,7 @@
 #ifdef RT_LINUX
 #include "thread/rt_thread_linux.c"
 #include "file/rt_file_linux.c"
+#include "file/directory_linux.c"
 #include "utilits/rt_time_linux.c"
 #include "window/window_linux.c"
 #elif RT_WIN32
