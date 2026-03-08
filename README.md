@@ -2,7 +2,9 @@
 
 In 2021 I started learning programming. At the programming school 42 School we had our first graphics project called **MiniRT**. The goal of the project was to implement the simplest version of ray tracing on the CPU using the **MinilibX** library, which allowed setting the color of a single pixel in the framebuffer. The project originally ran only on macOS.
 
-GIF BEFORE and GIF AFTER
+Old images and new compare:
+![ALT TEXT](examples/old_wolf.png) ![ALT TEXT](examples/new_wolf.png)
+![ALT TEXT](examples/old_pens.png) ![ALT TEXT](examples/new_pens.png)
 
 In 2025 I decided to return to this project and see how much it could be improved while keeping the original constraints — all computations must happen strictly on the CPU, and no external rendering libraries or engines can be used for any part of the project.
 
@@ -38,14 +40,14 @@ I also attempted to rewrite all math operations using SIMD, but benchmarks showe
 
 However, I realized that if functions are located far apart in memory, calling them may result in jumping to code that has already been evicted from the TLB cache or resides on another memory page, which negatively affects the CPU prefetcher. To solve this, I moved all math operations into headers and marked them as force inline. This improved performance by roughly fifteen percent, now all operations are prefetched more optimally and compile into efficient SIMD code with `-O3` optimization.
 
-But that still was not enough. Rendering a scene with 3–4 thousand triangles and three directional light sources still took around 14 seconds.
+But that still was not enough. Rendering a scene with 3–4 thousand triangles and three directional light sources still took up to 14 seconds on big screen.
 
 At this point it was time for algorithmic improvements. I studied how BVH trees work and implemented the simplest version of it. During this process planes, spheres, and cylinders were removed, leaving only triangles because building AABB for them was the easiest, but the complexity of ray hit finding improved from linear to logarithmic.
 
 Scenes that were previously static and required tens of seconds to render were now rendered in 20–30 milliseconds. Because of that improvement I added anti-aliasing (four jittered samples using an accumulation approach) and reflections (up to four ray bounces)
 
 For a speed comparison:
-`GIF BEFORE` `GIF AFTER`
+![ALT TEXT](examples/old_rendering.gif) ![ALT TEXT](examples/new_rendering.gif)
 
 Camera controls are relatively free:
 -   **WASD** — movement in space
@@ -53,7 +55,7 @@ Camera controls are relatively free:
 
 I also found an article about software rendering of debug text, which inspired the idea of adding a menu. To visually separate menu and scene states, I also implemented a very simple blur effect that activates when the menu is open.
 
-`MENU SCREEN`
+![ALT TEXT](examples/menu.png)
 
 All scenes shown in the menu are files located in the `assets` directory. This directory should not be removed or renamed. Adding new content there is currently difficult because only the original scene file format from the initial project is supported. Parsing `.obj` files was not implemented.
 Menu navigation:
