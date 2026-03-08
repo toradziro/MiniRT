@@ -3,8 +3,10 @@
 In 2021 I started learning programming. At the programming school 42 School we had our first graphics project called **MiniRT**. The goal of the project was to implement the simplest version of ray tracing on the CPU using the **MinilibX** library, which allowed setting the color of a single pixel in the framebuffer. The project originally ran only on macOS.
 
 Old images and new compare:
-![ALT TEXT](examples/old_wolf.png) ![ALT TEXT](examples/new_wolf.png)
-![ALT TEXT](examples/old_pens.png) ![ALT TEXT](examples/new_pens.png)
+| | |
+|---|---|
+| ![ALT TEXT](examples/old_wolf.png) | ![ALT TEXT](examples/new_wolf.png) |
+| ![ALT TEXT](examples/old_pens.png) | ![ALT TEXT](examples/new_pens.png) |
 
 In 2025 I decided to return to this project and see how much it could be improved while keeping the original constraints — all computations must happen strictly on the CPU, and no external rendering libraries or engines can be used for any part of the project.
 
@@ -47,7 +49,9 @@ At this point it was time for algorithmic improvements. I studied how BVH trees 
 Scenes that were previously static and required tens of seconds to render were now rendered in 20–30 milliseconds. Because of that improvement I added anti-aliasing (four jittered samples using an accumulation approach) and reflections (up to four ray bounces)
 
 For a speed comparison:
-![ALT TEXT](examples/old_rendering.gif) ![ALT TEXT](examples/new_rendering.gif)
+| | |
+|---|---|
+| ![ALT TEXT](examples/old_rendering.gif) | ![ALT TEXT](examples/new_rendering.gif) |
 
 Camera controls are relatively free:
 -   **WASD** — movement in space
@@ -55,7 +59,7 @@ Camera controls are relatively free:
 
 I also found an article about software rendering of debug text, which inspired the idea of adding a menu. To visually separate menu and scene states, I also implemented a very simple blur effect that activates when the menu is open.
 
-![ALT TEXT](examples/menu.png)
+![ALT TEXT](examples/menu.gif)
 
 All scenes shown in the menu are files located in the `assets` directory. This directory should not be removed or renamed. Adding new content there is currently difficult because only the original scene file format from the initial project is supported. Parsing `.obj` files was not implemented.
 Menu navigation:
