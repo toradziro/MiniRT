@@ -1,7 +1,5 @@
-#define _GNU_SOURCE
-#include "../includes/MiniRT.h"
 #include "arena.h"
-#include <sys/mman.h>
+#include <stdlib.h>
 
 void clear_arena(t_memory_arena* arena) { arena->cursor = 0; }
 
@@ -45,7 +43,7 @@ void* arena_push_aligned(t_memory_arena* arena, u32 size, u32 aligment)
 t_memory_arena create_arena(u32 size)
 {
     t_memory_arena arena;
-    arena.memory = mmap(0, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    arena.memory = calloc(size, 1);
     arena.size   = size;
     arena.cursor = 0;
 
@@ -54,8 +52,11 @@ t_memory_arena create_arena(u32 size)
 
 void destroy_arena(t_memory_arena* arena)
 {
-    munmap(arena->memory, arena->size);
+    if (arena->memory != NULL && arena->size != 0)
+    {
+        free(arena->memory);
 
-    arena->size   = 0;
-    arena->cursor = 0;
+        arena->size   = 0;
+        arena->cursor = 0;
+    }
 }

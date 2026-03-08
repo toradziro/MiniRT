@@ -3,7 +3,7 @@
 
 str8 get_next_line(str8 file, u32* curr, t_memory_arena* arena)
 {
-    str8 out = {0, NULL};
+    str8 out = {NULL, 0};
 
     if (!curr || !arena || *curr >= file.size)
     {

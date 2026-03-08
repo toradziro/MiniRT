@@ -14,16 +14,16 @@
 
 t_vec_fig* new_vec_fig(u32 size, t_memory_arena* arena)
 {
-    t_vec_fig* new     = (t_vec_fig*)arena_push_aligned(arena, sizeof(t_vec_fig), sizeof(t_vector));
-    new->figure_holder = arena_push_aligned(arena, sizeof(t_figure_holder) * size, sizeof(t_vector));
-    new->length        = 0;
+    t_vec_fig* new = (t_vec_fig*)arena_push_aligned(arena, sizeof(t_vec_fig), sizeof(t_vector));
+    new->triangles = arena_push_aligned(arena, sizeof(t_triangle) * size, sizeof(t_vector));
+    new->length    = 0;
 
     return (new);
 }
 
-t_vec_fig* add_elem_vec(t_vec_fig* vec, t_figure_holder next)
+t_vec_fig* add_elem_vec(t_vec_fig* vec, t_triangle next)
 {
-    vec->figure_holder[vec->length] = next;
+    vec->triangles[vec->length] = next;
     ++vec->length;
     return (vec);
 }

@@ -5,8 +5,8 @@
 
 typedef struct s_str8
 {
-    u32 size;
     u8* mem;
+    u32 size;
 } str8;
 
 str8 get_next_line(str8 file, u32* curr, t_memory_arena* arena);

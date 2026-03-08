@@ -52,7 +52,7 @@ char* skip_pattern(char* str)
     str = skip_nums(str);
     if (!*str || *str != ' ')
     {
-        killed_by_error(UNKNWN_ARG);
+        return (str);
     }
     str = skip_spaces(str);
     return (str);

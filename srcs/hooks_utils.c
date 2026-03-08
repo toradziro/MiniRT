@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "includes/MiniRT.h"
-#include <SDL2/SDL_scancode.h>
+#include "vectors_funcs/rt_math.h"
+#include "window/window.h"
 
 // int				mouse_press(int b, int x, int y, t_scene *scene)
 // {
@@ -43,50 +44,130 @@
 // 	return (0);
 // }
 
-int press_key(SDL_Keysym key, t_scene* scene)
+void process_scene(t_key key, t_application* application)
 {
-    switch (key.scancode)
+    t_scene* scene   = &application->curr_scene;
+    t_vector forward = scene->cams->direction;
+    t_vector up      = scene->cams->up;
+    t_vector right   = cross_prod(&forward, &up);
+
+    const float rotation_speed = 1.2 * scene->dt;
+    const float movement_speed = 300 * scene->dt;
+
+    switch (key)
     {
-    case (SDL_SCANCODE_TAB):
+    case (RT_SCANCODE_TAB):
     {
         scene->cams = (scene->cams->next == NULL) ? scene->first_cam : scene->cams->next;
     }
     break;
-    case (SDL_SCANCODE_W):
+    case (RT_SCANCODE_W):
     {
-        scene->cams->coordinates.v_z += 4;
+        forward                  = vector_by_scalar(&forward, movement_speed);
+        scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &forward);
     }
     break;
-    case (SDL_SCANCODE_S):
+    case (RT_SCANCODE_S):
     {
-        scene->cams->coordinates.v_z -= 4;
+        forward                  = vector_by_scalar(&forward, -movement_speed);
+        scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &forward);
     }
     break;
-    case (SDL_SCANCODE_A):
+    case (RT_SCANCODE_A):
     {
-        scene->cams->coordinates.v_x += 4;
+        right                    = vector_by_scalar(&right, movement_speed);
+        scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &right);
     }
     break;
-    case (SDL_SCANCODE_D):
+    case (RT_SCANCODE_D):
     {
-        scene->cams->coordinates.v_x -= 4;
+        right                    = vector_by_scalar(&right, -movement_speed);
+        scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &right);
     }
     break;
-    case (SDL_SCANCODE_Q):
+    case (RT_SCANCODE_Q):
     {
-        scene->cams->coordinates.v_y += 4;
+        up                       = vector_by_scalar(&up, movement_speed);
+        scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &up);
     }
     break;
-    case (SDL_SCANCODE_E):
+    case (RT_SCANCODE_E):
     {
-        scene->cams->coordinates.v_y -= 4;
+        up                       = vector_by_scalar(&up, -movement_speed);
+        scene->cams->coordinates = add_vectors(&scene->cams->coordinates, &up);
     }
     break;
-    case (SDL_SCANCODE_ESCAPE):
+    case (RT_SCANCODE_ARROW_UP):
     {
-        exit_rt(scene);
+        scene->cams->pitch += rotation_speed;
     }
     break;
+    case (RT_SCANCODE_ARROW_DOWN):
+    {
+        scene->cams->pitch -= rotation_speed;
+    }
+    break;
+    case (RT_SCANCODE_ARROW_LEFT):
+    {
+        scene->cams->yaw -= rotation_speed;
+    }
+    break;
+    case (RT_SCANCODE_ARROW_RIGHT):
+    {
+        scene->cams->yaw += rotation_speed;
+    }
+    break;
+    case (RT_SCANCODE_ESCAPE):
+    {
+        application->switch_to_menu_triggered = true;
+    }
+    break;
+    default:
+        break;
+    }
+    scene->need_update_mtx = true;
+    memset(scene->pixels_avg, 0, scene->width * scene->height * sizeof(t_accum_data));
+}
+
+void process_menu(t_key key, t_application* application)
+{
+    switch (key)
+    {
+    case (RT_SCANCODE_ARROW_UP):
+    {
+        application->menu_state.selected_item--;
+    }
+    break;
+    case (RT_SCANCODE_ARROW_DOWN):
+    {
+        application->menu_state.selected_item++;
+    }
+    break;
+    case (RT_SCANCODE_ESCAPE):
+    {
+        application->is_running = false;
+    }
+    break;
+    case (RT_SCANCODE_ENTER):
+    {
+        application->scene_loading_triggered = true;
+    }
+    break;
+    default:
+        break;
+    }
+}
+
+int press_key(t_key key, t_application* application)
+{
+    switch (application->curr_app_state)
+    {
+    case Menu:
+        process_menu(key, application);
+        break;
+    case Scene:
+        process_scene(key, application);
+        break;
     default:
         break;
     }

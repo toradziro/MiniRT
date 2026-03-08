@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/MiniRT.h"
+#include "lists.h"
 
 t_lights* new_light_node(t_vector coordinates, float intensity, t_color color, t_memory_arena* arena)
 {

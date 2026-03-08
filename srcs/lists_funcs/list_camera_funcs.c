@@ -10,17 +10,19 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/MiniRT.h"
+#include "lists.h"
 
-t_cameras* new_camera_node(t_vector coordinates, t_vector dir, float fov, t_memory_arena* arena)
+t_cameras* new_camera_node(t_vector coordinates, float pitch, float yaw, float fov, t_memory_arena* arena)
 {
-    t_cameras* new = arena_push(arena, sizeof(t_cameras));
+    t_cameras* new_camera = arena_push(arena, sizeof(t_cameras));
 
-    new->coordinates = coordinates;
-    new->direction   = dir;
-    new->field_of_v  = fov;
-    new->next        = NULL;
-    return (new);
+    new_camera->coordinates = coordinates;
+    new_camera->direction   = new_vector(0, 0, 0);
+    new_camera->field_of_v  = fov;
+    new_camera->pitch       = pitch;
+    new_camera->yaw         = yaw;
+    new_camera->next        = NULL;
+    return (new_camera);
 }
 
 void push_back_cam(t_cameras* list, t_cameras* new)

@@ -11,31 +11,32 @@
 /* ************************************************************************** */
 
 #include "includes/MiniRT.h"
-#include "stdio.h"
+#include <stdio.h>
 
 void save_to_bmp(t_scene* scene)
 {
-    int  fd;
-    char filler_head[54];
-    int  row;
-    int  file_size;
+    (void)scene;
+    // int  fd;
+    // char filler_head[54];
+    // int  row;
+    // int  file_size;
 
-    memset(filler_head, 0, 54);
-    file_size = 54 + 4 * scene->width * scene->height;
-    init_head(filler_head, scene, file_size);
-    fd         = open("screen.bmp", O_RDWR | O_CREAT | O_TRUNC, 0666);
-    int retval = write(fd, filler_head, 54);
-    row        = scene->height - 1;
-    while (row >= 0)
-    {
-        retval = write(fd, scene->pixels + (row * scene->width), scene->width * 4);
-        --row;
-    }
-    if (retval == -1)
-    {
-        printf("Error occured in save_to_bmp");
-    }
-    close(fd);
+    // memset(filler_head, 0, 54);
+    // file_size = 54 + 4 * scene->width * scene->height;
+    // init_head(filler_head, scene, file_size);
+    // fd         = open("screen.bmp", O_RDWR | O_CREAT | O_TRUNC, 0666);
+    // int retval = write(fd, filler_head, 54);
+    // row        = scene->height - 1;
+    // while (row >= 0)
+    // {
+    //     retval = write(fd, scene->pixels + (row * scene->width), scene->width * 4);
+    //     --row;
+    // }
+    // if (retval == -1)
+    // {
+    //     printf("Error occured in save_to_bmp");
+    // }
+    // close(fd);
 }
 
 void init_head(char* head, t_scene* scene, int file_size)
